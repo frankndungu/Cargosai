@@ -1,5 +1,9 @@
-<script setup></script>
+<script setup>
+import Navbar from "./components/Navbar.vue";
+import Hero from "./components/Hero.vue";
+</script>
 
 <template>
-  <h1>Cargosai</h1>
+  <Navbar />
+  <Hero />
 </template>

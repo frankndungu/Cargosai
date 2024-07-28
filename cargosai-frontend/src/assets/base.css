@@ -8,30 +8,28 @@
   --primary-color: #28282b;
   --secondary-color: #f6f3e3;
   --accent-color: #9e301b;
-  --text-color: #0f0f0f;
+  --dark-color: #0f0f0f;
+
+  /* margins */
+  --mb-0-5: 0.5rem;
+  --mb-0-75: 0.75rem;
+  --mb-1: 1rem;
+  --mb-1-5: 1.5rem;
+  --mb-2: 2rem;
 
   /* fonts */
   --body-font: "Open Sans", sans-serif;
-  --font-size-large: 4rem;
+  --font-size-large: 1.5rem;
   --h3-font-size: 1rem;
   --normal-font-size: 0.938rem;
   --smaller-font-size: 0.813rem;
   --font-light: 300;
   --font-medium: 500;
   --font-bold: 700;
+
+  /* z index */
   --z-tooltip: 10;
   --z-fixed: 100;
-}
-
-/* Responsive styles */
-@media screen and (min-width: 1150px) {
-  :root {
-    --biggest-font-size: 17rem;
-    --h2-font-size: 1.5rem;
-    --h3-font-size: 1.25rem;
-    --normal-font-size: 1rem;
-    --small-font-size: 0.875rem;
-  }
 }
 
 * {
