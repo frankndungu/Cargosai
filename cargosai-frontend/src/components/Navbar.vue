@@ -1,3 +1,12 @@
+<script setup>
+import { ref } from "vue";
+
+const isMenuOpen = ref(false);
+function toggleMenu() {
+  isMenuOpen.value = !isMenuOpen.value;
+}
+</script>
+
 <template>
   <nav class="navbar">
     <div class="navbar__title">
@@ -18,18 +27,3 @@
     </div>
   </nav>
 </template>
-
-<script>
-export default {
-  data() {
-    return {
-      isMenuOpen: false,
-    };
-  },
-  methods: {
-    toggleMenu() {
-      this.isMenuOpen = !this.isMenuOpen;
-    },
-  },
-};
-</script>
