@@ -34,6 +34,10 @@ a {
   font-weight: var(--font-bold);
 }
 
+.navbar__link-title {
+  font-size: var(--font-size-large);
+}
+
 .navbar__toggle {
   display: none;
   flex-direction: column;
@@ -89,6 +93,7 @@ a {
   left: 0;
   width: 100%;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: max-height 0.3s ease-in;
   z-index: 1000;
   padding: 20px 0;
 }
@@ -126,10 +131,13 @@ a {
 
   .navbar__links {
     display: none;
+    transition: max-height 0.3s ease-in;
   }
 
   .navbar__links.navbar__links--open {
     display: flex;
+    transition: max-height 0.3s ease-out;
+    overflow: hidden;
   }
 
   .navbar__contact {
