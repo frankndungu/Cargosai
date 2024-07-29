@@ -5,12 +5,18 @@ const isMenuOpen = ref(false);
 function toggleMenu() {
   isMenuOpen.value = !isMenuOpen.value;
 }
+
+function closeMenu() {
+  isMenuOpen.value = false;
+}
 </script>
 
 <template>
   <nav class="navbar">
     <div class="navbar__title">
-      <h1>Cargosai</h1>
+      <router-link to="/" class="navbar__link-title" @click="closeMenu"
+        >Cargosai</router-link
+      >
     </div>
     <div class="navbar__toggle" @click="toggleMenu">
       <div :class="{ 'navbar__toggle-bar': true, active: isMenuOpen }"></div>
@@ -18,12 +24,16 @@ function toggleMenu() {
       <div :class="{ 'navbar__toggle-bar': true, active: isMenuOpen }"></div>
     </div>
     <ul class="navbar__links" :class="{ 'navbar__links--open': isMenuOpen }">
-      <li><a href="#about">About</a></li>
-      <li><a href="#services">Services</a></li>
-      <li><a href="#blog">Blog</a></li>
+      <li><router-link to="/about" @click="closeMenu">About</router-link></li>
+      <li>
+        <router-link to="/services" @click="closeMenu">Services</router-link>
+      </li>
+      <li><router-link to="/blog" @click="closeMenu">Blog</router-link></li>
     </ul>
     <div class="navbar__contact">
-      <button>Contact</button>
+      <router-link to="/contact" @click="closeMenu">
+        <button>Contact</button>
+      </router-link>
     </div>
   </nav>
 </template>
