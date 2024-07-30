@@ -10,8 +10,12 @@
         antiques, jewelry, and fabrics.
       </p>
       <div class="hero-buttons">
-        <button class="btn btn-light" @click="learnMore">Learn more</button>
-        <button class="btn btn-dark" @click="getStarted">Get Started</button>
+        <router-link class="button-link" to="/blog">
+          <button class="btn btn-light">Learn more</button></router-link
+        >
+        <router-link class="button-link" to="/pre-order">
+          <button class="btn btn-dark">Get Started</button>
+        </router-link>
       </div>
     </div>
     <div class="hero-gallery">

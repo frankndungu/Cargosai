@@ -7,6 +7,7 @@ import Blog from "../views/Blog.vue";
 import Contact from "../views/Contact.vue";
 import Shop from "../views/Shop.vue";
 import NotFound from "../views/NotFound.vue";
+import Preorder from "../views/Preorder.vue";
 
 const routes = [
   { path: "/", component: Home },
@@ -14,6 +15,8 @@ const routes = [
   { path: "/services", component: Services },
   { path: "/blog", component: Blog },
   { path: "/contact", component: Contact },
+  { path: "/pre-order", component: Preorder },
+  { path: "/:slug", component: Home }, // catch-all route for dynamic pages
   { path: "/shop", component: Shop },
   { path: "/404", component: NotFound },
 ];
