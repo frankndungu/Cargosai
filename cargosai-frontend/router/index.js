@@ -5,6 +5,8 @@ import About from "../views/About.vue";
 import Services from "../views/Services.vue";
 import Blog from "../views/Blog.vue";
 import Contact from "../views/Contact.vue";
+import Shop from "../views/Shop.vue";
+import NotFound from "../views/NotFound.vue";
 
 const routes = [
   { path: "/", component: Home },
@@ -12,6 +14,8 @@ const routes = [
   { path: "/services", component: Services },
   { path: "/blog", component: Blog },
   { path: "/contact", component: Contact },
+  { path: "/shop", component: Shop },
+  { path: "/404", component: NotFound },
 ];
 
 const router = createRouter({

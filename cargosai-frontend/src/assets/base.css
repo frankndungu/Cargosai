@@ -19,12 +19,13 @@
 
   /* fonts */
   --body-font: "Open Sans", sans-serif;
+  --font-size-heading: 2rem;
   --font-size-large: 1.5rem;
   --h3-font-size: 1rem;
   --normal-font-size: 0.938rem;
   --smaller-font-size: 0.813rem;
   --font-light: 300;
-  --font-medium: 500;
+  --font-medium: 350;
   --font-bold: 700;
 
   /* z index */
