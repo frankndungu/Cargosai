@@ -1,6 +1,6 @@
-# Cargosai
+# Maasai Market Online
 
-Welcome to Cargosai, a platform dedicated to selling authentic Maasai and African antiques, jewelry, and fabrics. This project is built using Laravel for the backend and VueJS for the frontend, with MySQL as the database.
+Welcome to Maasai Market Online, a platform dedicated to selling authentic Maasai and African antiques, jewelry, and fabrics. This project is built using Laravel for the backend and VueJS for the frontend, with MySQL as the database.
 
 ## Table of Contents
 
@@ -20,7 +20,7 @@ Welcome to Cargosai, a platform dedicated to selling authentic Maasai and Africa
 
 ## Introduction
 
-Cargosai is designed to showcase and sell traditional Maasai and African crafts. It focuses on simplicity and user experience, with a straightforward design for easy navigation.
+Maasai Market Online is designed to showcase and sell traditional Maasai and African crafts. It focuses on simplicity and user experience, with a straightforward design for easy navigation.
 
 ## Features
 

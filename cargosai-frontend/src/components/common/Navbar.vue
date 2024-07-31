@@ -15,9 +15,12 @@ function closeMenu() {
   <header class="header">
     <nav class="navbar">
       <div class="navbar__title">
-        <router-link to="/" class="navbar__link-title" @click="closeMenu"
-          >Cargosai</router-link
-        >
+        <router-link to="/" class="navbar__link-title" @click="closeMenu">
+          <div class="navbar__logo-text">
+            <span class="logo-main">maasai market</span>
+            <span class="logo-sub">online</span>
+          </div>
+        </router-link>
       </div>
       <div class="navbar__toggle" @click="toggleMenu">
         <div :class="{ 'navbar__toggle-bar': true, active: isMenuOpen }"></div>
