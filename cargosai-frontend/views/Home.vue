@@ -6,8 +6,8 @@
         <span class="highlight">shipped directly to your door</span>
       </h1>
       <p>
-        Cargosai is your one-stop shop for authentic Maasai and African
-        antiques, jewelry, and fabrics.
+        maasai market online is your one-stop shop for authentic Maasai and
+        African antiques, jewelry, and fabrics.
       </p>
       <div class="hero-buttons">
         <router-link class="button-link" to="/blog">
