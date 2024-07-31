@@ -29,9 +29,6 @@ function closeMenu() {
       </div>
       <ul class="navbar__links" :class="{ 'navbar__links--open': isMenuOpen }">
         <li><router-link to="/about" @click="closeMenu">About</router-link></li>
-        <li>
-          <router-link to="/services" @click="closeMenu">Services</router-link>
-        </li>
         <li><router-link to="/blog" @click="closeMenu">Blog</router-link></li>
         <li><router-link to="/shop" @click="closeMenu">Shop</router-link></li>
       </ul>

@@ -18,20 +18,29 @@
         </router-link>
       </div>
     </div>
-    <div class="hero-gallery">
-      <img
-        src="https://res.cloudinary.com/kwishi/image/upload/v1722319325/hero-sandals_xbzga5.jpg"
-        alt="Antique collection"
-      />
-      <img
-        src="https://res.cloudinary.com/kwishi/image/upload/v1722319334/hero-jewelry_xdtiga.jpg"
-        alt="Jewelry display"
-      />
-      <img
-        src="https://res.cloudinary.com/kwishi/image/upload/v1722319353/hero-fabrics_el1abe.jpg"
-        alt="Fabric collection"
-      />
+    <div class="as-seen-on">
+      <h2>As featured in</h2>
+      <div class="hero-gallery">
+        <img
+          src="https://res.cloudinary.com/kwishi/image/upload/v1722426715/indie-hackers_rluthy.svg"
+          alt="Indie Hackers logo"
+        />
+        <img
+          src="https://res.cloudinary.com/kwishi/image/upload/v1722426715/product-hunt_siqg7r.svg"
+          alt="Product Hunt logo"
+          class="product-hunt-logo"
+        />
+        <img
+          src="https://res.cloudinary.com/kwishi/image/upload/v1722426716/reddit_kp7qot.svg"
+          alt="Reddit logo"
+          class="reddit-logo"
+        />
+      </div>
     </div>
+  </section>
+
+  <section class="hero-products">
+    <div>featured products</div>
   </section>
 </template>
 
