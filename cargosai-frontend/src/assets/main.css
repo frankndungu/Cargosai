@@ -249,8 +249,30 @@ a {
   gap: 80px;
 }
 
-.hero-gallery img {
+/* .hero-gallery img {
   width: 80px;
+  border-radius: 5px;
+  justify-content: center;
+  flex-wrap: wrap;
+  height: auto;
+} */
+
+.indie-hackers-logo {
+  width: 100px;
+  justify-content: center;
+  flex-wrap: wrap;
+  height: auto;
+}
+
+.product-hunt-logo {
+  width: 200px;
+  justify-content: center;
+  flex-wrap: wrap;
+  height: auto;
+}
+
+.reddit-logo {
+  width: 120px;
   border-radius: 5px;
   justify-content: center;
   flex-wrap: wrap;
@@ -292,7 +314,7 @@ a {
   }
 
   .hero-gallery img {
-    width: 50px;
+    width: 120px;
     margin: 0 auto;
   }
 }

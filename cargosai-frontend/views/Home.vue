@@ -22,16 +22,17 @@
       <h2>As featured in</h2>
       <div class="hero-gallery">
         <img
-          src="https://res.cloudinary.com/kwishi/image/upload/v1722426715/indie-hackers_rluthy.svg"
+          src="https://res.cloudinary.com/kwishi/image/upload/v1722436613/indiehackers_ww9uac.svg"
           alt="Indie Hackers logo"
+          class="indie-hackers-logo"
         />
         <img
-          src="https://res.cloudinary.com/kwishi/image/upload/v1722426715/product-hunt_siqg7r.svg"
+          src="https://res.cloudinary.com/kwishi/image/upload/v1722436863/product-hunt-logo-horizontal-black_sipadd.svg"
           alt="Product Hunt logo"
           class="product-hunt-logo"
         />
         <img
-          src="https://res.cloudinary.com/kwishi/image/upload/v1722426716/reddit_kp7qot.svg"
+          src="https://res.cloudinary.com/kwishi/image/upload/v1722437667/1658832030reddit-logo-png_vjgjzf.svg"
           alt="Reddit logo"
           class="reddit-logo"
         />
