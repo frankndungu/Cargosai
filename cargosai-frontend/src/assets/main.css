@@ -23,6 +23,7 @@ a {
 }
 
 .navbar {
+  background: var(--secondary-color);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -60,7 +61,7 @@ a {
   font-size: 14px;
   font-weight: 400;
   letter-spacing: 3px;
-  color: #000;
+  color: var(--primary-color);
   margin-top: -4px;
 }
 
@@ -118,7 +119,7 @@ a {
   top: 60px;
   left: 0;
   width: 100%;
-  background: var(--background-color);
+  background: var(--secondary-color);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: max-height 0.3s ease-in;
   z-index: 1000;
@@ -178,18 +179,18 @@ a {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  margin-top: var(--mb-2);
-  padding: 50px 20px;
+  margin-top: 0;
+  padding: 100px 20px;
 }
 
 .hero-content {
-  max-width: 600px;
+  max-width: 800px;
   margin-bottom: 40px;
 }
 
 .hero h1 {
-  font-size: var(--font-size-large);
-  font-weight: bold;
+  font-size: var(--font-size-heading);
+  font-weight: var(--font-bold);
   margin-bottom: 20px;
 }
 
@@ -232,16 +233,50 @@ a {
   border: none;
 }
 
-.hero-gallery {
-  display: flex;
-  gap: 20px;
+.as-seen-on {
+  margin-top: 20px;
+  text-align: center;
 }
 
-.hero-gallery img {
-  width: 100%;
-  max-width: 300px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.as-seen-on h2 {
+  font-size: var(--font-size-large);
+  margin-bottom: 10px;
+  font-weight: var(--font-medium);
+}
+
+.hero-gallery {
+  display: flex;
+  gap: 80px;
+}
+
+/* .hero-gallery img {
+  width: 80px;
+  border-radius: 5px;
+  justify-content: center;
+  flex-wrap: wrap;
+  height: auto;
+} */
+
+.indie-hackers-logo {
+  width: 100px;
+  justify-content: center;
+  flex-wrap: wrap;
+  height: auto;
+}
+
+.product-hunt-logo {
+  width: 200px;
+  justify-content: center;
+  flex-wrap: wrap;
+  height: auto;
+}
+
+.reddit-logo {
+  width: 120px;
+  border-radius: 5px;
+  justify-content: center;
+  flex-wrap: wrap;
+  height: auto;
 }
 
 @media (max-width: 768px) {
@@ -251,7 +286,7 @@ a {
   }
 
   .hero h1 {
-    font-size: var(--normal-font-size);
+    font-size: var(--h3-font-size);
   }
 
   .hero p {
@@ -275,10 +310,11 @@ a {
     flex-direction: column;
     gap: 20px;
     width: 100%;
+    margin-top: 30px;
   }
 
   .hero-gallery img {
-    max-width: 90%;
+    width: 120px;
     margin: 0 auto;
   }
 }
