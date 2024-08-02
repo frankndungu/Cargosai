@@ -40,9 +40,10 @@
     </div>
   </section>
   <section class="featured-products">
-    <h2 class="featured-heading">Featured Products</h2>
+    <h2 class="featured-heading">Pre-Order Now!</h2>
     <p class="featured-text">
-      We haven't launched yet, but we are accepting pre-orders.
+      We haven't launched yet, but we are accepting pre-orders. <br />
+      Be the first to receive these exclusive items once they are available.
     </p>
     <div class="product-grid">
       <ProductCard
@@ -52,10 +53,14 @@
       />
     </div>
   </section>
+  <section class="call-to-action">
+    <CallToAction />
+  </section>
 </template>
 
 <script setup>
 import ProductCard from "@/components/ProductCard.vue";
+import CallToAction from "@/components/CallToAction.vue";
 
 const products = [
   {
