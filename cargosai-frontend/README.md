@@ -1,6 +1,6 @@
-# Cargosai Frontend
+# Maasai Market Online Frontend
 
-This repository contains the frontend code for the Cargosai project, an e-commerce platform dedicated to showcasing and selling authentic Maasai and African antiques, jewelry, and fabrics. The frontend is built with VueJS to provide a dynamic and responsive user interface.
+This repository contains the frontend code for the Maasai Market project, an e-commerce platform dedicated to showcasing and selling authentic Maasai and African antiques, jewelry, and fabrics. The frontend is built with VueJS to provide a dynamic and responsive user interface.
 
 ## Table of Contents
 
@@ -16,7 +16,7 @@ This repository contains the frontend code for the Cargosai project, an e-commer
 
 ## Introduction
 
-The Cargosai frontend is designed to provide a seamless shopping experience for users. It includes components for browsing products, viewing product details, and managing pre-orders.
+The frontend is designed to provide a seamless shopping experience for users. It includes components for browsing products, viewing product details, and managing pre-orders.
 
 ## Features
 
@@ -50,7 +50,7 @@ npm install
 npm run dev
 ```
 
-The application will be available at http://localhost:8080 by default.
+The application will be available at http://localhost:3000 by default.
 
 #### Usage
 
