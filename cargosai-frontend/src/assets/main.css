@@ -198,7 +198,7 @@ a {
 }
 
 .hero p {
-  font-size: var(--normal-font-size);
+  font-size: var(--h3-font-size);
   margin-bottom: 30px;
 }
 
@@ -239,6 +239,7 @@ a {
 
 .as-seen-on h2 {
   font-size: var(--font-size-large);
+  color: var(--accent-color);
   margin-bottom: 10px;
   font-weight: var(--font-medium);
 }
@@ -277,11 +278,11 @@ a {
   }
 
   .hero h1 {
-    font-size: var(--h3-font-size);
+    font-size: var(--h2-font-size);
   }
 
   .hero p {
-    font-size: var(--smaller-font-size);
+    font-size: var(--normal-font-size);
   }
 
   .hero-buttons {
@@ -326,6 +327,15 @@ a {
   color: var(--dark-color);
 }
 
+@media (max-width: 600px) {
+  .featured-heading {
+    font-size: var(--h2-font-size);
+  }
+  .featured-text {
+    font-size: var(--normal-font-size);
+  }
+}
+
 .product-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -362,12 +372,13 @@ a {
 
 .product-title {
   font-weight: bold;
-  font-size: 1.2rem;
+  font-size: var(--h2-font-size);
   margin: 10px 0;
 }
 
 .product-description {
   color: var(--dark-color);
+  font-size: var(--h3-font-size);
   margin-bottom: 10px;
 }
 
@@ -382,7 +393,7 @@ a {
 .product-price {
   color: var(--accent-color);
   font-size: var(--font-size-large);
-  font-weight: bold;
+  font-weight: var(--font-bold);
 }
 
 .preorder-button {
@@ -442,4 +453,31 @@ input[type="email"] {
 
 .subscribe-button:hover {
   background-color: var(--dark-color);
+}
+
+@media (max-width: 600px) {
+  form {
+    flex-direction: column; /* Stack input and button vertically */
+  }
+
+  .subscribe-section h2 {
+    font-size: var(--h2-font-size);
+    margin-bottom: 20px;
+  }
+
+  .subscribe-section p {
+    font-size: var(--normal-font-size);
+    margin-bottom: 20px;
+  }
+
+  input[type="email"],
+  .subscribe-button {
+    width: 100%;
+    max-width: 100%;
+    margin: 5px 0;
+  }
+
+  .subscribe-button {
+    padding: 10px;
+  }
 }
