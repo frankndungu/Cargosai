@@ -1,11 +1,11 @@
 <template>
   <section class="hero">
     <div class="hero-content">
-      <h1>
+      <h1 class="hero-title">
         Get beautiful, <em class="em">handmade antiques</em> from Kenya,<br />
         <span class="highlight">shipped directly to your door</span>
       </h1>
-      <p>
+      <p class="hero-description">
         maasai market online is your one-stop shop for authentic Maasai and
         African antiques, jewelry, and fabrics.
       </p>

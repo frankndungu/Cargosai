@@ -2,8 +2,7 @@
   <section class="featured-products">
     <h2 class="featured-heading">Pre-Order Now!</h2>
     <p class="featured-text">
-      We haven't launched yet, but we are accepting pre-orders. <br />
-      Be the first to receive these exclusive items once they are available.
+      We haven't launched yet, but we are accepting pre-orders.
     </p>
     <div class="product-grid">
       <ProductCard
