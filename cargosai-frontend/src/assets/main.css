@@ -169,7 +169,7 @@ a {
   }
 
   .navbar__contact {
-    display: block;
+    display: none;
   }
 }
 
@@ -610,5 +610,8 @@ input[type="email"] {
 
   .footer__kofi img {
     margin-bottom: 20px;
+  }
+  .footer__copy {
+    font-size: 12px;
   }
 }
