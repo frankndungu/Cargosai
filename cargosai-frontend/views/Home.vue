@@ -1,5 +1,5 @@
 <template>
-  <main class="home">
+  <main class="main">
     <Hero />
     <FeaturedProducts />
     <CallToAction />
