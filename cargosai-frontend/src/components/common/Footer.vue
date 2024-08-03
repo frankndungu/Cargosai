@@ -12,10 +12,7 @@
         </p>
         <p class="footer__creator">
           Made with ❤ by
-          <a
-            class="transform"
-            href="https://twitter.com/francodosha"
-            target="_blank"
+          <a class="transform" href="https://x.com/francodosha" target="_blank"
             >@francodosha</a
           >
         </p>
@@ -42,7 +39,7 @@
             <i class="fab fa-instagram"></i>
           </a>
           <a href="#" aria-label="X (Twitter)">
-            <i class="fab fa-twitter"></i>
+            <i class="fab fa-x-twitter"></i>
           </a>
           <a href="#" aria-label="TikTok">
             <i class="fab fa-tiktok"></i>
