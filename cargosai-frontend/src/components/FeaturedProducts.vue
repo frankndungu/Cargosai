@@ -19,52 +19,53 @@ import ProductCard from "@/components/ProductCard.vue";
 const products = [
   {
     id: 1,
-    name: "Maasai Beaded Necklace",
-    description: "Handcrafted necklace with traditional Maasai beads.",
-    price: "$25",
+    name: "Brass Bracelet",
+    description:
+      "Perfect for any occasion, it showcases intricate designs and timeless beauty",
+    price: "$15.99",
     image:
       "https://res.cloudinary.com/kwishi/image/upload/v1722319334/hero-jewelry_xdtiga.jpg",
   },
   {
     id: 2,
-    name: "Maasai Beaded Necklace",
-    description: "Handcrafted necklace with traditional Maasai beads.",
-    price: "$25",
+    name: "Maasai Choker",
+    description: "Authentic Maasai design with vibrant, intricate patterns",
+    price: "$17.99",
     image:
       "https://res.cloudinary.com/kwishi/image/upload/v1722319334/hero-jewelry_xdtiga.jpg",
   },
 
   {
     id: 3,
-    name: "Maasai Beaded Necklace",
-    description: "Handcrafted necklace with traditional Maasai beads.",
-    price: "$25",
+    name: "Rings",
+    description: "Elegant design with a timeless appeal",
+    price: "$12.99",
     image:
       "https://res.cloudinary.com/kwishi/image/upload/v1722319334/hero-jewelry_xdtiga.jpg",
   },
 
   {
     id: 4,
-    name: "Maasai Beaded Necklace",
-    description: "Handcrafted necklace with traditional Maasai beads.",
-    price: "$25",
+    name: "Maasai Sandals (W)",
+    description: "Stylish and comfortable footwear with cultural flair",
+    price: "$19.99",
     image:
       "https://res.cloudinary.com/kwishi/image/upload/v1722319334/hero-jewelry_xdtiga.jpg",
   },
   {
     id: 5,
-    name: "Maasai Beaded Necklace",
-    description: "Handcrafted necklace with traditional Maasai beads.",
-    price: "$25",
+    name: "Hoop Earrings",
+    description: "Bold and stylish, perfect for any occasion",
+    price: "$13.99",
     image:
       "https://res.cloudinary.com/kwishi/image/upload/v1722319334/hero-jewelry_xdtiga.jpg",
   },
 
   {
     id: 6,
-    name: "Maasai Beaded Necklace",
-    description: "Handcrafted necklace with traditional Maasai beads.",
-    price: "$25",
+    name: "Ankle Bracelets",
+    description: " Charming and unique, adding a touch of elegance",
+    price: "$15.99",
     image:
       "https://res.cloudinary.com/kwishi/image/upload/v1722319334/hero-jewelry_xdtiga.jpg",
   },

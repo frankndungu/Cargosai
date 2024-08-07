@@ -438,6 +438,7 @@ form {
 }
 
 input[type="email"] {
+  background: var(--background-color);
   padding: 10px;
   font-size: 1rem;
   border: 1px solid var(--dark-color);
@@ -523,7 +524,7 @@ input[type="email"] {
   color: var(--background-color);
   margin-top: -4px;
   margin-bottom: 10px;
-  margin-left: 40px;
+  margin-left: 38px;
 }
 
 .footer__left p {
@@ -586,6 +587,10 @@ input[type="email"] {
   color: var(--background-color);
   font-size: 20px;
   transition: color 0.3s;
+}
+
+.footer__creator {
+  display: none;
 }
 
 @media (max-width: 768px) {
