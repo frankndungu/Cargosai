@@ -19,7 +19,7 @@
       </div>
     </div>
     <div class="as-seen-on">
-      <h2>As featured in</h2>
+      <h2>As featured on</h2>
       <div class="hero-gallery">
         <img
           src="https://res.cloudinary.com/kwishi/image/upload/v1722437667/1658832030reddit-logo-png_vjgjzf.svg"

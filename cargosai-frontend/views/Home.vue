@@ -7,7 +7,7 @@
 </template>
 
 <script setup>
-import Hero from "@/components/Hero.vue";
-import FeaturedProducts from "@/components/FeaturedProducts.vue";
-import CallToAction from "@/components/CallToAction.vue";
+import Hero from "@/components/layout/Hero.vue";
+import FeaturedProducts from "@/components/layout/FeaturedProducts.vue";
+import CallToAction from "@/components/layout/CallToAction.vue";
 </script>

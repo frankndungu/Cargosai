@@ -28,3 +28,10 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+
+<p class="footer__creator">
+          Made with ❤ by
+          <a class="transform" href="https://x.com/francodosha" target="_blank"
+            >@francodosha</a
+        >
+</p>

@@ -10,15 +10,6 @@
           Join us in bringing authentic Maasai and African antiques, jewelry,
           and fabrics to a global audience
         </p>
-        <p class="footer__creator">
-          Made with ❤ by
-          <a
-            class="transform"
-            href="https://twitter.com/francodosha"
-            target="_blank"
-            >@francodosha</a
-          >
-        </p>
         <p class="footer__copy">
           &copy; 2024 Fueled By Dosha LLC, All Rights Reserved
         </p>
@@ -42,7 +33,7 @@
             <i class="fab fa-instagram"></i>
           </a>
           <a href="#" aria-label="X (Twitter)">
-            <i class="fab fa-twitter"></i>
+            <i class="fab fa-x-twitter"></i>
           </a>
           <a href="#" aria-label="TikTok">
             <i class="fab fa-tiktok"></i>
