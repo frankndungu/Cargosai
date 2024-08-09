@@ -13,7 +13,7 @@
         <router-link class="button-link" to="/blog">
           <button class="btn btn-light">Learn more</button></router-link
         >
-        <router-link class="button-link" to="/pre-order">
+        <router-link class="button-link" to="/shop">
           <button class="btn btn-dark">Get Started</button>
         </router-link>
       </div>

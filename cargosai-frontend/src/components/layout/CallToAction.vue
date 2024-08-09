@@ -1,10 +1,10 @@
 <template>
   <section class="call-to-action">
     <div class="subscribe-section">
-      <h2>Stay Updated with Maasai Market Online!</h2>
+      <h2>Be Part of Our Vibrant Community</h2>
       <p>
-        Subscribe to our newsletter to receive the latest updates and exclusive
-        offers.
+        Get early access to new arrivals and receive updates on our latest
+        products.
       </p>
       <form @submit.prevent="handleSubscribe">
         <input
