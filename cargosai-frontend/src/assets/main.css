@@ -581,7 +581,7 @@ input[type="email"] {
 .subscribe-button {
   background-color: var(--primary-color);
   color: var(--background-color);
-  padding: 10px 20px;
+  padding: 10px 50px;
   border: none;
   border-radius: 5px;
   font-size: 1rem;

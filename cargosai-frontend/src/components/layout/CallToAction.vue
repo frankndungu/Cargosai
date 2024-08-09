@@ -13,7 +13,7 @@
           placeholder="Enter your email"
           required
         />
-        <button type="submit" class="subscribe-button">Subscribe</button>
+        <button type="submit" class="subscribe-button">Join</button>
       </form>
     </div>
   </section>
