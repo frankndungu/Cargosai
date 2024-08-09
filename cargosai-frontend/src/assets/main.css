@@ -380,10 +380,10 @@ a {
 }
 
 .discount {
-  font-size: var(--smaller-font-size);
+  font-size: var(--font-extra-small);
   background: var(--dark-color);
   border-radius: 3px;
-  padding: 1px 5px;
+  padding: 2px 8px;
   color: var(--background-color);
   margin-bottom: 10px;
 }
