@@ -848,9 +848,9 @@ input[type="email"] {
   border-radius: 0.5rem;
   object-fit: cover;
   margin-top: 20px;
-  box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
-  -webkit-box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
-  -moz-box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
+  -webkit-box-shadow: 4px 7px 14px 0px rgba(0, 0, 0, 0.55);
+  -moz-box-shadow: 4px 7px 14px 0px rgba(0, 0, 0, 0.55);
+  box-shadow: 4px 7px 14px 0px rgba(0, 0, 0, 0.55);
 }
 
 .image-w {
@@ -858,9 +858,9 @@ input[type="email"] {
   border-radius: 0.5rem;
   object-fit: cover;
   margin-bottom: 20px;
-  box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
-  -webkit-box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
-  -moz-box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
+  -webkit-box-shadow: 4px 7px 14px 0px rgba(0, 0, 0, 0.55);
+  -moz-box-shadow: 4px 7px 14px 0px rgba(0, 0, 0, 0.55);
+  box-shadow: 4px 7px 14px 0px rgba(0, 0, 0, 0.55);
 }
 
 /* Responsive Styling */
