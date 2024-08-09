@@ -31,7 +31,7 @@
 const categories = [
   {
     id: 1,
-    name: "Jewelry",
+    name: "jewelry",
     description:
       "Explore unique handmade brass earrings, necklaces and bracelets.",
     image:
@@ -39,7 +39,7 @@ const categories = [
   },
   {
     id: 2,
-    name: "Wall Decor",
+    name: "wall decor",
     description:
       "Decorate your space with authentic Maasai art, wall baskets, plates and vases.",
     image:
@@ -47,7 +47,7 @@ const categories = [
   },
   {
     id: 3,
-    name: "Beads",
+    name: "accessory",
     description:
       "Shop comfortable and stylish Maasai beaded necklaces, chokers and anklets",
     image:
