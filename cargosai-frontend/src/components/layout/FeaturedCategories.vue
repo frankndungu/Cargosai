@@ -28,8 +28,6 @@
 </template>
 
 <script setup>
-import router from "../../../router";
-
 const categories = [
   {
     id: 1,
@@ -49,7 +47,7 @@ const categories = [
   },
   {
     id: 3,
-    name: "Sandals",
+    name: "Beads",
     description:
       "Shop comfortable and stylish Maasai beaded necklaces, chokers and anklets",
     image:
