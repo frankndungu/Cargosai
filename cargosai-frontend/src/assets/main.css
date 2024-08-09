@@ -278,6 +278,10 @@ a {
 }
 
 @media (max-width: 768px) {
+  .hero {
+    padding: 100px 20px;
+  }
+
   .hero-content {
     max-width: 100%;
     padding: 0 20px;
@@ -312,7 +316,7 @@ a {
   }
 
   .hero-gallery img {
-    width: 120px;
+    width: 180px;
     margin: 0 auto;
   }
 }
@@ -404,23 +408,31 @@ a {
   text-decoration: underline;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
+  .featured-categories {
+    padding: 40px 20px;
+  }
+
+  .categories-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .categories-grid {
+    grid-template-columns: 1fr;
+  }
+
   .title {
     font-size: var(--h3-font-size);
   }
 
   .see-all {
-    font-size: var(--smaller-font-size);
-  }
-}
-
-@media (max-width: 768px) {
-  .categories-grid {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    font-size: var(--normal-font-size);
   }
 
   .category-card {
-    padding: 12px;
     margin-bottom: 10px;
   }
 
@@ -738,7 +750,7 @@ input[type="email"] {
     margin-bottom: 20px;
   }
   .footer__copy {
-    font-size: 12px;
+    font-size: var(--font-extra-small);
   }
 }
 /* about */
