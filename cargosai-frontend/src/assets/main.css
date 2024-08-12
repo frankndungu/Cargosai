@@ -453,7 +453,7 @@ a {
 .featured-heading {
   font-size: var(--font-size-large);
   margin-bottom: 20px;
-  color: var(--dark-color);
+  color: var(--accent-color);
   text-align: center;
 }
 
@@ -482,7 +482,7 @@ a {
 
 @media (min-width: 768px) {
   .featured-products {
-    padding: 40px 50px;
+    padding: 80px 50px;
   }
 
   .product-grid {

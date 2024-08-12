@@ -1,5 +1,7 @@
 <template>
-  <FeaturedProducts />
+  <main class="main">
+    <FeaturedProducts />
+  </main>
 </template>
 
 <script setup>
