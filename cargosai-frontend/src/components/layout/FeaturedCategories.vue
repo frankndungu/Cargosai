@@ -16,7 +16,7 @@
           class="category-image"
         />
         <div class="discount">
-          <span class="discount-icon">★</span>Shop Authentic African Antiques
+          <span class="discount-icon">¤</span>Shop Authentic African Treasures
         </div>
         <div class="category-description">{{ category.description }}</div>
         <router-link to="/shop" class="see-more"
