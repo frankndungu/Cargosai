@@ -20,7 +20,7 @@
         </div>
         <div class="category-description">{{ category.description }}</div>
         <router-link to="/shop" class="see-more"
-          >See more {{ category.name }} deals →</router-link
+          >See more {{ category.name }} items →</router-link
         >
       </div>
     </div>
@@ -47,7 +47,7 @@ const categories = [
   },
   {
     id: 3,
-    name: "accessory",
+    name: "beaded",
     description:
       "Shop comfortable and stylish Maasai beaded necklaces, chokers and anklets",
     image:
