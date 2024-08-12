@@ -13,7 +13,7 @@
         Join us in bringing authentic Maasai and African antiques, jewelry, and
         fabrics to a global audience
       </p>
-      <router-link to="/blog" class="learn-more">Learn more &gt;</router-link>
+      <router-link to="/blog" class="learn-more">Learn more →</router-link>
     </section>
 
     <section class="why-us-section">
@@ -39,12 +39,12 @@
         </div>
         <div class="image-content">
           <img
-            src="https://res.cloudinary.com/kwishi/image/upload/v1723118847/453475609_976044547605595_6980971035129972474_n_lihfea.jpg"
+            src="https://res.cloudinary.com/kwishi/image/upload/v1723030179/About2_gnw6ep.jpg"
             alt="Artisan at work"
             class="image-w"
           />
           <img
-            src="https://res.cloudinary.com/kwishi/image/upload/v1723118708/452915328_531487145969261_3946633588861174087_n_lnzerd.jpg"
+            src="https://res.cloudinary.com/kwishi/image/upload/v1723030096/A_display_of_maasai_jewelry_earings_rings_stylish_hoops_tiwdq7.jpg"
             alt="African market"
             class="image"
           />
