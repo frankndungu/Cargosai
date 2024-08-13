@@ -486,6 +486,18 @@ a {
   }
 
   .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 820px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .product-grid {
     grid-template-columns: repeat(3, 1fr);
   }
 }
@@ -531,8 +543,7 @@ a {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 50px;
-  margin-top: auto;
+  gap: 20px;
 }
 
 .product-price {
