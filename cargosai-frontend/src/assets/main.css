@@ -251,6 +251,7 @@ a {
 }
 
 .hero-gallery {
+  margin-top: 30px;
   display: flex;
   gap: 80px;
 }
@@ -271,6 +272,13 @@ a {
 
 .reddit-logo {
   width: 120px;
+  border-radius: 5px;
+  justify-content: center;
+  flex-wrap: wrap;
+  height: auto;
+}
+.betalist-logo {
+  width: 200px;
   border-radius: 5px;
   justify-content: center;
   flex-wrap: wrap;
@@ -315,8 +323,23 @@ a {
     margin-top: 30px;
   }
 
-  .hero-gallery img {
-    width: 180px;
+  .betalist-logo {
+    width: 200px;
+    margin: 0 auto;
+  }
+
+  .reddit-logo {
+    width: 170px;
+    margin: 0 auto;
+  }
+
+  .product-hunt-logo {
+    width: 190px;
+    margin: 0 auto;
+  }
+
+  .indie-hackers-logo {
+    width: 160px;
     margin: 0 auto;
   }
 }

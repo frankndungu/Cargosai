@@ -22,6 +22,11 @@
       <h2>As featured on</h2>
       <div class="hero-gallery">
         <img
+          src="https://res.cloudinary.com/kwishi/image/upload/v1723619463/betalist_yeov5t.svg"
+          alt="Betalist logo"
+          class="betalist-logo"
+        />
+        <img
           src="https://res.cloudinary.com/kwishi/image/upload/v1722437667/1658832030reddit-logo-png_vjgjzf.svg"
           alt="Reddit logo"
           class="reddit-logo"
