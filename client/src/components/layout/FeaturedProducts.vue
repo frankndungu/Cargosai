@@ -1,9 +1,6 @@
 <template>
+  <PreorderBanner />
   <section class="featured-products">
-    <h2 class="featured-heading">Pre-Order Now!</h2>
-    <p class="featured-text">
-      We haven't launched yet, but we are accepting pre-orders
-    </p>
     <div class="product-grid">
       <ProductCard
         v-for="product in products"
@@ -16,6 +13,7 @@
 
 <script setup>
 import ProductCard from "@/components/layout/ProductCard.vue";
+import PreorderBanner from "./PreorderBanner.vue";
 const products = [
   {
     id: 1,

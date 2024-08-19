@@ -136,7 +136,7 @@ a {
 
 .navbar__contact button {
   padding: 10px 20px;
-  background-color: var(--primary-color);
+  background-color: var(--dark-tint);
   color: var(--background-color);
   border: none;
   border-radius: 5px;
@@ -468,31 +468,107 @@ a {
   }
 }
 
+/* pre-order banner */
+.pre-order-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--secondary-color-lighter);
+  padding: 40px 50px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.banner-content {
+  max-width: 60%;
+}
+
+.banner-content h2 {
+  color: var(--dark-color);
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.banner-content p {
+  color: var(--dark-color-lighter);
+  font-size: 1em;
+  margin-bottom: 20px;
+}
+
+.pre-order-button {
+  background-color: var(--dark-tint);
+  color: var(--background-color);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.pre-order-button:hover {
+  background-color: var(--dark-color);
+}
+
+.banner-image img {
+  max-width: 200px;
+  border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+  .pre-order-banner {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .banner-content {
+    max-width: 100%;
+  }
+
+  .banner-content h2 {
+    font-size: 1.3em;
+  }
+
+  .banner-content p {
+    font-size: 0.95em;
+    margin-bottom: 15px;
+  }
+
+  .banner-image img {
+    max-width: 150px;
+    margin-top: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pre-order-banner {
+    padding: 40px 20px;
+  }
+
+  .banner-content h2 {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+  }
+
+  .banner-content p {
+    font-size: 0.9em;
+    margin-bottom: 30px;
+  }
+
+  .pre-order-button {
+    padding: 8px 16px;
+  }
+
+  .banner-image img {
+    max-width: 120px;
+    margin-top: 30px;
+  }
+}
+
 /* featured products */
 .featured-products {
   padding: 40px 20px;
-}
-
-.featured-heading {
-  font-size: var(--font-size-large);
-  margin-bottom: 20px;
-  color: var(--accent-color);
-  text-align: center;
-}
-
-.featured-text {
-  margin-bottom: 20px;
-  color: var(--dark-color);
-  text-align: center;
-}
-
-@media (max-width: 600px) {
-  .featured-heading {
-    font-size: var(--h2-font-size);
-  }
-  .featured-text {
-    font-size: var(--normal-font-size);
-  }
 }
 
 .product-grid {
@@ -576,7 +652,7 @@ a {
 }
 
 .preorder-button {
-  background-color: var(--primary-color);
+  background-color: var(--dark-tint);
   color: var(--background-color);
   padding: 10px 20px;
   border: none;
@@ -623,7 +699,7 @@ input[type="email"] {
 }
 
 .subscribe-button {
-  background-color: var(--primary-color);
+  background-color: var(--dark-tint);
   color: var(--background-color);
   padding: 10px 50px;
   border: none;
