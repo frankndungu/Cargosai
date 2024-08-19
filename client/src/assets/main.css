@@ -229,7 +229,7 @@ a {
 }
 
 .btn-dark {
-  background: var(--primary-color);
+  background: var(--dark-tint);
   color: var(--background-color);
   border: none;
 }
