@@ -7,8 +7,11 @@
   --background-color: #faf9f6;
   --primary-color: #28282b;
   --secondary-color: #f6f3e3;
+  --secondary-color-lighter: #f8f4ec;
   --accent-color: #9e301b;
+  --dark-tint: #000;
   --dark-color: #0f0f0f;
+  --dark-color-lighter: #333;
 
   /* margins */
   --mb-0-5: 0.5rem;
