@@ -568,7 +568,7 @@ a {
 
 /* featured products */
 .featured-products {
-  padding: 40px 20px;
+  padding: 20px 20px;
 }
 
 .product-grid {
@@ -581,7 +581,7 @@ a {
 
 @media (min-width: 768px) {
   .featured-products {
-    padding: 80px 50px;
+    padding: 20px 50px;
   }
 
   .product-grid {

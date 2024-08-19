@@ -1,6 +1,6 @@
 <template>
   <PreorderBanner />
-  <section class="featured-products">
+  <section class="featured-products" id="featured-products">
     <div class="product-grid">
       <ProductCard
         v-for="product in products"
@@ -12,8 +12,8 @@
 </template>
 
 <script setup>
-import ProductCard from "@/components/layout/ProductCard.vue";
 import PreorderBanner from "./PreorderBanner.vue";
+import ProductCard from "@/components/layout/ProductCard.vue";
 const products = [
   {
     id: 1,

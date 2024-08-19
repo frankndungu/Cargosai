@@ -7,7 +7,9 @@
           Secure your authentic Maasai products today and be among the first to
           receive them when we go live.
         </p>
-        <button class="pre-order-button">Pre-Order Now</button>
+        <button class="pre-order-button" @click="scrollToProducts">
+          Pre-Order Now
+        </button>
       </div>
       <div class="banner-image">
         <!-- Use an image or illustration that matches the Maasai theme -->
@@ -19,3 +21,12 @@
     </div>
   </section>
 </template>
+
+<script setup>
+const scrollToProducts = () => {
+  const featuredProducts = document.getElementById("featured-products");
+  if (featuredProducts) {
+    featuredProducts.scrollIntoView({ behavior: "smooth" });
+  }
+};
+</script>
