@@ -2,7 +2,8 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import Home from "../views/Home.vue";
 import About from "../views/About.vue";
-import Blog from "../views/Blog.vue";
+import BlogList from "../views/BlogList.vue";
+import BlogPost from "@/components/layout/BlogPost.vue";
 import Contact from "../views/Contact.vue";
 import Shop from "../views/Shop.vue";
 import NotFound from "../views/NotFound.vue";
@@ -11,7 +12,8 @@ import Preorder from "../views/Preorder.vue";
 const routes = [
   { path: "/", component: Home },
   { path: "/about", component: About },
-  { path: "/blog", component: Blog },
+  { path: "/blog", component: BlogList },
+  { path: "/blog/:slug", component: BlogPost },
   { path: "/contact", component: Contact },
   { path: "/pre-order", component: Preorder },
   { path: "/:slug", component: Home }, // catch-all route for dynamic pages
