@@ -37,3 +37,7 @@ coverage
 </p>
 
 .env
+.vscode
+
+# Vite dependencies
+.vite
