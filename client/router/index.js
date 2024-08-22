@@ -13,7 +13,7 @@ const routes = [
   { path: "/", component: Home },
   { path: "/about", component: About },
   { path: "/blog", component: BlogList },
-  { path: "/blog/:slug", component: BlogPost },
+  { path: "/blog/:slug", component: BlogPost, props: true },
   { path: "/contact", component: Contact },
   { path: "/pre-order", component: Preorder },
   { path: "/:slug", component: Home }, // catch-all route for dynamic pages
