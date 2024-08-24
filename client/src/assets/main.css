@@ -1117,7 +1117,6 @@ input[type="email"] {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  cursor: pointer;
   transition: transform 0.2s ease;
   -webkit-box-shadow: 4px 7px 14px 0px rgba(0, 0, 0, 0.55);
   -moz-box-shadow: 4px 7px 14px 0px rgba(0, 0, 0, 0.55);
