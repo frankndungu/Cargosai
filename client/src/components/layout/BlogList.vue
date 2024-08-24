@@ -27,7 +27,11 @@
           </div>
         </div>
         <div class="blog-route">
-          <router-link class="read-more-link">Read More</router-link>
+          <router-link
+            :to="{ name: 'BlogPost', params: { slug: post.slug.current } }"
+            class="read-more-link"
+            >Read More</router-link
+          >
         </div>
       </div>
     </div>
@@ -60,7 +64,8 @@ const fetchPosts = async () => {
           _id,
           url
         }
-      }
+      },
+      slug
     }`;
   posts.value = await sanityClient.fetch(query);
 };
