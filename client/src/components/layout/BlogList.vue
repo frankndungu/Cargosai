@@ -77,6 +77,4 @@ function formatDate(dateStr) {
 onMounted(() => {
   fetchPosts();
 });
-
-const goToPost = (_id) => {};
 </script>
