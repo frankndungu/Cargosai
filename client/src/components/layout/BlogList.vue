@@ -3,68 +3,80 @@
   <div class="right-section">
     <div
       v-for="post in posts"
-      :key="post.id"
+      :key="post._id"
+      @click="goToPost(post._id)"
       class="post-card"
-      @click="goToPost(post.id)"
     >
       <div class="post-content">
         <div class="post-tag-container">
           <span class="post-tag">Article</span>
         </div>
         <h3 class="post-title">{{ post.title }}</h3>
-        <p class="post-excerpt">{{ post.excerpt }}</p>
+        <p class="post-excerpt">{{ post.summary }}</p>
         <div class="author-info">
-          <img :src="post.authorImage" alt="Author" class="author-image" />
+          <img
+            :src="post.authorImage?.asset?.url"
+            alt="Author"
+            class="author-image"
+          />
           <div>
             <p class="author">{{ post.author }}</p>
-            <p class="post-date">{{ post.date }} • {{ post.readTime }} read</p>
+            <p class="post-date">
+              {{ formatDate(post.publishedAt) }} • {{ post.readTime }} min read
+            </p>
           </div>
+        </div>
+        <div class="blog-route">
+          <router-link class="read-more-link">Read More</router-link>
         </div>
       </div>
     </div>
   </div>
 </template>
+
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { createClient } from "@sanity/client";
 
-const posts = ref([
-  {
-    id: 1,
-    title: "Our first office",
-    excerpt:
-      "Over the past year, Volosoft has undergone many changes! After months of preparation and some hard work, we moved to our new office.",
-    author: "Jese Leos",
-    authorImage:
-      "https://res.cloudinary.com/kwishi/image/upload/v1724314534/Frank_c7t15k.jpg",
-    date: "Aug 15, 2021",
-    readTime: "16 min",
-  },
-  {
-    id: 2,
-    title: "We partnered up with Google",
-    excerpt:
-      "Over the past year, Volosoft has undergone many changes! After months of preparation and some hard work, we moved to our new office.",
-    author: "Roberta Casas",
-    authorImage:
-      "https://res.cloudinary.com/kwishi/image/upload/v1724314534/Frank_c7t15k.jpg",
-    date: "Aug 15, 2021",
-    readTime: "16 min",
-  },
-  {
-    id: 3,
-    title: "Our first project with React",
-    excerpt:
-      "Over the past year, Volosoft has undergone many changes! After months of preparation and some hard work, we moved to our new office.",
-    author: "Sofia McGuire",
-    authorImage:
-      "https://res.cloudinary.com/kwishi/image/upload/v1724314534/Frank_c7t15k.jpg",
-    date: "Aug 15, 2021",
-    readTime: "16 min",
-  },
-]);
+const sanityClient = createClient({
+  projectId: import.meta.env.VITE_SANITY_PROJECT_ID,
+  dataset: import.meta.env.VITE_SANITY_DATASET,
+  useCdn: true,
+  apiVersion: "2023-08-22",
+});
 
-const goToPost = (id) => {
-  console.log(`Navigating to post with id: ${id}`);
-  // e.g., this.$router.push(`/blog/${id}`)
+const posts = ref([]);
+
+const fetchPosts = async () => {
+  const query = `*[_type == "post"]{
+      _id,
+      title,
+      summary,
+      publishedAt,
+      readTime,
+      "author": author->name,
+      "authorImage": author->image{
+        asset->{
+          _id,
+          url
+        }
+      }
+    }`;
+  posts.value = await sanityClient.fetch(query);
 };
+
+function formatDate(dateStr) {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
+onMounted(() => {
+  fetchPosts();
+});
+
+const goToPost = (_id) => {};
 </script>
