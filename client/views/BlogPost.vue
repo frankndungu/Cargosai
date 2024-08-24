@@ -11,9 +11,23 @@
         />
       </div>
       <PortableText :value="post.body" />
-      <p class="blog-author-info">Written by: {{ post.author }}</p>
-      <p class="blog-publish-date">{{ formatDate(post.publishedAt) }}</p>
+      <div class="blog-date">
+        <p class="blog-publish-date">{{ formatDate(post.publishedAt) }}</p>
+      </div>
+      <div class="author-section">
+        <div class="author-info-blog">
+          <img
+            :src="post.authorImage?.asset?.url"
+            alt="Author"
+            class="author-image-blog"
+          />
+          <div>
+            <PortableText class="author-bio" :value="post.authorBio" />
+          </div>
+        </div>
+      </div>
     </div>
+
     <div v-else class="loading-dots">
       <div class="dot"></div>
       <div class="dot"></div>
@@ -48,7 +62,14 @@ const fetchPost = async (slug) => {
       title,
       body,
       publishedAt,
-      "author": author->name,
+      "authorName": author->name,
+      "authorBio": author->bio,
+      "authorImage": author->image{
+      asset->{
+        _id,
+        url
+      }
+     },
       "mainImage": mainImage{
         asset->{
           _id,
