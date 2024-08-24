@@ -1,23 +1,25 @@
 <template>
-  <div v-if="post" class="blog-post">
-    <h1 class="blog-post-title">{{ post.title }}</h1>
-    <div class="image-container">
-      <img
-        v-if="post.mainImage"
-        :src="imageUrl(post.mainImage).url()"
-        alt="Post Image"
-        class="blog-post-image"
-      />
+  <main class="main">
+    <div v-if="post" class="blog-post">
+      <h1 class="blog-post-title">{{ post.title }}</h1>
+      <div class="image-container">
+        <img
+          v-if="post.mainImage"
+          :src="imageUrl(post.mainImage).url()"
+          alt="Post Image"
+          class="blog-post-image"
+        />
+      </div>
+      <PortableText :value="post.body" />
+      <p class="blog-author-info">Written by: {{ post.author }}</p>
+      <p class="blog-publish-date">{{ formatDate(post.publishedAt) }}</p>
     </div>
-    <PortableText :value="post.body" />
-    <p class="blog-author-info">Written by: {{ post.author }}</p>
-    <p class="blog-publish-date">{{ formatDate(post.publishedAt) }}</p>
-  </div>
-  <div v-else class="loading-dots">
-    <div class="dot"></div>
-    <div class="dot"></div>
-    <div class="dot"></div>
-  </div>
+    <div v-else class="loading-dots">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+  </main>
 </template>
 
 <script setup>

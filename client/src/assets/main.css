@@ -1233,7 +1233,7 @@ input[type="email"] {
 }
 
 .blog-publish-date {
-  color: #555;
+  color: var(--dark-color);
 }
 
 .loading-dots {
