@@ -10,10 +10,13 @@
     </div>
 
     <div class="card popular-products-card">
-      <div class="popular-products-grid">
+      <div v-if="loading" class="blogintro-loading-circle">
+        <div class="blogintro-circle"></div>
+      </div>
+      <div v-else class="popular-products-grid">
         <button
           v-for="product in products"
-          :key="product.name"
+          :key="product._id"
           class="popular-product-button"
         >
           {{ product.name }}
@@ -27,13 +30,30 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { createClient } from "@sanity/client";
 
-const products = ref([
-  { name: "Beaded Earrings" },
-  { name: "Maasai Sandals" },
-  { name: "Hand-carved Chess Board" },
-  { name: "Decorative Mirrors" },
-  { name: "Traditional Dresses" },
-]);
+// Sanity client configuration
+const sanityClient = createClient({
+  projectId: import.meta.env.VITE_SANITY_PROJECT_ID,
+  dataset: import.meta.env.VITE_SANITY_DATASET,
+  useCdn: true,
+  apiVersion: "2023-08-22",
+});
+
+// State
+const products = ref([]);
+const loading = ref(true);
+
+// Fetch products from Sanity
+const fetchProducts = async () => {
+  const query = `*[_type == "product"]{ _id, name }`;
+  products.value = await sanityClient.fetch(query);
+  loading.value = false;
+};
+
+// Lifecycle hook
+onMounted(() => {
+  fetchProducts();
+});
 </script>
