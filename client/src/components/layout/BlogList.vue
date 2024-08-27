@@ -1,9 +1,4 @@
 <template>
-  <div v-if="posts.length === 0" class="loading-container">
-    <div class="loading-dot"></div>
-    <div class="loading-dot"></div>
-    <div class="loading-dot"></div>
-  </div>
   <!-- Right Section - BlogList -->
   <div class="right-section">
     <div
