@@ -148,10 +148,18 @@ a {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: var(--background-color) 0.2s ease, transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .navbar__contact button:hover {
   background-color: var(--dark-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.navbar__contact button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(15, 15, 15, 0.6);
 }
 
 @media (max-width: 768px) {
@@ -243,6 +251,12 @@ a {
 
 .btn-dark:hover {
   background-color: var(--dark-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0);
+}
+
+.btn-dark:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(15, 15, 15, 0.6);
 }
 
 .as-seen-on {
@@ -512,11 +526,17 @@ a {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: var(--background-color) 0.3s ease;
 }
 
 .pre-order-button:hover {
   background-color: var(--dark-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.pre-order-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(15, 15, 15, 0.6);
 }
 
 .banner-image img {
@@ -671,8 +691,13 @@ a {
 
 .preorder-button:hover {
   background-color: var(--dark-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+.preorder-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(15, 15, 15, 0.6);
+}
 /* subscribe section */
 .subscribe-section {
   text-align: center;
@@ -719,6 +744,12 @@ input[type="email"] {
 
 .subscribe-button:hover {
   background-color: var(--dark-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0);
+}
+
+.subscribe-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(15, 15, 15, 0.6);
 }
 
 @media (max-width: 600px) {
@@ -1260,6 +1291,7 @@ input[type="email"] {
 @media (max-width: 768px) {
   .blog-page {
     flex-direction: column;
+    padding: 40px 20px;
   }
 
   .left-section {
@@ -1505,6 +1537,12 @@ input[type="email"] {
 
 .submit-button:hover {
   background-color: var(--dark-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.submit-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(15, 15, 15, 0.6);
 }
 
 /* Responsive Styles */
