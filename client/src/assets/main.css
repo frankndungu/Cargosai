@@ -1411,15 +1411,18 @@ input[type="email"] {
 
 /* contact */
 .contact-container {
+  border: 1px solid #ddd;
   display: flex;
   flex-wrap: wrap;
   gap: 50px;
   padding: 30px;
   background-color: var(--secondary-color);
   border-radius: 8px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   max-width: 950px; /* Constrain width on larger screens */
   margin: 40px auto; /* Center container horizontally */
+  box-shadow: 7px 4px 3px 0px rgba(0, 0, 0, 0.31);
+  -webkit-box-shadow: 7px 4px 3px 0px rgba(0, 0, 0, 0.31);
+  -moz-box-shadow: 7px 4px 3px 0px rgba(0, 0, 0, 0.31);
 }
 
 .contact-info {
@@ -1447,6 +1450,11 @@ input[type="email"] {
   margin-top: 20px;
 }
 
+.contact-link {
+  margin-top: 5px;
+  font-size: 12px;
+}
+
 .contact-form {
   flex: 2;
   display: flex;
@@ -1463,6 +1471,11 @@ input[type="email"] {
 .form-group label {
   margin-bottom: 5px;
   font-weight: bold;
+}
+
+.error-message {
+  color: var(--error-message);
+  margin-top: 5px;
 }
 
 .form-group input,

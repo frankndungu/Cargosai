@@ -17,7 +17,6 @@
       <div class="footer__right">
         <ul class="footer__links">
           <li><router-link to="/terms">Terms of Service</router-link></li>
-          <li><router-link to="/invest">Invest</router-link></li>
           <li><router-link to="/faq">FAQ</router-link></li>
           <li><router-link to="/contact">Contact</router-link></li>
         </ul>

@@ -12,6 +12,7 @@
   --dark-tint: #000;
   --dark-color: #0f0f0f;
   --dark-color-lighter: #333;
+  --error-message: #ff0000;
 
   /* margins */
   --mb-0-5: 0.5rem;
