@@ -26,7 +26,7 @@
         <input
           type="text"
           id="name"
-          v-model="formState.email"
+          v-model="formState.name"
           placeholder="Your name"
         />
         <span v-if="errors.name" class="error-message">{{ errors.name }}</span>
