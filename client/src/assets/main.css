@@ -1260,6 +1260,7 @@ input[type="email"] {
 @media (max-width: 768px) {
   .blog-page {
     flex-direction: column;
+    padding: 40px 20px;
   }
 
   .left-section {
