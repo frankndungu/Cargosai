@@ -8,11 +8,11 @@
       <div class="contact-details">
         <div class="contact-more">
           <strong>Address</strong><br />
-          <p class="contact-link">CPA Center Survey - Nairobi, Kenya</p>
+          <p class="contact-link">CPA Center - Survey Nairobi, Kenya</p>
         </div>
         <div class="contact-more">
           <strong>Phone Number</strong><br />
-          <p class="contact-link">Customer Support: +254 712 345 678</p>
+          <p class="contact-link">Customer Support: +254 746 884 254</p>
         </div>
         <div class="contact-more">
           <strong>Email Address</strong><br />
