@@ -1,9 +1,9 @@
 <template>
   <main class="main">
-    <Page404 />
+    <Terms />
   </main>
 </template>
 
 <script setup>
-import Page404 from "@/components/layout/Page404.vue";
+import Terms from "@/components/common/Terms.vue";
 </script>
