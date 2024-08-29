@@ -1585,3 +1585,81 @@ input[type="email"] {
     padding: 6px;
   }
 }
+
+/* page 404 */
+.page-404 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 80vh;
+  padding: 0 20px;
+  background: var(--background-color);
+}
+
+.page-404-title {
+  font-size: 8rem;
+  color: var(--accent-color);
+  margin: 0;
+}
+
+.page-404-heading {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 20px 0;
+}
+
+.page-404-description {
+  font-size: 1rem;
+  color: var(--dark-color-lighter);
+  margin-bottom: 30px;
+}
+
+.home-button {
+  padding: 10px 20px;
+  background-color: var(--dark-tint);
+  color: var(--background-color);
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.home-button:hover {
+  background-color: var(--dark-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.home-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(15, 15, 15, 0.6);
+}
+
+@media (max-width: 768px) {
+  .page-404-title {
+    font-size: 6rem;
+  }
+  .page-404-heading {
+    font-size: 1.5rem;
+  }
+  .page-404-description {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-404-title {
+    font-size: 4rem;
+  }
+  .page-404-heading {
+    font-size: 1.2rem;
+  }
+  .page-404-description {
+    font-size: 0.8rem;
+  }
+  .home-button {
+    width: 100%;
+    padding: 10px;
+  }
+}
