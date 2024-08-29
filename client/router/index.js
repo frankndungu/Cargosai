@@ -8,6 +8,8 @@ import Contact from "../views/Contact.vue";
 import Shop from "../views/Shop.vue";
 import NotFound from "../views/NotFound.vue";
 import Preorder from "../views/Preorder.vue";
+import TermsOfService from "../views/TermsOfService.vue";
+import FrequentlyAskedQuestions from "../views/FrequentlyAskedQuestions.vue";
 
 const routes = [
   { path: "/", component: Home },
@@ -17,6 +19,8 @@ const routes = [
   { path: "/contact", component: Contact },
   { path: "/pre-order", component: Preorder },
   { path: "/shop", component: Shop },
+  { path: "/terms-of-service", component: TermsOfService },
+  { path: "/frequently-asked-questions", component: FrequentlyAskedQuestions },
   { path: "/404", component: NotFound },
   { path: "/:catchAll(.*)", redirect: "/404" }, // Catch-all route for 404
 ];
