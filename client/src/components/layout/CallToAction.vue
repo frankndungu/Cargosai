@@ -1,9 +1,9 @@
 <template>
   <section class="call-to-action">
     <div class="subscribe-section">
-      <h2>Be Part of Our Vibrant Community</h2>
+      <h2>Become a Member of This Community</h2>
       <p>
-        Get early access to new arrivals and receive updates on our latest
+        Get access to discounts, new arrivals and receive updates on our latest
         products.
       </p>
       <form @submit.prevent="handleSubscribe">
