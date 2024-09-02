@@ -6,6 +6,7 @@ import Blog from "../views/Blog.vue";
 import BlogPost from "../views/BlogPost.vue";
 import Contact from "../views/Contact.vue";
 import Shop from "../views/Shop.vue";
+import ProductPage from "../views/ProductPage.vue";
 import NotFound from "../views/NotFound.vue";
 import Preorder from "../views/Preorder.vue";
 import TermsOfService from "../views/TermsOfService.vue";
@@ -19,6 +20,12 @@ const routes = [
   { path: "/contact", component: Contact },
   { path: "/pre-order", component: Preorder },
   { path: "/shop", component: Shop },
+  {
+    path: "/shop/:slug",
+    component: ProductPage,
+    name: "ProductPage",
+    props: true,
+  }, // Route for individual product page
   { path: "/terms-of-service", component: TermsOfService },
   { path: "/frequently-asked-questions", component: FrequentlyAskedQuestions },
   { path: "/404", component: NotFound },

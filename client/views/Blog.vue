@@ -7,6 +7,6 @@
   </main>
 </template>
 <script setup>
-import BlogIntro from "@/components/layout/BlogIntro.vue";
-import BlogList from "@/components/layout/BlogList.vue";
+import BlogIntro from "@/components/blog/BlogIntro.vue";
+import BlogList from "@/components/blog/BlogList.vue";
 </script>
