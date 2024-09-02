@@ -5,5 +5,5 @@
 </template>
 
 <script setup>
-import FeaturedProducts from "@/components/layout/FeaturedProducts.vue";
+import FeaturedProducts from "@/components/products/ProductGrid.vue";
 </script>

@@ -5,5 +5,5 @@
 </template>
 
 <script setup>
-import Page404 from "@/components/layout/Page404.vue";
+import Page404 from "@/components/ui/Page404.vue";
 </script>

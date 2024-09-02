@@ -24,7 +24,7 @@
 
 <script setup>
 const scrollToProducts = () => {
-  const featuredProducts = document.getElementById("featured-products");
+  const featuredProducts = document.getElementById("product-grid");
   if (featuredProducts) {
     featuredProducts.scrollIntoView({ behavior: "smooth" });
   }
