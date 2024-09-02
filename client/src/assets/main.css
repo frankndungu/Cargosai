@@ -27,6 +27,12 @@ a {
 }
 
 /* navbar section */
+.sticky {
+  position: sticky;
+  top: 0;
+  z-index: 1000; /* Ensure it stays on top of other content */
+}
+
 .navbar {
   background: var(--secondary-color);
   display: flex;
@@ -137,11 +143,12 @@ a {
   margin: 10px 0;
 }
 
-.navbar__contact {
+.navbar__actions {
   display: flex;
+  gap: 20px;
 }
 
-.navbar__contact button {
+.navbar__actions button {
   padding: 10px 20px;
   background-color: var(--dark-tint);
   color: var(--background-color);
@@ -152,14 +159,25 @@ a {
     box-shadow 0.2s ease;
 }
 
-.navbar__contact button:hover {
+.navbar__actions button:hover {
   background-color: var(--dark-color);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.navbar__contact button:focus {
+.navbar__actions button:focus {
   outline: none;
   box-shadow: 0 0 0 3px rgba(15, 15, 15, 0.6);
+}
+
+.navbar__cart img {
+  width: 24px;
+  height: 24px;
+  margin-top: 5px;
+}
+
+.navbar__actions img:hover {
+  background-color: var(--background-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 @media (max-width: 768px) {
@@ -182,10 +200,6 @@ a {
     display: flex;
     transition: max-height 0.3s ease-out;
     overflow: hidden;
-  }
-
-  .navbar__contact {
-    display: none;
   }
 }
 

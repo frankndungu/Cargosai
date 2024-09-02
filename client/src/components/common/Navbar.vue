@@ -32,9 +32,15 @@ function closeMenu() {
         <li><router-link to="/blog" @click="closeMenu">Blog</router-link></li>
         <li><router-link to="/shop" @click="closeMenu">Shop</router-link></li>
       </ul>
-      <div class="navbar__contact">
+      <div class="navbar__actions">
         <router-link to="/contact" @click="closeMenu">
           <button>Contact</button>
+        </router-link>
+        <router-link to="/cart" @click="closeMenu" class="navbar__cart">
+          <img
+            src="https://res.cloudinary.com/kwishi/image/upload/v1725263913/shopping-bag-icon_h04zp7.webp"
+            alt="Cart"
+          />
         </router-link>
       </div>
     </nav>

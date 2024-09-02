@@ -35,10 +35,6 @@
   --font-light: 300;
   --font-medium: 350;
   --font-bold: 700;
-
-  /* z index */
-  --z-tooltip: 10;
-  --z-fixed: 100;
 }
 
 * {
