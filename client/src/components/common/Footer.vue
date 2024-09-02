@@ -16,13 +16,13 @@
       </div>
       <div class="footer__right">
         <ul class="footer__links">
-          <li>
-            <router-link to="/terms-of-service">Terms of Service</router-link>
-          </li>
+          <li><router-link to="/about">About</router-link></li>
           <li>
             <router-link to="/frequently-asked-questions">FAQ</router-link>
           </li>
-          <li><router-link to="/contact">Contact</router-link></li>
+          <li>
+            <router-link to="/terms-of-service">Terms of Service</router-link>
+          </li>
         </ul>
         <div class="footer__kofi">
           <a href="https://ko-fi.com" target="_blank">
@@ -50,5 +50,3 @@
     </div>
   </footer>
 </template>
-
-<script setup></script>

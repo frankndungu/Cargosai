@@ -5,7 +5,7 @@
     <p class="product-description">{{ product.description }}</p>
     <div class="product-footer">
       <p class="product-price">{{ product.price }}</p>
-      <button class="preorder-button">Pre-Order</button>
+      <button class="preorder-button">Add to cart</button>
     </div>
   </div>
 </template>
