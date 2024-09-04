@@ -16,7 +16,7 @@
       </div>
       <div class="footer__right">
         <ul class="footer__links">
-          <li><router-link to="/about">About</router-link></li>
+          <li><router-link to="/contact">Contact</router-link></li>
           <li>
             <router-link to="/frequently-asked-questions">FAQ</router-link>
           </li>
