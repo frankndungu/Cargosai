@@ -4,7 +4,7 @@ import Footer from "./components/common/Footer.vue";
 </script>
 
 <template>
-  <section>
+  <section class="page-wrapper">
     <div class="sticky">
       <Navbar />
     </div>

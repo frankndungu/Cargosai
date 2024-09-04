@@ -10,12 +10,18 @@
   font-family: var(--body-font);
 }
 
-html {
-  scroll-behavior: smooth;
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--background-color);
+  height: 100%;
 }
 
-body {
-  background: var(--background-color);
+.page-wrapper {
+  min-height: 100vh; /* Full viewport height */
+  display: flex;
+  flex-direction: column; /* Stack children vertically */
 }
 
 li {
@@ -493,7 +499,7 @@ a {
   }
 
   .see-all {
-    font-size: var(--normal-font-size);
+    display: none;
   }
 
   .category-card {
@@ -816,6 +822,7 @@ input[type="email"] {
   background-color: var(--dark-tint);
   padding: 40px 50px;
   color: var(--background-color);
+  margin-top: auto; /* Push the footer to the bottom */
 }
 
 .footer__content {

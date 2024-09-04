@@ -1,10 +1,7 @@
 <template>
   <section>
     <PreorderBanner />
-    <div v-if="loading" class="spinner-overlay">
-      <LoadingSpinner />
-    </div>
-    <div v-else class="product-grid" id="product-grid">
+    <div class="product-grid" id="product-grid">
       <ProductCard
         v-for="product in products"
         :key="product._id"
@@ -19,7 +16,6 @@ import ProductCard from "../products/ProductCard.vue";
 import PreorderBanner from "../ui/PreorderBanner.vue";
 import { ref, onMounted } from "vue";
 import { createClient } from "@sanity/client";
-import LoadingSpinner from "../ui/LoadingSpinner.vue";
 
 const sanityClient = createClient({
   projectId: import.meta.env.VITE_SANITY_PROJECT_ID,
