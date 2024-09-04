@@ -1,8 +1,8 @@
 <template>
   <div class="product-card">
-    <img :src="product.image" alt="Product Image" class="product-image" />
+    <img :src="product.imageUrl" alt="Product Image" class="product-image" />
     <div class="product-info">
-      <span class="discount-tag">{{ product.discount }}</span>
+      <span class="discount-tag">{{ product.vendor }}</span>
       <!-- Product Name Link -->
       <router-link to="/" class="product-name-link">
         <h3 class="product-name">{{ product.name }}</h3>
@@ -12,7 +12,7 @@
         <span class="reviews">({{ product.reviews }})</span>
       </div>
       <div class="price-section">
-        <span class="price">{{ product.price }}</span>
+        <span class="price">${{ product.price }}</span>
         <button class="add-to-cart">Add to cart</button>
       </div>
     </div>
