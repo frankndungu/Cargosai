@@ -1,16 +1,3 @@
-<script setup>
-import { ref } from "vue";
-
-const isMenuOpen = ref(false);
-function toggleMenu() {
-  isMenuOpen.value = !isMenuOpen.value;
-}
-
-function closeMenu() {
-  isMenuOpen.value = false;
-}
-</script>
-
 <template>
   <header class="header">
     <nav class="navbar">
@@ -41,8 +28,31 @@ function closeMenu() {
             src="https://res.cloudinary.com/kwishi/image/upload/v1725263913/shopping-bag-icon_h04zp7.webp"
             alt="Cart"
           />
+          <!-- Display cart item count as a badge -->
+          <span v-if="cartItemCount > 0" class="cart-badge">{{
+            cartItemCount
+          }}</span>
         </router-link>
       </div>
     </nav>
   </header>
 </template>
+
+<script setup>
+import { ref, computed } from "vue";
+import { useStore } from "vuex";
+
+const isMenuOpen = ref(false);
+function toggleMenu() {
+  isMenuOpen.value = !isMenuOpen.value;
+}
+
+function closeMenu() {
+  isMenuOpen.value = false;
+}
+
+const store = useStore();
+
+// Access the cart item count from the Vuex store
+const cartItemCount = computed(() => store.getters.cartItemCount);
+</script>

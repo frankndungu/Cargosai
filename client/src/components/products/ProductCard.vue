@@ -13,17 +13,35 @@
       </div>
       <div class="price-section">
         <span class="price">${{ product.price }}</span>
-        <button class="add-to-cart">Add to cart</button>
+        <button @click="addToCart(product)" class="add-to-cart">
+          Add to cart
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-defineProps({
+import { useStore } from "vuex";
+import { useToast } from "vue-toast-notification";
+
+const store = useStore();
+const toast = useToast();
+
+const props = defineProps({
   product: {
     type: Object,
     required: true,
   },
 });
+
+const addToCart = (product) => {
+  store.dispatch("addToCart", product);
+  toast.success(`${product.name} has been added to the cart!`, {
+    position: "top-right",
+    timeout: 3000,
+    closeOnClick: true,
+    pauseOnHover: true,
+  });
+};
 </script>
