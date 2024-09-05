@@ -1,4 +1,5 @@
 import { createStore } from "vuex";
+import createPersistedState from "vuex-persistedstate";
 
 export default createStore({
   state: {
@@ -7,10 +8,15 @@ export default createStore({
   getters: {
     cartItems: (state) => state.cart,
     cartItemCount: (state) =>
-      state.cart.reduce((count, item) => count + item.quantity, 0),
+      state.cart.reduce(
+        (count, item) => count + (parseInt(item.quantity) || 0),
+        0
+      ),
     cartTotalPrice: (state) => {
       const total = state.cart.reduce(
-        (total, item) => total + item.price * item.quantity,
+        (total, item) =>
+          total +
+          (parseFloat(item.price) || 0) * (parseInt(item.quantity) || 0),
         0
       );
       return total.toFixed(2);
@@ -55,4 +61,9 @@ export default createStore({
       commit("DECREASE_ITEM_QUANTITY", id);
     },
   },
+  plugins: [
+    createPersistedState({
+      storage: window.localStorage, // Or sessionStorage
+    }),
+  ],
 });
