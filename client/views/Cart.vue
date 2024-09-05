@@ -36,7 +36,9 @@
               />
               <span>{{ item.name }}</span>
             </td>
-            <td class="cart-price">${{ parseFloat(item.price).toFixed(2) }}</td>
+            <td class="cart-price">
+              ${{ (parseFloat(item.price) || 0).toFixed(2) }}
+            </td>
             <td>
               <div class="quantity-controls">
                 <button @click="decreaseQuantity(item._id)">-</button>
@@ -45,7 +47,11 @@
               </div>
             </td>
             <td class="cart-price">
-              ${{ parseFloat(item.price * item.quantity).toFixed(2) }}
+              ${{
+                (
+                  parseFloat(item.price) || 0 * (parseInt(item.quantity) || 0)
+                ).toFixed(2)
+              }}
             </td>
             <td>
               <button @click="removeItem(item._id)" class="transparent-button">
@@ -56,7 +62,6 @@
         </tbody>
       </table>
       <div class="cart-summary">
-        <!-- <p>Total items: {{ cartItemCount }}</p> -->
         <p>Total price: ${{ totalPrice }}</p>
         <button @click="proceedToCheckout">Proceed to Checkout</button>
       </div>
