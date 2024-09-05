@@ -11,6 +11,11 @@
 
     <!-- Cart table when cart has items -->
     <div v-else class="cart-items">
+      <p class="cart-items-description">
+        ⏰ All products are purchased on preorder and take 3-4 days to fulfill.
+        Shipping costs are not included in the price and vary depending on your
+        delivery location. 🚢
+      </p>
       <table class="cart-table">
         <thead>
           <tr>
