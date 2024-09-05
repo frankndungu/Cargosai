@@ -23,6 +23,10 @@
 
 <script setup>
 import { useStore } from "vuex";
+import { useToast } from "vue-toast-notification";
+
+const store = useStore();
+const toast = useToast();
 
 const props = defineProps({
   product: {
@@ -31,9 +35,13 @@ const props = defineProps({
   },
 });
 
-const store = useStore();
-
 const addToCart = (product) => {
   store.dispatch("addToCart", product);
+  toast.success(`${product.name} has been added to the cart!`, {
+    position: "top-right",
+    timeout: 3000,
+    closeOnClick: true,
+    pauseOnHover: true,
+  });
 };
 </script>
