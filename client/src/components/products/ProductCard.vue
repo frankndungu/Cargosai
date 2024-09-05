@@ -13,17 +13,27 @@
       </div>
       <div class="price-section">
         <span class="price">${{ product.price }}</span>
-        <button class="add-to-cart">Add to cart</button>
+        <button @click="addToCart(product)" class="add-to-cart">
+          Add to cart
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-defineProps({
+import { useStore } from "vuex";
+
+const props = defineProps({
   product: {
     type: Object,
     required: true,
   },
 });
+
+const store = useStore();
+
+const addToCart = (product) => {
+  store.dispatch("addToCart", product);
+};
 </script>
