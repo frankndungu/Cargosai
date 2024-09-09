@@ -2,15 +2,11 @@
   <main class="main">
     <div class="cart-page">
       <h1 class="cart-title">Your Cart</h1>
-
-      <!-- Display message if cart is empty -->
       <div v-if="cartItemCount === 0" class="empty-cart">
         <h2>Something's missing.</h2>
         <p>There's nothing in your cart.</p>
         <button @click="goToShop">Back to Shop</button>
       </div>
-
-      <!-- Cart table when cart has items -->
       <div v-else class="cart-items">
         <p class="cart-items-description">
           ⏰ All products are purchased on preorder and take 3-4 days to
