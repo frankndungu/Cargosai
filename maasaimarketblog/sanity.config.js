@@ -7,8 +7,8 @@ export default defineConfig({
   name: 'default',
   title: 'MAASAIMARKETBLOG',
 
-  projectId: '0itxu2je',
-  dataset: 'production',
+  projectId: process.env.SANITY_PROJECT_ID,
+  dataset: process.env.SANITY_DATASET,
 
   plugins: [structureTool(), visionTool()],
 
