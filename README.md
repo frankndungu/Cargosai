@@ -36,7 +36,7 @@ Before you start, ensure you have the following installed:
 - PHP >= 8.0
 - Composer
 - Node.js and npm
-- MySQL
+- Postgresql
 
 ### Clone the Repository
 
