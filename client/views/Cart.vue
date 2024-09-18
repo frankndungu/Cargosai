@@ -27,7 +27,7 @@
             <tr v-for="item in cartItems" :key="item._id">
               <td class="product-details">
                 <img
-                  :src="item.imageUrl"
+                  :src="item.image_url"
                   alt="Product image"
                   class="product-image-cart"
                 />
