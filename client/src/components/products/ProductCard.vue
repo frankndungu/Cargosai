@@ -1,6 +1,6 @@
 <template>
   <div class="product-card">
-    <img :src="product.imageUrl" alt="Product Image" class="product-image" />
+    <img :src="product.image_url" alt="Product Image" class="product-image" />
     <div class="product-info">
       <span class="discount-tag">{{ product.vendor }}</span>
       <!-- Product Name Link -->
