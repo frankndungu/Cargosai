@@ -4,7 +4,7 @@
     <div class="product-grid" id="product-grid">
       <ProductCard
         v-for="product in products"
-        :key="product._id"
+        :key="product.id"
         :product="product"
       />
     </div>
@@ -15,32 +15,18 @@
 import ProductCard from "../products/ProductCard.vue";
 import PreorderBanner from "../ui/PreorderBanner.vue";
 import { ref, onMounted } from "vue";
-import { createClient } from "@sanity/client";
+import axios from "axios";
 
-const sanityClient = createClient({
-  projectId: import.meta.env.VITE_SANITY_PROJECT_ID,
-  dataset: import.meta.env.VITE_SANITY_DATASET,
-  useCdn: true,
-  apiVersion: "2023-08-22",
-});
+// Access the API URL from environment variables
+const API_URL = import.meta.env.VITE_API_URL;
 
 const products = ref([]);
 const loading = ref(true);
 
 const fetchProducts = async () => {
-  const query = `*[_type == "products"]{
-    _id,
-    name,
-    "imageUrl": image.asset->url,
-    price,
-    vendor,
-    rating,
-    reviews
-  }`;
-
   try {
-    const result = await sanityClient.fetch(query);
-    products.value = result;
+    const { data } = await axios.get(`${API_URL}/products`);
+    products.value = data;
   } catch (error) {
     console.error("Error fetching products:", error);
   } finally {
