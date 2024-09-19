@@ -4,7 +4,10 @@
     <div class="product-info">
       <span class="discount-tag">{{ product.vendor }}</span>
       <!-- Product Name Link -->
-      <router-link to="/shop/product" class="product-name-link">
+      <router-link
+        :to="{ name: 'ProductPage', params: { slug: product.slug } }"
+        class="product-name-link"
+      >
         <h3 class="product-name">{{ product.name }}</h3>
       </router-link>
       <div class="rating">

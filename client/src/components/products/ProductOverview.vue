@@ -1,37 +1,29 @@
 <template>
-  <div class="product-overview-wrapper">
+  <div v-if="product" class="product-overview-wrapper">
+    <!-- Product Image Section -->
     <div class="product-overview-container">
-      <!-- Product Image Section -->
       <div class="product-overview-image">
         <img :src="currentImage" alt="Product Image" />
       </div>
-
       <!-- Product Details Section -->
       <div class="product-overview-details">
         <div class="product-status">
           <span class="product-status-badge">In stock</span>
         </div>
-        <!-- Combined Title and Description -->
         <h1 class="product-title-overview">
           {{ product.name }}, {{ product.description }}
         </h1>
-
-        <!-- Price and Rating -->
         <div class="product-price-rating">
-          <span class="product-price-overview">{{ product.price }}</span>
+          <span class="product-price-overview">${{ product.price }}</span>
           <div class="product-rating">
             <span class="product-stars">⭐⭐⭐</span>
-            <span class="product-reviews">(3.0)</span>
+            <span class="product-reviews">({{ product.rating }})</span>
             <a href="#" class="product-review-link">Add a review</a>
           </div>
         </div>
-
-        <!-- Add to Cart Button -->
         <button @click="addToCart" class="product-add-to-cart">
           Add to cart
         </button>
-
-        <!-- Vendor Info -->
         <div class="product-vendor-info">
           <p>
             Crafted and sold by <strong>{{ product.vendor }}</strong>
@@ -40,9 +32,10 @@
         </div>
       </div>
     </div>
-
-    <!-- Product Thumbnail Section -->
-    <div class="product-overview-thumbnails">
+    <div
+      v-if="product.thumbnails && product.thumbnails.length > 0"
+      class="product-overview-thumbnails"
+    >
       <img
         v-for="(thumbnail, index) in product.thumbnails"
         :src="thumbnail.src"
@@ -56,46 +49,47 @@
 </template>
 
 <script setup>
-import { reactive, ref } from "vue";
+import { ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
+import axios from "axios";
+import { useStore } from "vuex";
 
-// Product Data
-const product = reactive({
-  name: "Handcrafted Brass Necklace, Adjustable Length",
-  description: "Intricate Design, Durable and Stylish, Gold Finish",
-  price: "$9.99",
-  image:
-    "https://res.cloudinary.com/kwishi/image/upload/v1725290282/IMG_1841_pxxkgj.jpg",
-  thumbnails: [
-    {
-      src: "https://res.cloudinary.com/kwishi/image/upload/v1723877597/IMG_1868_pz49ft.jpg",
-      alt: "Front view",
-    },
-    {
-      src: "https://res.cloudinary.com/kwishi/image/upload/v1723876880/A08FAA78-332F-4BC8-B5B9-91C2AA28B634_pu9wfi.jpg",
-      alt: "Back view",
-    },
-    {
-      src: "https://res.cloudinary.com/kwishi/image/upload/v1723451902/62180B51-9E28-438B-9C93-5BD7227193CC_wnlwco.jpg",
-      alt: "Left view",
-    },
-    {
-      src: "https://res.cloudinary.com/kwishi/image/upload/v1723449027/IMG_1831_cdtsrb.png",
-      alt: "Right view",
-    },
-  ],
-  vendor: "Cultured Brass",
-});
+// Use VITE_API_URL from environment variables
+const API_URL = import.meta.env.VITE_API_URL;
 
-// State for currently selected image
-const currentImage = ref(product.image);
+const route = useRoute();
+const store = useStore();
+const product = ref(null);
+const currentImage = ref("");
 
-// Function to change the main image
+// Fetch product data based on the slug
+const fetchProduct = async () => {
+  try {
+    const response = await axios.get(
+      `${API_URL}/products/${route.params.slug}`
+    );
+    product.value = response.data;
+    // Set currentImage to the main image or a default image if no thumbnails exist
+    currentImage.value =
+      product.value.thumbnails && product.value.thumbnails.length > 0
+        ? product.value.thumbnails[0].src
+        : product.value.image_url || "/path/to/default-image.jpg"; // Default image if `product.image_url` is not available
+  } catch (error) {
+    console.error("Failed to fetch product:", error);
+  }
+};
+
 const setCurrentImage = (image) => {
   currentImage.value = image;
 };
 
-// Add to Cart Function
 const addToCart = () => {
-  console.log("Product added to cart!");
+  if (product.value) {
+    store.dispatch("addToCart", product.value);
+  }
 };
+
+onMounted(() => {
+  fetchProduct();
+});
 </script>
