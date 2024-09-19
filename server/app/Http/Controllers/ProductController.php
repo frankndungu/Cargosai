@@ -9,9 +9,14 @@ class ProductController extends Controller
 {
     public function index()
     {
-        //fetch all products from database
-        $products = Product::all();
+        //fetch 16 products per page from the database
+        $products = Product::paginate(16);
+        $totalProducts = Product::count();
+
         //return products as JSON
-        return response()->json($products);
+        return response()->json([
+            'products' => $products,
+            'total' => $totalProducts
+        ]);
     }
 }

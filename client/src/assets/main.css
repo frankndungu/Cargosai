@@ -752,6 +752,66 @@ a {
   }
 }
 
+/* pagination */
+.pagination-controls {
+  display: flex;
+  justify-content: center; /* Center align */
+  align-items: center;
+  margin: 20px 0;
+  flex-wrap: wrap; /* Wrap on smaller screens */
+}
+
+.pagination-button {
+  background: var(--dark-tint);
+  color: var(--background-color);
+  border: none;
+  border-radius: 4px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 10px;
+}
+
+.pagination-button:hover {
+  background-color: var(--dark-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.pagination-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(15, 15, 15, 0.6);
+}
+.pagination-button:disabled {
+  background: var(--dark-color-border);
+  cursor: not-allowed;
+}
+
+.result-count {
+  font-weight: bold;
+  margin: 0 20px; /* Space between the result count and buttons */
+}
+
+@media (max-width: 768px) {
+  .pagination-controls {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .pagination-button {
+    width: 100%; /* Remove full width */
+    padding: 8px 12px; /* Smaller padding */
+    font-size: 12px; /* Smaller font size */
+    margin: 5px; /* Reduce margin */
+  }
+
+  .result-count {
+    margin-bottom: 10px;
+    text-align: center;
+  }
+}
+
 /* subscribe section */
 .subscribe-section {
   text-align: center;
