@@ -4,6 +4,8 @@ import createPersistedState from "vuex-persistedstate";
 export default createStore({
   state: {
     cart: [],
+    currentPage: 1,
+    totalPages: 0,
   },
   getters: {
     cartItems: (state) => state.cart,
@@ -21,6 +23,8 @@ export default createStore({
       );
       return total.toFixed(2);
     },
+    currentPage: (state) => state.currentPage,
+    totalPages: (state) => state.totalPages,
   },
   mutations: {
     ADD_TO_CART(state, product) {
@@ -46,6 +50,12 @@ export default createStore({
         item.quantity -= 1;
       }
     },
+    SET_CURRENT_PAGE(state, page) {
+      state.currentPage = page;
+    },
+    SET_TOTAL_PAGES(state, pages) {
+      state.totalPages = pages;
+    },
   },
   actions: {
     addToCart({ commit }, product) {
@@ -59,6 +69,12 @@ export default createStore({
     },
     decreaseItemQuantity({ commit }, id) {
       commit("DECREASE_ITEM_QUANTITY", id);
+    },
+    setCurrentPage({ commit }, page) {
+      commit("SET_CURRENT_PAGE", page);
+    },
+    setTotalPages({ commit }, pages) {
+      commit("SET_TOTAL_PAGES", pages);
     },
   },
   plugins: [

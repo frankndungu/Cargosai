@@ -20,15 +20,15 @@
       <button
         class="pagination-button"
         @click="previousPage"
-        :disabled="page === 1"
+        :disabled="currentPage === 1"
       >
         Previous
       </button>
-      <span>Page {{ page }} of {{ totalPages }}</span>
+      <span>Page {{ currentPage }} of {{ totalPages }}</span>
       <button
         class="pagination-button"
         @click="nextPage"
-        :disabled="page === totalPages"
+        :disabled="currentPage === totalPages"
       >
         Next
       </button>
@@ -37,17 +37,22 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
+import { useStore } from "vuex";
 import axios from "axios";
 import ProductCard from "../products/ProductCard.vue";
 import PreorderBanner from "../ui/PreorderBanner.vue";
 
-// State variables for products, pagination, and loading
+const store = useStore();
+
+// State variables
 const products = ref([]);
 const totalProducts = ref(0);
 const loading = ref(true);
-const page = ref(1);
-const totalPages = ref(0);
+
+// Computed properties from Vuex store
+const currentPage = computed(() => store.getters.currentPage);
+const totalPages = computed(() => store.getters.totalPages);
 
 const fetchProducts = async () => {
   loading.value = true;
@@ -56,14 +61,14 @@ const fetchProducts = async () => {
     const response = await axios.get(
       `${import.meta.env.VITE_API_URL}/products`,
       {
-        params: { page: page.value },
+        params: { page: currentPage.value },
       }
     );
 
     // Set products and pagination info
     products.value = response.data.products.data;
-    totalProducts.value = response.data.total; // Total products count
-    totalPages.value = response.data.products.last_page; // Total pages
+    totalProducts.value = response.data.total;
+    store.dispatch("setTotalPages", response.data.products.last_page);
   } catch (error) {
     console.error("Error fetching products:", error);
   } finally {
@@ -73,15 +78,15 @@ const fetchProducts = async () => {
 
 // Pagination methods
 const nextPage = () => {
-  if (page.value < totalPages.value) {
-    page.value++;
+  if (currentPage.value < totalPages.value) {
+    store.dispatch("setCurrentPage", currentPage.value + 1);
     fetchProducts();
   }
 };
 
 const previousPage = () => {
-  if (page.value > 1) {
-    page.value--;
+  if (currentPage.value > 1) {
+    store.dispatch("setCurrentPage", currentPage.value - 1);
     fetchProducts();
   }
 };
