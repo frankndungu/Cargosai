@@ -43,7 +43,8 @@ class ProductController extends Controller
             'image_url' => 'required|string',
             'vendor' => 'required|string|max:255',
             'rating' => 'nullable|integer',
-            'reviews' => 'nullable|integer'
+            'reviews' => 'nullable|integer',
+            'description' => 'nullable|string'
         ]);
 
         // Create a new product using the validated data

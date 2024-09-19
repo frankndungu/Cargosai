@@ -14,10 +14,10 @@
           {{ product.name }}, {{ product.description }}
         </h1>
         <div class="product-price-rating">
-          <span class="product-price-overview">{{ product.price }}</span>
+          <span class="product-price-overview">${{ product.price }}</span>
           <div class="product-rating">
             <span class="product-stars">⭐⭐⭐</span>
-            <span class="product-reviews">(3.0)</span>
+            <span class="product-reviews">({{ product.rating }})</span>
             <a href="#" class="product-review-link">Add a review</a>
           </div>
         </div>
@@ -32,7 +32,10 @@
         </div>
       </div>
     </div>
-    <div class="product-overview-thumbnails">
+    <div
+      v-if="product.thumbnails && product.thumbnails.length > 0"
+      class="product-overview-thumbnails"
+    >
       <img
         v-for="(thumbnail, index) in product.thumbnails"
         :src="thumbnail.src"
@@ -51,18 +54,26 @@ import { useRoute } from "vue-router";
 import axios from "axios";
 import { useStore } from "vuex";
 
+// Use VITE_API_URL from environment variables
+const API_URL = import.meta.env.VITE_API_URL;
+
 const route = useRoute();
 const store = useStore();
 const product = ref(null);
 const currentImage = ref("");
 
+// Fetch product data based on the slug
 const fetchProduct = async () => {
   try {
     const response = await axios.get(
-      `http://localhost:8000/api/products/${route.params.id}`
+      `${API_URL}/products/${route.params.slug}`
     );
     product.value = response.data;
-    currentImage.value = product.value.image;
+    // Set currentImage to the main image or a default image if no thumbnails exist
+    currentImage.value =
+      product.value.thumbnails && product.value.thumbnails.length > 0
+        ? product.value.thumbnails[0].src
+        : product.value.image_url || "/path/to/default-image.jpg"; // Default image if `product.image_url` is not available
   } catch (error) {
     console.error("Failed to fetch product:", error);
   }
