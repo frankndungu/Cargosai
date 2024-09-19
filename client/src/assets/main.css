@@ -789,8 +789,8 @@ a {
 }
 
 .result-count {
-  font-weight: bold;
-  margin: 0 20px; /* Space between the result count and buttons */
+  font-weight: var(--font-medium);
+  margin: 0 20px;
 }
 
 @media (max-width: 768px) {
