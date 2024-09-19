@@ -20,8 +20,8 @@
         <li><router-link to="/shop" @click="closeMenu">Shop</router-link></li>
       </ul>
       <div class="navbar__actions">
-        <router-link to="/contact" @click="closeMenu">
-          <button>Contact</button>
+        <router-link to="/login" @click="closeMenu">
+          <button>Login</button>
         </router-link>
         <router-link to="/cart" @click="closeMenu" class="navbar__cart">
           <img
