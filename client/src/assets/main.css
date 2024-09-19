@@ -2239,7 +2239,6 @@ input[type="email"] {
 .product-overview-thumbnails {
   display: flex;
   gap: 10px;
-  margin-top: -20px;
   margin-left: -5px;
   justify-content: flex-start;
 }
