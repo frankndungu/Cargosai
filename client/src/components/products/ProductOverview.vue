@@ -8,7 +8,11 @@
       <!-- Product Details Section -->
       <div class="product-overview-details">
         <div class="product-status">
-          <span class="product-status-badge">In stock</span>
+          <!-- Show the 'in stock' or 'out of stock' badge based on stock status -->
+          <span v-if="product.stock > 0" class="product-status-badge"
+            >In stock</span
+          >
+          <span v-else class="product-status-badge-out">Out of stock</span>
         </div>
         <h1 class="product-title-overview">
           {{ product.name }}, {{ product.description }}
