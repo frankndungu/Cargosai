@@ -22,6 +22,7 @@ class ProductSeeder extends Seeder
             'vendor' => 'Maasai Crafts',
             'rating' => 0,
             'reviews' => 0,
+            'stock' => 0,
             'thumbnails' => [
                 ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723877597/IMG_1868_pz49ft.jpg', 'alt' => 'Front view'],
                 ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723876880/A08FAA78-332F-4BC8-B5B9-91C2AA28B634_pu9wfi.jpg', 'alt' => 'Back view'],
@@ -39,6 +40,7 @@ class ProductSeeder extends Seeder
             'vendor' => 'Cultured Brass',
             'rating' => 0,
             'reviews' => 0,
+            'stock' => 10,
             'thumbnails' => [
                 ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723877597/IMG_1868_pz49ft.jpg', 'alt' => 'Front view'],
                 ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723876880/A08FAA78-332F-4BC8-B5B9-91C2AA28B634_pu9wfi.jpg', 'alt' => 'Back view'],
@@ -56,6 +58,7 @@ class ProductSeeder extends Seeder
             'vendor' => 'Beads by Judy',
             'rating' => 0,
             'reviews' => 0,
+            'stock' => 10,
             'thumbnails' => [
                 ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723877597/IMG_1868_pz49ft.jpg', 'alt' => 'Front view'],
                 ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723876880/A08FAA78-332F-4BC8-B5B9-91C2AA28B634_pu9wfi.jpg', 'alt' => 'Back view'],
@@ -73,6 +76,7 @@ class ProductSeeder extends Seeder
             'vendor' => 'Shona Artists',
             'rating' => 0,
             'reviews' => 0,
+            'stock' => 10,
             'thumbnails' => [
                 ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723877597/IMG_1868_pz49ft.jpg', 'alt' => 'Front view'],
                 ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723876880/A08FAA78-332F-4BC8-B5B9-91C2AA28B634_pu9wfi.jpg', 'alt' => 'Back view'],
@@ -91,6 +95,7 @@ class ProductSeeder extends Seeder
             'vendor' => 'Kenya Weavers',
             'rating' => 5,
             'reviews' => 10,
+            'stock' => 10,
             'thumbnails' => [
                 ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723877597/IMG_1868_pz49ft.jpg', 'alt' => 'Front view'],
                 ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723876880/A08FAA78-332F-4BC8-B5B9-91C2AA28B634_pu9wfi.jpg', 'alt' => 'Back view'],
@@ -109,6 +114,7 @@ class ProductSeeder extends Seeder
             'vendor' => 'Sculptors United',
             'rating' => 4,
             'reviews' => 3,
+            'stock' => 10,
             'thumbnails' => [
                 ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723877597/IMG_1868_pz49ft.jpg', 'alt' => 'Front view'],
                 ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723876880/A08FAA78-332F-4BC8-B5B9-91C2AA28B634_pu9wfi.jpg', 'alt' => 'Back view'],
@@ -127,6 +133,7 @@ class ProductSeeder extends Seeder
             'vendor' => 'Maasai Garments',
             'rating' => 5,
             'reviews' => 8,
+            'stock' => 10,
             'thumbnails' => [
                 ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723877597/IMG_1868_pz49ft.jpg', 'alt' => 'Front view'],
                 ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723876880/A08FAA78-332F-4BC8-B5B9-91C2AA28B634_pu9wfi.jpg', 'alt' => 'Back view'],
@@ -145,6 +152,7 @@ class ProductSeeder extends Seeder
             'vendor' => 'Beads by Judy',
             'rating' => 5,
             'reviews' => 12,
+            'stock' => 10,
             'thumbnails' => [
                 ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723877597/IMG_1868_pz49ft.jpg', 'alt' => 'Front view'],
                 ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723876880/A08FAA78-332F-4BC8-B5B9-91C2AA28B634_pu9wfi.jpg', 'alt' => 'Back view'],
@@ -162,6 +170,7 @@ class ProductSeeder extends Seeder
             'vendor' => 'Woodworkers Guild',
             'rating' => 4,
             'reviews' => 6,
+            'stock' => 10,
             'thumbnails' => [
                 ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723877597/IMG_1868_pz49ft.jpg', 'alt' => 'Front view'],
                 ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723876880/A08FAA78-332F-4BC8-B5B9-91C2AA28B634_pu9wfi.jpg', 'alt' => 'Back view'],
@@ -179,6 +188,7 @@ class ProductSeeder extends Seeder
             'vendor' => 'Mask Makers',
             'rating' => 3,
             'reviews' => 4,
+            'stock' => 10,
             'thumbnails' => [
                 ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723877597/IMG_1868_pz49ft.jpg', 'alt' => 'Front view'],
                 ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723876880/A08FAA78-332F-4BC8-B5B9-91C2AA28B634_pu9wfi.jpg', 'alt' => 'Back view'],

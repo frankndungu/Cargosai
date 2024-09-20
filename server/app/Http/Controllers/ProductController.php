@@ -45,6 +45,7 @@ class ProductController extends Controller
             'rating' => 'nullable|integer',
             'reviews' => 'nullable|integer',
             'description' => 'nullable|string',
+            'stock' => 'required|integer|min:0', // Validate stock
             'thumbnails' => 'nullable|array', // Expect an array for thumbnails
             'thumbnails.*.src' => 'required_with:thumbnails|string', // Each thumbnail must have a 'src'
             'thumbnails.*.alt' => 'nullable|string' // Each thumbnail can have an 'alt' tag
@@ -60,6 +61,7 @@ class ProductController extends Controller
             'rating' => $validatedData['rating'] ?? 0, // Default rating to 0 if not provided
             'reviews' => $validatedData['reviews'] ?? 0, // Default reviews to 0 if not provided
             'description' => $validatedData['description'] ?? '', // Default description to empty string
+            'stock' => $validatedData['stock'], // Store stock
             'thumbnails' => $validatedData['thumbnails'] ?? [], // Store the thumbnails as JSON, empty array if not provided
         ]);
 

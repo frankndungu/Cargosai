@@ -2214,8 +2214,18 @@ input[type="email"] {
 .product-status {
   margin-bottom: 10px;
 }
+
 .product-status-badge {
   background: var(--green-color);
+  color: var(--background-color);
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  display: inline-block;
+}
+
+.product-status-badge-out {
+  background: var(--error-message);
   color: var(--background-color);
   padding: 5px 10px;
   border-radius: 5px;
