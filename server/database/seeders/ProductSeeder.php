@@ -21,7 +21,13 @@ class ProductSeeder extends Seeder
             'price' => 11.95,
             'vendor' => 'Maasai Crafts',
             'rating' => 0,
-            'reviews' => 0
+            'reviews' => 0,
+            'thumbnails' => [
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723877597/IMG_1868_pz49ft.jpg', 'alt' => 'Front view'],
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723876880/A08FAA78-332F-4BC8-B5B9-91C2AA28B634_pu9wfi.jpg', 'alt' => 'Back view'],
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723451902/62180B51-9E28-438B-9C93-5BD7227193CC_wnlwco.jpg', 'alt' => 'Left view'],
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723449027/IMG_1831_cdtsrb.png', 'alt' => 'Right view']
+            ]
         ]);
 
         Product::create([
@@ -32,7 +38,13 @@ class ProductSeeder extends Seeder
             'price' => 9.99,
             'vendor' => 'Cultured Brass',
             'rating' => 0,
-            'reviews' => 0
+            'reviews' => 0,
+            'thumbnails' => [
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723877597/IMG_1868_pz49ft.jpg', 'alt' => 'Front view'],
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723876880/A08FAA78-332F-4BC8-B5B9-91C2AA28B634_pu9wfi.jpg', 'alt' => 'Back view'],
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723451902/62180B51-9E28-438B-9C93-5BD7227193CC_wnlwco.jpg', 'alt' => 'Left view'],
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723449027/IMG_1831_cdtsrb.png', 'alt' => 'Right view']
+            ]
         ]);
 
         Product::create([
@@ -43,7 +55,13 @@ class ProductSeeder extends Seeder
             'price' => 120.00,
             'vendor' => 'Beads by Judy',
             'rating' => 0,
-            'reviews' => 0
+            'reviews' => 0,
+            'thumbnails' => [
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723877597/IMG_1868_pz49ft.jpg', 'alt' => 'Front view'],
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723876880/A08FAA78-332F-4BC8-B5B9-91C2AA28B634_pu9wfi.jpg', 'alt' => 'Back view'],
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723451902/62180B51-9E28-438B-9C93-5BD7227193CC_wnlwco.jpg', 'alt' => 'Left view'],
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723449027/IMG_1831_cdtsrb.png', 'alt' => 'Right view']
+            ]
         ]);
 
         Product::create([
@@ -54,7 +72,14 @@ class ProductSeeder extends Seeder
             'price' => 60.00,
             'vendor' => 'Shona Artists',
             'rating' => 0,
-            'reviews' => 0
+            'reviews' => 0,
+            'thumbnails' => [
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723877597/IMG_1868_pz49ft.jpg', 'alt' => 'Front view'],
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723876880/A08FAA78-332F-4BC8-B5B9-91C2AA28B634_pu9wfi.jpg', 'alt' => 'Back view'],
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723451902/62180B51-9E28-438B-9C93-5BD7227193CC_wnlwco.jpg', 'alt' => 'Left view'],
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723449027/IMG_1831_cdtsrb.png', 'alt' => 'Right view']
+            ]
+
         ]);
 
         Product::create([
@@ -65,7 +90,13 @@ class ProductSeeder extends Seeder
             'price' => 25.50,
             'vendor' => 'Kenya Weavers',
             'rating' => 5,
-            'reviews' => 10
+            'reviews' => 10,
+            'thumbnails' => [
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723877597/IMG_1868_pz49ft.jpg', 'alt' => 'Front view'],
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723876880/A08FAA78-332F-4BC8-B5B9-91C2AA28B634_pu9wfi.jpg', 'alt' => 'Back view'],
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723451902/62180B51-9E28-438B-9C93-5BD7227193CC_wnlwco.jpg', 'alt' => 'Left view'],
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723449027/IMG_1831_cdtsrb.png', 'alt' => 'Right view']
+            ]
         ]);
 
         // Product 6
@@ -77,7 +108,13 @@ class ProductSeeder extends Seeder
             'price' => 150.00,
             'vendor' => 'Sculptors United',
             'rating' => 4,
-            'reviews' => 3
+            'reviews' => 3,
+            'thumbnails' => [
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723877597/IMG_1868_pz49ft.jpg', 'alt' => 'Front view'],
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723876880/A08FAA78-332F-4BC8-B5B9-91C2AA28B634_pu9wfi.jpg', 'alt' => 'Back view'],
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723451902/62180B51-9E28-438B-9C93-5BD7227193CC_wnlwco.jpg', 'alt' => 'Left view'],
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723449027/IMG_1831_cdtsrb.png', 'alt' => 'Right view']
+            ]
         ]);
 
         // Product 7
@@ -89,7 +126,13 @@ class ProductSeeder extends Seeder
             'price' => 50.00,
             'vendor' => 'Maasai Garments',
             'rating' => 5,
-            'reviews' => 8
+            'reviews' => 8,
+            'thumbnails' => [
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723877597/IMG_1868_pz49ft.jpg', 'alt' => 'Front view'],
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723876880/A08FAA78-332F-4BC8-B5B9-91C2AA28B634_pu9wfi.jpg', 'alt' => 'Back view'],
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723451902/62180B51-9E28-438B-9C93-5BD7227193CC_wnlwco.jpg', 'alt' => 'Left view'],
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723449027/IMG_1831_cdtsrb.png', 'alt' => 'Right view']
+            ]
         ]);
 
         // Product 8
@@ -101,7 +144,13 @@ class ProductSeeder extends Seeder
             'price' => 15.00,
             'vendor' => 'Beads by Judy',
             'rating' => 5,
-            'reviews' => 12
+            'reviews' => 12,
+            'thumbnails' => [
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723877597/IMG_1868_pz49ft.jpg', 'alt' => 'Front view'],
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723876880/A08FAA78-332F-4BC8-B5B9-91C2AA28B634_pu9wfi.jpg', 'alt' => 'Back view'],
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723451902/62180B51-9E28-438B-9C93-5BD7227193CC_wnlwco.jpg', 'alt' => 'Left view'],
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723449027/IMG_1831_cdtsrb.png', 'alt' => 'Right view']
+            ]
         ]);
 
         Product::create([
@@ -112,7 +161,13 @@ class ProductSeeder extends Seeder
             'price' => 85.00,
             'vendor' => 'Woodworkers Guild',
             'rating' => 4,
-            'reviews' => 6
+            'reviews' => 6,
+            'thumbnails' => [
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723877597/IMG_1868_pz49ft.jpg', 'alt' => 'Front view'],
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723876880/A08FAA78-332F-4BC8-B5B9-91C2AA28B634_pu9wfi.jpg', 'alt' => 'Back view'],
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723451902/62180B51-9E28-438B-9C93-5BD7227193CC_wnlwco.jpg', 'alt' => 'Left view'],
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723449027/IMG_1831_cdtsrb.png', 'alt' => 'Right view']
+            ]
         ]);
 
         Product::create([
@@ -123,7 +178,13 @@ class ProductSeeder extends Seeder
             'price' => 75.00,
             'vendor' => 'Mask Makers',
             'rating' => 3,
-            'reviews' => 4
+            'reviews' => 4,
+            'thumbnails' => [
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723877597/IMG_1868_pz49ft.jpg', 'alt' => 'Front view'],
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723876880/A08FAA78-332F-4BC8-B5B9-91C2AA28B634_pu9wfi.jpg', 'alt' => 'Back view'],
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723451902/62180B51-9E28-438B-9C93-5BD7227193CC_wnlwco.jpg', 'alt' => 'Left view'],
+                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723449027/IMG_1831_cdtsrb.png', 'alt' => 'Right view']
+            ]
         ]);
     }
 }

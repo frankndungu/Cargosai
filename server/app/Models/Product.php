@@ -11,7 +11,7 @@ class Product extends Model
     use HasFactory, Sluggable;
 
     protected $table = 'products';
-    protected $fillable = ['name', 'slug', 'price', 'image_url', 'vendor', 'rating', 'reviews', 'description'];
+    protected $fillable = ['name', 'slug', 'price', 'image_url', 'thumbnails', 'vendor', 'rating', 'reviews', 'description'];
 
     public function sluggable(): array
     {
@@ -21,4 +21,8 @@ class Product extends Model
             ]
         ];
     }
+
+    protected $casts = [
+        'thumbnails' => 'array', // Cast thumbnails as an array
+    ];
 }
