@@ -3,7 +3,7 @@
     <!-- Product Image Section -->
     <div class="product-overview-container">
       <div class="product-overview-image">
-        <img :src="currentImage" alt="Product Image" />
+        <img :src="product.image_url" alt="Product Image" />
       </div>
       <!-- Product Details Section -->
       <div class="product-overview-details">
@@ -60,7 +60,6 @@ const API_URL = import.meta.env.VITE_API_URL;
 const route = useRoute();
 const store = useStore();
 const product = ref(null);
-const currentImage = ref("");
 
 // Fetch product data based on the slug
 const fetchProduct = async () => {
@@ -69,18 +68,13 @@ const fetchProduct = async () => {
       `${API_URL}/products/${route.params.slug}`
     );
     product.value = response.data;
-    // Set currentImage to the main image or a default image if no thumbnails exist
-    currentImage.value =
-      product.value.thumbnails && product.value.thumbnails.length > 0
-        ? product.value.thumbnails[0].src
-        : product.value.image_url || "/path/to/default-image.jpg"; // Default image if `product.image_url` is not available
   } catch (error) {
     console.error("Failed to fetch product:", error);
   }
 };
 
 const setCurrentImage = (image) => {
-  currentImage.value = image;
+  product.value.image_url = image; // Update the product image when a thumbnail is clicked
 };
 
 const addToCart = () => {
