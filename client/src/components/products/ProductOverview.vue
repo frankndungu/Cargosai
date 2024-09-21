@@ -50,6 +50,7 @@
       />
     </div>
   </div>
+  <ProductInformation />
 </template>
 
 <script setup>
@@ -57,6 +58,7 @@ import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
 import { useStore } from "vuex";
+import ProductInformation from "../products/ProductInformation.vue";
 
 // Use VITE_API_URL from environment variables
 const API_URL = import.meta.env.VITE_API_URL;
