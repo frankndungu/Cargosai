@@ -20,7 +20,7 @@ class ProductSeeder extends Seeder
             'image_url' => 'https://res.cloudinary.com/kwishi/image/upload/v1726660393/IMG_2056_edptam.jpg',
             'price' => 11.95,
             'vendor' => 'Maasai Crafts',
-            'rating' => 0,
+            'rating' => 0.0,
             'reviews' => 0,
             'stock' => 0,
             'thumbnails' => [
@@ -38,7 +38,7 @@ class ProductSeeder extends Seeder
             'image_url' => 'https://res.cloudinary.com/kwishi/image/upload/v1725290282/IMG_1841_pxxkgj.jpg',
             'price' => 9.99,
             'vendor' => 'Cultured Brass',
-            'rating' => 0,
+            'rating' => 0.0,
             'reviews' => 0,
             'stock' => 10,
             'thumbnails' => [
@@ -56,7 +56,7 @@ class ProductSeeder extends Seeder
             'image_url' => 'https://res.cloudinary.com/kwishi/image/upload/v1726658286/IMG_1875_1_pakgbb.jpg',
             'price' => 120.00,
             'vendor' => 'Beads by Judy',
-            'rating' => 0,
+            'rating' => 0.0,
             'reviews' => 0,
             'stock' => 10,
             'thumbnails' => [
@@ -74,7 +74,7 @@ class ProductSeeder extends Seeder
             'image_url' => 'https://res.cloudinary.com/kwishi/image/upload/v1726660769/IMG_1874_qpp9p1.jpg',
             'price' => 60.00,
             'vendor' => 'Shona Artists',
-            'rating' => 0,
+            'rating' => 0.0,
             'reviews' => 0,
             'stock' => 10,
             'thumbnails' => [
@@ -93,7 +93,7 @@ class ProductSeeder extends Seeder
             'image_url' => 'https://res.cloudinary.com/kwishi/image/upload/v1726660981/IMG_1890_wqzy3f.jpg',
             'price' => 25.50,
             'vendor' => 'Kenya Weavers',
-            'rating' => 5,
+            'rating' => 5.0,
             'reviews' => 10,
             'stock' => 10,
             'thumbnails' => [
@@ -112,7 +112,7 @@ class ProductSeeder extends Seeder
             'image_url' => 'https://res.cloudinary.com/kwishi/image/upload/v1726661077/IMG_1900_ejhcbh.jpg',
             'price' => 150.00,
             'vendor' => 'Sculptors United',
-            'rating' => 4,
+            'rating' => 4.0,
             'reviews' => 3,
             'stock' => 10,
             'thumbnails' => [
@@ -131,7 +131,7 @@ class ProductSeeder extends Seeder
             'image_url' => 'https://res.cloudinary.com/kwishi/image/upload/v1726661254/IMG_1980_eyutwr.jpg',
             'price' => 50.00,
             'vendor' => 'Maasai Garments',
-            'rating' => 5,
+            'rating' => 5.0,
             'reviews' => 8,
             'stock' => 10,
             'thumbnails' => [
@@ -150,7 +150,7 @@ class ProductSeeder extends Seeder
             'image_url' => 'https://res.cloudinary.com/kwishi/image/upload/v1726661345/IMG_1993_rnwytg.jpg',
             'price' => 15.00,
             'vendor' => 'Beads by Judy',
-            'rating' => 5,
+            'rating' => 5.0,
             'reviews' => 12,
             'stock' => 10,
             'thumbnails' => [
@@ -168,7 +168,7 @@ class ProductSeeder extends Seeder
             'image_url' => 'https://res.cloudinary.com/kwishi/image/upload/v1726661457/IMG_2092_fjtgsj.jpg',
             'price' => 85.00,
             'vendor' => 'Woodworkers Guild',
-            'rating' => 4,
+            'rating' => 4.0,
             'reviews' => 6,
             'stock' => 10,
             'thumbnails' => [
@@ -187,7 +187,7 @@ class ProductSeeder extends Seeder
             'price' => 75.00,
             'vendor' => 'Mask Makers',
             'rating' => 3,
-            'reviews' => 4,
+            'reviews' => 4.0,
             'stock' => 10,
             'thumbnails' => [
                 ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723877597/IMG_1868_pz49ft.jpg', 'alt' => 'Front view'],

@@ -2342,3 +2342,73 @@ input[type="email"] {
     font-size: var(--h2-font-size);
   }
 }
+
+/* Product Information */
+.product-info-section {
+  padding: 10px 50px;
+  background: var(--background-color);
+}
+
+.product-info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.product-info-content {
+  margin-top: 10px;
+}
+
+.separator {
+  border: 0;
+  height: 1px;
+  background: var(--dark-color-border);
+  margin-top: 10px;
+}
+
+.chevron {
+  transition: transform 0.3s ease-in-out;
+}
+
+.fa-chevron-up,
+.fa-chevron-down {
+  font-size: 12px; /* Adjust size as needed */
+}
+
+/* vendor */
+.vendor-info-section {
+  padding: 10px 50px;
+  background: var(--background-color);
+}
+
+.vendor-info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.vendor-info-content {
+  margin-top: 10px;
+}
+
+.separator {
+  border: 0;
+  height: 1px;
+  background-color: var(--dark-color-border);
+  margin-top: 10px;
+}
+
+.chevron {
+  transition: transform 0.3s ease-in-out;
+}
+
+.fa-chevron-up,
+.fa-chevron-down {
+  font-size: 12px; /* Adjust size as needed */
+}
