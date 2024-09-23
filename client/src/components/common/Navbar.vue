@@ -16,9 +16,11 @@
       </div>
       <ul class="navbar__links" :class="{ 'navbar__links--open': isMenuOpen }">
         <li><router-link to="/about" @click="closeMenu">About</router-link></li>
-        <li><router-link to="/shop" @click="closeMenu">Shop</router-link></li>
         <li>
           <router-link to="/contact" @click="closeMenu">Contact</router-link>
+        </li>
+        <li>
+          <router-link to="/shop" @click="closeMenu">Pre-Order</router-link>
         </li>
       </ul>
       <div class="navbar__actions">
