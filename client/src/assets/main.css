@@ -2292,7 +2292,7 @@ input[type="email"] {
   outline: none;
   box-shadow: 0 0 0 3px rgba(15, 15, 15, 0.6);
 }
-/* Vendor Info */
+
 .product-vendor-info {
   margin-top: 15px;
   padding: 10px;
@@ -2336,7 +2336,10 @@ input[type="email"] {
     max-width: 100%;
   }
   .product-overview-thumbnails {
-    margin-top: 10px;
+    margin-top: 20px;
+  }
+  .product-vendor-info {
+    margin-top: 20px;
   }
   .product-title-overview {
     font-size: var(--h2-font-size);
@@ -2411,4 +2414,335 @@ input[type="email"] {
 .fa-chevron-up,
 .fa-chevron-down {
   font-size: 12px; /* Adjust size as needed */
+}
+
+@media (max-width: 768px) {
+  .product-info-section,
+  .vendor-info-section {
+    padding: 10px 15px;
+  }
+}
+
+.product-reviews-section {
+  margin-top: 40px;
+  padding: 10px 50px;
+}
+
+/* Product Reviews */
+.product-reviews-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.reviews-header-title {
+  display: flex;
+  align-items: center;
+}
+
+.product-reviews-header h3 {
+  font-size: 22px;
+  font-weight: bold;
+  margin-right: 10px; /* Small space between title and count */
+}
+
+.reviews-count {
+  font-size: 14px;
+  color: var(--reviews-count);
+}
+
+.write-review-btn {
+  background: var(--dark-tint);
+  color: var(--background-color);
+  padding: 8px 16px;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.write-review-btn:hover {
+  background-color: var(--dark-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.write-review-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(15, 15, 15, 0.6);
+}
+
+/* Review card layout */
+.review-card {
+  background-color: var(--card-color);
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+/* Reviewer name */
+.reviewer-name {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* Star ratings */
+.review-stars {
+  display: flex;
+}
+
+.review-stars i {
+  font-size: 16px;
+  color: var(--rating-color);
+}
+
+.review-stars i.filled {
+  color: var(--rating-color); /* Filled star color */
+}
+
+.review-stars i {
+  color: var(--rating-empty); /* Empty star color */
+}
+
+/* Review content */
+.review-content {
+  margin-top: 10px;
+}
+
+.review-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.review-text {
+  font-size: 14px;
+  color: var(--dark-color);
+}
+
+/* ----- Responsive CSS ----- */
+@media (max-width: 768px) {
+  /* Stack header and button vertically */
+
+  .product-reviews-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0 15px;
+  }
+
+  /* Ensure button aligns to the left in mobile view */
+  .write-review-btn {
+    margin-top: 10px;
+    width: 100%;
+  }
+
+  .product-reviews-header h3 {
+    font-size: 20px;
+  }
+
+  .reviews-count {
+    font-size: 13px;
+  }
+
+  .review-title {
+    font-size: 16px;
+  }
+
+  .review-text {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .product-reviews-header h3 {
+    font-size: 18px;
+  }
+
+  .reviews-count {
+    font-size: 12px;
+  }
+
+  .review-title {
+    font-size: 14px;
+  }
+
+  .review-text {
+    font-size: 12px;
+  }
+
+  /* Padding for the entire section on mobile */
+  .product-reviews-section {
+    padding: 10px 0;
+  }
+
+  /* Decrease padding inside the review card */
+  .review-card {
+    padding: 15px;
+  }
+}
+
+/* modal */
+.modal-overlay {
+  margin: 20px auto;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px; /* Padding to prevent content from touching screen edges */
+}
+
+.modal-container {
+  background: var(--modal-color);
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+h2 {
+  margin: 0;
+  font-size: 1.5em;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  cursor: pointer;
+}
+
+.form-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Adds spacing between form elements */
+}
+
+.modal-form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+input[type="text"],
+textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--dark-color);
+  border-radius: 5px;
+  box-sizing: border-box;
+  background: var(--modal-color);
+}
+
+.rating-stars {
+  display: flex;
+  margin-top: 5px;
+}
+
+.rating-stars .fa-star {
+  font-size: 1.5em;
+  margin-right: 5px;
+  color: var(--rating-empty);
+  cursor: pointer;
+}
+
+.rating-stars .fa-star.filled {
+  color: var(--rating-color);
+}
+
+.error-msg {
+  color: red;
+  font-size: 0.9em;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px; /* Space between buttons */
+  margin-top: 20px;
+}
+
+.add-review-btn,
+.cancel-btn {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1em;
+  cursor: pointer;
+}
+
+.add-review-btn {
+  background: var(--dark-tint);
+  color: var(--background-color);
+}
+
+.add-review-btn:hover {
+  background-color: var(--dark-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.add-review-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(15, 15, 15, 0.6);
+}
+
+.cancel-btn {
+  background: var(--dark-tint);
+  color: var(--background-color);
+}
+
+.cancel-btn:hover {
+  background-color: var(--dark-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.cancel-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(15, 15, 15, 0.6);
+}
+
+.terms-text {
+  font-size: 0.9em;
+  margin-top: 15px;
+  text-align: center;
+}
+
+.terms-link {
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+.terms-link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .modal-container {
+    width: 95%; /* Make modal container nearly full-width on smaller screens */
+    padding: 15px; /* Reduce padding for smaller screens */
+  }
 }
