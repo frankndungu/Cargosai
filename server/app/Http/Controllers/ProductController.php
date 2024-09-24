@@ -41,7 +41,6 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'price' => 'required|numeric',
             'image_url' => 'required|string',
-            'vendor' => 'required|string|max:255',
             'rating' => 'nullable|integer',
             'reviews' => 'nullable|integer',
             'description' => 'nullable|string',
@@ -52,6 +51,9 @@ class ProductController extends Controller
             'dimensions' => 'nullable|string',
             'weight' => 'nullable|numeric',
             'material' => 'nullable|string',
+            'vendor_name' => 'required|string|max:255',
+            'vendor_email' => 'required|email|max:255',
+            'vendor_location' => 'required|string|max:255',
         ]);
 
         // Create a new product using the validated data, including thumbnails
@@ -60,7 +62,6 @@ class ProductController extends Controller
             'slug' => $validatedData['name'], // Sluggable trait will generate this automatically
             'price' => $validatedData['price'],
             'image_url' => $validatedData['image_url'],
-            'vendor' => $validatedData['vendor'],
             'rating' => $validatedData['rating'] ?? 0, // Default rating to 0 if not provided
             'reviews' => $validatedData['reviews'] ?? 0, // Default reviews to 0 if not provided
             'description' => $validatedData['description'] ?? '', // Default description to empty string
@@ -69,6 +70,9 @@ class ProductController extends Controller
             'dimensions' => $validatedData['dimensions'] ?? '',
             'weight' => $validatedData['weight'] ?? null,
             'material' => $validatedData['material'] ?? '',
+            'vendor_name' => $validatedData['vendor_name'], // Save vendor name
+            'vendor_email' => $validatedData['vendor_email'], // Save vendor email
+            'vendor_location' => $validatedData['vendor_location'], // Save vendor location
         ]);
 
         // Return the created product as JSON
