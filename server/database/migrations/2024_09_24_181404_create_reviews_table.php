@@ -12,13 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('reviews', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('product_id')->constrained()->onDelete('cascade'); // Link to the products table
+            $table->id(); // Auto-incrementing primary key
+            $table->foreignId('product_id')->constrained()->onDelete('cascade'); // Foreign key to products
             $table->string('reviewer_name');
-            $table->integer('rating'); // Store the review rating
+            $table->unsignedTinyInteger('rating'); // Assuming a 1-5 rating
             $table->string('title');
             $table->text('content');
-            $table->timestamps();
+            $table->timestamps(); // Created at and updated at
         });
     }
 

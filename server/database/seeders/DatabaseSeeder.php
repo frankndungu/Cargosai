@@ -24,7 +24,10 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'), // Ensure to set a password
         ]);
 
-        // Call the ProductSeeder to seed products
-        $this->call(ProductSeeder::class);
+        // Call the seeders
+        $this->call([
+            ProductSeeder::class,
+            ReviewSeeder::class,
+        ]);
     }
 }
