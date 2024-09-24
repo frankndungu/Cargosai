@@ -5,9 +5,7 @@ import Footer from "./components/common/Footer.vue";
 
 <template>
   <section class="page-wrapper">
-    <div class="sticky">
-      <Navbar />
-    </div>
+    <Navbar />
     <RouterView />
     <Footer />
   </section>

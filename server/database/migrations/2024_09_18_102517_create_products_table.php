@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('name');
             $table->string('image_url'); // To store image URLs
             $table->decimal('price', 8, 2);
-            $table->string('vendor');
             $table->integer('rating');
             $table->integer('reviews');
             $table->timestamps();

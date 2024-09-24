@@ -8,14 +8,36 @@
       ></i>
     </div>
     <div v-if="isOpen" class="product-info-content">
-      <p>Here goes product information...</p>
+      <p>Dimensions: {{ product.dimensions }}</p>
+      <p>Weight: {{ product.weight }} kg</p>
+      <p>Material: {{ product.material }}</p>
     </div>
     <hr class="separator" />
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
+import axios from "axios";
 
+const route = useRoute();
 const isOpen = ref(false);
+const product = ref({}); // Initialize product data
+
+const API_URL = import.meta.env.VITE_API_URL;
+
+const fetchProductInfo = async () => {
+  try {
+    const response = await axios.get(
+      `${API_URL}/products/${route.params.slug}`
+    );
+    product.value = response.data; // Assign the fetched product data
+  } catch (error) {
+    console.error("Error fetching product information:", error);
+  }
+};
+
+// Fetch product info when the component mounts
+onMounted(fetchProductInfo);
 </script>

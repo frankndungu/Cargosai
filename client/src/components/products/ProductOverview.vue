@@ -8,10 +8,9 @@
       <!-- Product Details Section -->
       <div class="product-overview-details">
         <div class="product-status">
-          <!-- Show the 'in stock' or 'out of stock' badge based on stock status -->
-          <span v-if="product.stock > 0" class="product-status-badge"
-            >In stock</span
-          >
+          <span v-if="product.stock > 0" class="product-status-badge">
+            In stock
+          </span>
           <span v-else class="product-status-badge-out">Out of stock</span>
         </div>
         <h1 class="product-title-overview">
@@ -22,7 +21,12 @@
           <div class="product-rating">
             <span class="product-stars">⭐⭐⭐</span>
             <span class="product-reviews">({{ product.rating }})</span>
-            <a href="#" class="product-review-link">Add a review</a>
+            <a
+              href="#"
+              @click.prevent="scrollToReviews"
+              class="product-review-link"
+              >Add a review</a
+            >
           </div>
         </div>
         <button @click="addToCart" class="product-add-to-cart">
@@ -30,7 +34,7 @@
         </button>
         <div class="product-vendor-info">
           <p>
-            Crafted and sold by <strong>{{ product.vendor }}</strong>
+            Crafted and sold by <strong>{{ product.vendor_name }}</strong>
           </p>
           <span>Live on Maasai Market since 2024</span>
         </div>
@@ -55,7 +59,7 @@
   <div class="product-info-container">
     <ProductInformation />
     <Vendor />
-    <ProductReviews />
+    <ProductReviews ref="productReviews" />
   </div>
 </template>
 
@@ -68,7 +72,6 @@ import ProductInformation from "../products/ProductInformation.vue";
 import Vendor from "../products/Vendor.vue";
 import ProductReviews from "../products/ProductReviews.vue";
 
-// Use VITE_API_URL from environment variables
 const API_URL = import.meta.env.VITE_API_URL;
 
 const route = useRoute();
@@ -81,6 +84,7 @@ const fetchProduct = async () => {
     const response = await axios.get(
       `${API_URL}/products/${route.params.slug}`
     );
+    console.log("Fetched Product Data:", response.data); // Log the fetched product data
     product.value = response.data;
   } catch (error) {
     console.error("Failed to fetch product:", error);
@@ -94,6 +98,16 @@ const setCurrentImage = (image) => {
 const addToCart = () => {
   if (product.value) {
     store.dispatch("addToCart", product.value);
+  }
+};
+
+// Scroll to ProductReviews component
+const scrollToReviews = () => {
+  const reviewsSection = document.querySelector(
+    ".product-info-container > .product-reviews-section"
+  );
+  if (reviewsSection) {
+    reviewsSection.scrollIntoView({ behavior: "smooth" });
   }
 };
 

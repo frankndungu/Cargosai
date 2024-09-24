@@ -2,7 +2,7 @@
   <div class="product-card">
     <img :src="product.image_url" alt="Product Image" class="product-image" />
     <div class="product-info">
-      <span class="discount-tag">{{ product.vendor }}</span>
+      <span class="discount-tag">{{ product.vendor_name }}</span>
       <!-- Product Name Link -->
       <router-link
         :to="{ name: 'ProductPage', params: { slug: product.slug } }"

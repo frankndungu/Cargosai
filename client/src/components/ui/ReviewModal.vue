@@ -1,5 +1,5 @@
 <template>
-  <div class="modal-overlay" v-if="isOpen">
+  <div class="modal-overlay" v-if="isModalOpen">
     <div class="modal-container">
       <div class="modal-header">
         <h2>Add Review</h2>
@@ -11,7 +11,7 @@
         <!-- Name Field -->
         <div class="modal-form-group">
           <label for="name">Name</label>
-          <input type="text" id="name" v-model="review.name" required />
+          <input type="text" id="name" v-model="review.name" />
           <span v-if="errors.name" class="error-msg">{{ errors.name }}</span>
         </div>
 
@@ -24,7 +24,7 @@
               :key="star"
               class="fa fa-star"
               :class="{ filled: star <= review.rating }"
-              @click="review.rating = star"
+              @click="updateRating(star)"
             ></i>
           </div>
           <span v-if="errors.rating" class="error-msg">{{
@@ -35,19 +35,14 @@
         <!-- Review Title Field -->
         <div class="modal-form-group">
           <label for="title">Review Title</label>
-          <input type="text" id="title" v-model="review.title" required />
+          <input type="text" id="title" v-model="review.title" />
           <span v-if="errors.title" class="error-msg">{{ errors.title }}</span>
         </div>
 
         <!-- Review Content Field -->
         <div class="modal-form-group">
           <label for="review">Review</label>
-          <textarea
-            id="review"
-            v-model="review.content"
-            rows="4"
-            required
-          ></textarea>
+          <textarea id="review" v-model="review.content" rows="4"></textarea>
           <span v-if="errors.content" class="error-msg">{{
             errors.content
           }}</span>
@@ -63,7 +58,7 @@
 
         <!-- Terms and Conditions -->
         <p class="terms-text">
-          By publishing this review, you agree with the
+          By publishing this review, you agree with our
           <router-link to="/terms-of-service" class="terms-link"
             >terms and conditions</router-link
           >
@@ -74,20 +69,19 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
+import { useStore } from "vuex";
 
-const props = defineProps({
-  isOpen: Boolean,
-});
-const emit = defineEmits(["close"]);
+// Access Vuex store
+const store = useStore();
 
-const review = ref({
-  name: "",
-  rating: 0,
-  title: "",
-  content: "",
-});
+// Fetch modal open state from Vuex store
+const isModalOpen = computed(() => store.getters.isModalOpen);
 
+// Fetch review data from Vuex store
+const review = computed(() => store.state.review);
+
+// Local errors ref
 const errors = ref({
   name: null,
   rating: null,
@@ -95,17 +89,20 @@ const errors = ref({
   content: null,
 });
 
+// Dispatch action to close modal
 const closeModal = () => {
-  emit("close");
+  store.dispatch("closeModal");
 };
 
+// Submit the review form
 const submitReview = () => {
   if (validateForm()) {
     console.log("Review submitted:", review.value);
-    closeModal();
+    closeModal(); // Close modal after submitting
   }
 };
 
+// Validate the form
 const validateForm = () => {
   let isValid = true;
   errors.value = { name: null, rating: null, title: null, content: null };
@@ -128,5 +125,10 @@ const validateForm = () => {
   }
 
   return isValid;
+};
+
+// Dispatch an action to update the rating in the Vuex store
+const updateRating = (rating) => {
+  store.dispatch("updateReviewRating", rating);
 };
 </script>

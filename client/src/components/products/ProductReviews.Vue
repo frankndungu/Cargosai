@@ -37,17 +37,27 @@
     </div>
 
     <!-- Modal Component -->
-    <ReviewModal :isOpen="isModalOpen" @close="isModalOpen = false" />
+    <ReviewModal :isOpen="isModalOpen" @close="closeReviewModal" />
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { computed } from "vue";
+import { useStore } from "vuex";
 import ReviewModal from "../ui/ReviewModal.vue";
 
-const isModalOpen = ref(false);
+const store = useStore();
 
+// Access modal state from Vuex
+const isModalOpen = computed(() => store.getters.isModalOpen);
+
+// Open modal by dispatching Vuex action
 const openReviewModal = () => {
-  isModalOpen.value = true;
+  store.dispatch("openModal");
+};
+
+// Close modal by dispatching Vuex action
+const closeReviewModal = () => {
+  store.dispatch("closeModal");
 };
 </script>
