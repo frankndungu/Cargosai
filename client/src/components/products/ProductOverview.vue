@@ -22,7 +22,13 @@
           <div class="product-rating">
             <span class="product-stars">⭐⭐⭐</span>
             <span class="product-reviews">({{ product.rating }})</span>
-            <a href="#" class="product-review-link">Add a review</a>
+            <a
+              href="#"
+              @click.prevent="scrollToReviews"
+              class="product-review-link"
+            >
+              Add a review
+            </a>
           </div>
         </div>
         <button @click="addToCart" class="product-add-to-cart">
@@ -55,7 +61,8 @@
   <div class="product-info-container">
     <ProductInformation />
     <Vendor />
-    <ProductReviews />
+    <!-- Add ref here -->
+    <ProductReviews ref="productReviews" />
   </div>
 </template>
 
@@ -68,7 +75,6 @@ import ProductInformation from "../products/ProductInformation.vue";
 import Vendor from "../products/Vendor.vue";
 import ProductReviews from "../products/ProductReviews.vue";
 
-// Use VITE_API_URL from environment variables
 const API_URL = import.meta.env.VITE_API_URL;
 
 const route = useRoute();
@@ -94,6 +100,16 @@ const setCurrentImage = (image) => {
 const addToCart = () => {
   if (product.value) {
     store.dispatch("addToCart", product.value);
+  }
+};
+
+// Scroll to ProductReviews component
+const scrollToReviews = () => {
+  const reviewsSection = document.querySelector(
+    ".product-info-container > .product-reviews-section"
+  );
+  if (reviewsSection) {
+    reviewsSection.scrollIntoView({ behavior: "smooth" });
   }
 };
 
