@@ -20,7 +20,21 @@ class ProductController extends Controller
         ]);
     }
 
-    public function show($slug)
+    public function show($id) // Changed from $slug to $id
+    {
+        // Fetch a single product by ID
+        $product = Product::find($id);
+
+        if (!$product) {
+            // Return a 404 response if the product is not found
+            return response()->json(['error' => 'Product not found'], 404);
+        }
+
+        // Return the product as JSON, including the slug
+        return response()->json($product);
+    }
+
+    public function showBySlug($slug)
     {
         // Fetch a single product by slug
         $product = Product::where('slug', $slug)->first();

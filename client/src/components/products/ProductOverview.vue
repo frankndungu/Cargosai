@@ -82,7 +82,7 @@ const product = ref(null);
 const fetchProduct = async () => {
   try {
     const response = await axios.get(
-      `${API_URL}/products/${route.params.slug}`
+      `${API_URL}/products/slug/${route.params.slug}`
     );
     console.log("Fetched Product Data:", response.data); // Log the fetched product data
     product.value = response.data;

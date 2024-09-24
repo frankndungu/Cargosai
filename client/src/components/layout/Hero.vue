@@ -2,7 +2,7 @@
   <section class="hero">
     <div class="hero-content">
       <h1 class="hero-title">
-        Get beautiful, <em class="em">handmade antiques</em> from Kenya,<br />
+        Get beautiful, <em class="em">handmade products</em> from Kenya,<br />
         <span class="highlight">shipped directly to your door</span>
       </h1>
       <p class="hero-description">

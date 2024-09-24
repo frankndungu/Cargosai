@@ -30,7 +30,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 const fetchVendorInfo = async () => {
   try {
     const response = await axios.get(
-      `${API_URL}/products/${route.params.slug}`
+      `${API_URL}/products/slug/${route.params.slug}`
     );
     vendor.value = {
       vendor_name: response.data.vendor_name,
