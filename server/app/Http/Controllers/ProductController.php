@@ -48,7 +48,10 @@ class ProductController extends Controller
             'stock' => 'required|integer|min:0', // Validate stock
             'thumbnails' => 'nullable|array', // Expect an array for thumbnails
             'thumbnails.*.src' => 'required_with:thumbnails|string', // Each thumbnail must have a 'src'
-            'thumbnails.*.alt' => 'nullable|string' // Each thumbnail can have an 'alt' tag
+            'thumbnails.*.alt' => 'nullable|string', // Each thumbnail can have an 'alt' tag
+            'dimensions' => 'nullable|string',
+            'weight' => 'nullable|numeric',
+            'material' => 'nullable|string',
         ]);
 
         // Create a new product using the validated data, including thumbnails
@@ -63,6 +66,9 @@ class ProductController extends Controller
             'description' => $validatedData['description'] ?? '', // Default description to empty string
             'stock' => $validatedData['stock'], // Store stock
             'thumbnails' => $validatedData['thumbnails'] ?? [], // Store the thumbnails as JSON, empty array if not provided
+            'dimensions' => $validatedData['dimensions'] ?? '',
+            'weight' => $validatedData['weight'] ?? null,
+            'material' => $validatedData['material'] ?? '',
         ]);
 
         // Return the created product as JSON

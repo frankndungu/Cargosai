@@ -23,6 +23,9 @@ class ProductSeeder extends Seeder
             'rating' => 0.0,
             'reviews' => 0,
             'stock' => 0,
+            'dimensions' => 'N/A', // Update as needed
+            'weight' => 0.02, // Weight in kg
+            'material' => 'Beads',
             'thumbnails' => [
                 ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723877597/IMG_1868_pz49ft.jpg', 'alt' => 'Front view'],
                 ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723876880/A08FAA78-332F-4BC8-B5B9-91C2AA28B634_pu9wfi.jpg', 'alt' => 'Back view'],
@@ -41,6 +44,9 @@ class ProductSeeder extends Seeder
             'rating' => 0.0,
             'reviews' => 0,
             'stock' => 10,
+            'dimensions' => '50cm x 1cm',
+            'weight' => 0.1,
+            'material' => 'Brass',
             'thumbnails' => [
                 ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723877597/IMG_1868_pz49ft.jpg', 'alt' => 'Front view'],
                 ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723876880/A08FAA78-332F-4BC8-B5B9-91C2AA28B634_pu9wfi.jpg', 'alt' => 'Back view'],
@@ -59,6 +65,9 @@ class ProductSeeder extends Seeder
             'rating' => 0.0,
             'reviews' => 0,
             'stock' => 10,
+            'dimensions' => '40cm x 30cm',
+            'weight' => 0.3,
+            'material' => 'Cotton and Beads',
             'thumbnails' => [
                 ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723877597/IMG_1868_pz49ft.jpg', 'alt' => 'Front view'],
                 ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723876880/A08FAA78-332F-4BC8-B5B9-91C2AA28B634_pu9wfi.jpg', 'alt' => 'Back view'],
@@ -77,13 +86,15 @@ class ProductSeeder extends Seeder
             'rating' => 0.0,
             'reviews' => 0,
             'stock' => 10,
+            'dimensions' => '60cm x 90cm',
+            'weight' => 1.5,
+            'material' => 'Wood and Paint',
             'thumbnails' => [
                 ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723877597/IMG_1868_pz49ft.jpg', 'alt' => 'Front view'],
                 ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723876880/A08FAA78-332F-4BC8-B5B9-91C2AA28B634_pu9wfi.jpg', 'alt' => 'Back view'],
                 ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723451902/62180B51-9E28-438B-9C93-5BD7227193CC_wnlwco.jpg', 'alt' => 'Left view'],
                 ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723449027/IMG_1831_cdtsrb.png', 'alt' => 'Right view']
             ]
-
         ]);
 
         Product::create([
@@ -96,6 +107,9 @@ class ProductSeeder extends Seeder
             'rating' => 5.0,
             'reviews' => 10,
             'stock' => 10,
+            'dimensions' => '30cm diameter',
+            'weight' => 0.4,
+            'material' => 'Natural Fibers',
             'thumbnails' => [
                 ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723877597/IMG_1868_pz49ft.jpg', 'alt' => 'Front view'],
                 ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723876880/A08FAA78-332F-4BC8-B5B9-91C2AA28B634_pu9wfi.jpg', 'alt' => 'Back view'],
@@ -110,85 +124,14 @@ class ProductSeeder extends Seeder
             'slug' => 'african-sculpture',
             'description' => 'Unique Traditional Design, Made from High-Quality Materials',
             'image_url' => 'https://res.cloudinary.com/kwishi/image/upload/v1726661077/IMG_1900_ejhcbh.jpg',
-            'price' => 150.00,
-            'vendor' => 'Sculptors United',
-            'rating' => 4.0,
-            'reviews' => 3,
-            'stock' => 10,
-            'thumbnails' => [
-                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723877597/IMG_1868_pz49ft.jpg', 'alt' => 'Front view'],
-                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723876880/A08FAA78-332F-4BC8-B5B9-91C2AA28B634_pu9wfi.jpg', 'alt' => 'Back view'],
-                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723451902/62180B51-9E28-438B-9C93-5BD7227193CC_wnlwco.jpg', 'alt' => 'Left view'],
-                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723449027/IMG_1831_cdtsrb.png', 'alt' => 'Right view']
-            ]
-        ]);
-
-        // Product 7
-        Product::create([
-            'name' => 'Traditional Maasai Shuka',
-            'slug' => 'traditional-maasai-shuka',
-            'description' => 'Vibrant Red and Black Checked Pattern, Soft and Durable Fabric, Perfect for Everyday Wear',
-            'image_url' => 'https://res.cloudinary.com/kwishi/image/upload/v1726661254/IMG_1980_eyutwr.jpg',
-            'price' => 50.00,
-            'vendor' => 'Maasai Garments',
-            'rating' => 5.0,
-            'reviews' => 8,
-            'stock' => 10,
-            'thumbnails' => [
-                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723877597/IMG_1868_pz49ft.jpg', 'alt' => 'Front view'],
-                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723876880/A08FAA78-332F-4BC8-B5B9-91C2AA28B634_pu9wfi.jpg', 'alt' => 'Back view'],
-                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723451902/62180B51-9E28-438B-9C93-5BD7227193CC_wnlwco.jpg', 'alt' => 'Left view'],
-                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723449027/IMG_1831_cdtsrb.png', 'alt' => 'Right view']
-            ]
-        ]);
-
-        // Product 8
-        Product::create([
-            'name' => 'Beaded Maasai Bracelet',
-            'slug' => 'beaded-maasai-bracelet',
-            'description' => 'Intricately Handcrafted with Vibrant Beads, Traditional Maasai Patterns, Adjustable Fit',
-            'image_url' => 'https://res.cloudinary.com/kwishi/image/upload/v1726661345/IMG_1993_rnwytg.jpg',
-            'price' => 15.00,
-            'vendor' => 'Beads by Judy',
-            'rating' => 5.0,
-            'reviews' => 12,
-            'stock' => 10,
-            'thumbnails' => [
-                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723877597/IMG_1868_pz49ft.jpg', 'alt' => 'Front view'],
-                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723876880/A08FAA78-332F-4BC8-B5B9-91C2AA28B634_pu9wfi.jpg', 'alt' => 'Back view'],
-                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723451902/62180B51-9E28-438B-9C93-5BD7227193CC_wnlwco.jpg', 'alt' => 'Left view'],
-                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723449027/IMG_1831_cdtsrb.png', 'alt' => 'Right view']
-            ]
-        ]);
-
-        Product::create([
-            'name' => 'Carved Wooden Stool',
-            'slug' => 'carved-wooden-stool',
-            'description' => 'Handcrafted with Intricate Designs, Solid and Durable Construction, Unique Artistic Touch',
-            'image_url' => 'https://res.cloudinary.com/kwishi/image/upload/v1726661457/IMG_2092_fjtgsj.jpg',
-            'price' => 85.00,
-            'vendor' => 'Woodworkers Guild',
-            'rating' => 4.0,
-            'reviews' => 6,
-            'stock' => 10,
-            'thumbnails' => [
-                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723877597/IMG_1868_pz49ft.jpg', 'alt' => 'Front view'],
-                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723876880/A08FAA78-332F-4BC8-B5B9-91C2AA28B634_pu9wfi.jpg', 'alt' => 'Back view'],
-                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723451902/62180B51-9E28-438B-9C93-5BD7227193CC_wnlwco.jpg', 'alt' => 'Left view'],
-                ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723449027/IMG_1831_cdtsrb.png', 'alt' => 'Right view']
-            ]
-        ]);
-
-        Product::create([
-            'name' => 'Decorative African Mask',
-            'slug' => 'decorative-african-mask',
-            'description' => 'Exquisitely Handcrafted with Traditional Designs, Vibrant Colors and Detailed Carvings',
-            'image_url' => 'https://res.cloudinary.com/kwishi/image/upload/v1726661548/IMG_2098_yuipsj.jpg',
-            'price' => 75.00,
-            'vendor' => 'Mask Makers',
-            'rating' => 3,
-            'reviews' => 4.0,
-            'stock' => 10,
+            'price' => 80.00,
+            'vendor' => 'Zanzibar Artists',
+            'rating' => 0.0,
+            'reviews' => 0,
+            'stock' => 5,
+            'dimensions' => '45cm x 25cm',
+            'weight' => 2.0,
+            'material' => 'Wood',
             'thumbnails' => [
                 ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723877597/IMG_1868_pz49ft.jpg', 'alt' => 'Front view'],
                 ['src' => 'https://res.cloudinary.com/kwishi/image/upload/v1723876880/A08FAA78-332F-4BC8-B5B9-91C2AA28B634_pu9wfi.jpg', 'alt' => 'Back view'],
