@@ -2590,7 +2590,7 @@ input[type="email"] {
 
 /* modal */
 .modal-overlay {
-  margin: 20px auto;
+  margin: 0 auto;
   position: fixed;
   top: 0;
   left: 0;
@@ -2656,6 +2656,14 @@ textarea {
   border-radius: 5px;
   box-sizing: border-box;
   background: var(--modal-color);
+  transition: border-color 0.3s ease;
+}
+
+/* Highlight input fields with errors */
+input[type="text"].error,
+textarea.error {
+  border-color: var(--error-border); /* Error border color */
+  background-color: var(--error-background); /* Subtle error background */
 }
 
 .rating-stars {
@@ -2675,8 +2683,33 @@ textarea {
 }
 
 .error-msg {
-  color: red;
+  color: var(--error-message);
   font-size: 0.9em;
+  margin-top: 5px;
+  font-weight: bold;
+}
+
+/* Error message animations for better visibility */
+.error-msg {
+  animation: shake 0.2s ease-in-out;
+}
+
+@keyframes shake {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+  75% {
+    transform: translateX(-5px);
+  }
+  100% {
+    transform: translateX(0);
+  }
 }
 
 .form-buttons {
