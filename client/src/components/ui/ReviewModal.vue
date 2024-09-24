@@ -1,5 +1,5 @@
 <template>
-  <div class="modal-overlay" v-if="isOpen">
+  <div class="modal-overlay" v-if="isModalOpen">
     <div class="modal-container">
       <div class="modal-header">
         <h2>Add Review</h2>
@@ -24,7 +24,7 @@
               :key="star"
               class="fa fa-star"
               :class="{ filled: star <= review.rating }"
-              @click="review.rating = star"
+              @click="updateRating(star)"
             ></i>
           </div>
           <span v-if="errors.rating" class="error-msg">{{
@@ -69,20 +69,19 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
+import { useStore } from "vuex";
 
-const props = defineProps({
-  isOpen: Boolean,
-});
-const emit = defineEmits(["close"]);
+// Access Vuex store
+const store = useStore();
 
-const review = ref({
-  name: "",
-  rating: 0,
-  title: "",
-  content: "",
-});
+// Fetch modal open state from Vuex store
+const isModalOpen = computed(() => store.getters.isModalOpen);
 
+// Fetch review data from Vuex store
+const review = computed(() => store.state.review);
+
+// Local errors ref
 const errors = ref({
   name: null,
   rating: null,
@@ -90,46 +89,46 @@ const errors = ref({
   content: null,
 });
 
+// Dispatch action to close modal
 const closeModal = () => {
-  emit("close");
+  store.dispatch("closeModal");
 };
 
+// Submit the review form
 const submitReview = () => {
-  // Trigger validation when the user clicks "Add Review"
   if (validateForm()) {
     console.log("Review submitted:", review.value);
-    closeModal();
+    closeModal(); // Close modal after submitting
   }
 };
 
+// Validate the form
 const validateForm = () => {
   let isValid = true;
   errors.value = { name: null, rating: null, title: null, content: null };
 
-  // Name validation
   if (!review.value.name) {
     errors.value.name = "Name is required.";
     isValid = false;
   }
-
-  // Rating validation
   if (!review.value.rating) {
     errors.value.rating = "Please select a rating.";
     isValid = false;
   }
-
-  // Title validation
   if (!review.value.title) {
     errors.value.title = "Review title is required.";
     isValid = false;
   }
-
-  // Content validation
   if (!review.value.content) {
     errors.value.content = "Please write your review.";
     isValid = false;
   }
 
   return isValid;
+};
+
+// Dispatch an action to update the rating in the Vuex store
+const updateRating = (rating) => {
+  store.dispatch("updateReviewRating", rating);
 };
 </script>

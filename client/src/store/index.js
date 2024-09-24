@@ -6,6 +6,13 @@ export default createStore({
     cart: [],
     currentPage: 1,
     totalPages: 0,
+    isModalOpen: false, // To manage the modal state
+    review: {
+      name: "",
+      rating: 0,
+      title: "",
+      content: "",
+    },
   },
   getters: {
     cartItems: (state) => state.cart,
@@ -25,6 +32,10 @@ export default createStore({
     },
     currentPage: (state) => state.currentPage,
     totalPages: (state) => state.totalPages,
+
+    // New getters for modal and review state
+    isModalOpen: (state) => state.isModalOpen,
+    reviewData: (state) => state.review,
   },
   mutations: {
     ADD_TO_CART(state, product) {
@@ -56,6 +67,28 @@ export default createStore({
     SET_TOTAL_PAGES(state, pages) {
       state.totalPages = pages;
     },
+
+    // Mutations for handling modal and review state
+    OPEN_MODAL(state) {
+      state.isModalOpen = true;
+    },
+    CLOSE_MODAL(state) {
+      state.isModalOpen = false;
+    },
+    UPDATE_REVIEW(state, reviewData) {
+      state.review = { ...state.review, ...reviewData };
+    },
+    UPDATE_REVIEW_RATING(state, rating) {
+      state.review.rating = rating;
+    },
+    RESET_REVIEW(state) {
+      state.review = {
+        name: "",
+        rating: 0,
+        title: "",
+        content: "",
+      };
+    },
   },
   actions: {
     addToCart({ commit }, product) {
@@ -76,10 +109,27 @@ export default createStore({
     setTotalPages({ commit }, pages) {
       commit("SET_TOTAL_PAGES", pages);
     },
+
+    // Actions for handling modal and review state
+    openModal({ commit }) {
+      commit("OPEN_MODAL");
+    },
+    closeModal({ commit }) {
+      commit("CLOSE_MODAL");
+    },
+    updateReview({ commit }, reviewData) {
+      commit("UPDATE_REVIEW", reviewData);
+    },
+    updateReviewRating({ commit }, rating) {
+      commit("UPDATE_REVIEW_RATING", rating);
+    },
+    resetReview({ commit }) {
+      commit("RESET_REVIEW");
+    },
   },
   plugins: [
     createPersistedState({
-      storage: window.localStorage, // Or sessionStorage
+      storage: window.localStorage, // Persist state using localStorage
     }),
   ],
 });
