@@ -5,16 +5,22 @@ use App\Http\Controllers\ReviewController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-// product Routes
-Route::get('/products', [ProductController::class, 'index']); // all products
-Route::get('products/{id}', [ProductController::class, 'show']); // route individual product by ID
-Route::get('products/slug/{slug}', [ProductController::class, 'showBySlug']); // route individual product by slug for product overview
-Route::post('products', [ProductController::class, 'store']);
+// Product Routes
+Route::prefix('products')->group(function () {
+    Route::get('/', [ProductController::class, 'index']); // All products
+    Route::get('{id}', [ProductController::class, 'show']); // Individual product by ID
+    Route::get('slug/{slug}', [ProductController::class, 'showBySlug']); // Individual product by slug
+    Route::get('{id}/with-reviews', [ProductController::class, 'showWithReviews']); // Product with reviews
+    Route::post('/', [ProductController::class, 'store']); // Store a new product
+});
 
-// review Routes
-Route::get('products/{productId}/reviews', [ReviewController::class, 'index']);
-Route::post('reviews', [ReviewController::class, 'store']); // Make sure this is defined
+// Review Routes
+Route::prefix('products/{productId}')->group(function () {
+    Route::get('/reviews', [ReviewController::class, 'index']); // Get reviews for a product
+    Route::post('/reviews', [ReviewController::class, 'store']); // Store a new review
+});
 
+// User Route
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
