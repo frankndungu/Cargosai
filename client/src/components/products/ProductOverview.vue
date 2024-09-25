@@ -59,7 +59,7 @@
   <div class="product-info-container">
     <ProductInformation />
     <Vendor />
-    <ProductReviews ref="productReviews" />
+    <ProductReviews :reviews="reviews" :product="product" />
   </div>
 </template>
 
@@ -77,6 +77,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 const route = useRoute();
 const store = useStore();
 const product = ref(null);
+const reviews = ref([]); // Create a ref for reviews
 
 // Fetch product data based on the slug
 const fetchProduct = async () => {
@@ -86,8 +87,22 @@ const fetchProduct = async () => {
     );
     console.log("Fetched Product Data:", response.data); // Log the fetched product data
     product.value = response.data;
+    fetchReviews(product.value.id); // Fetch reviews after getting the product
   } catch (error) {
     console.error("Failed to fetch product:", error);
+  }
+};
+
+// Fetch reviews based on product ID
+const fetchReviews = async (productId) => {
+  try {
+    const response = await axios.get(
+      `${API_URL}/products/${productId}/reviews`
+    );
+    reviews.value = response.data; // Assign fetched reviews to the reviews ref
+    console.log("Fetched Reviews:", reviews.value); // Log the fetched reviews
+  } catch (error) {
+    console.error("Failed to fetch reviews:", error);
   }
 };
 

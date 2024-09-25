@@ -2439,9 +2439,10 @@ input[type="email"] {
 .reviews-header-title {
   display: flex;
   align-items: center;
+  gap: 20px;
 }
 
-.product-reviews-header h3 {
+.product-reviews-header h1 {
   font-size: 22px;
   font-weight: bold;
   margin-right: 10px; /* Small space between title and count */
@@ -2450,6 +2451,13 @@ input[type="email"] {
 .reviews-count {
   font-size: 14px;
   color: var(--reviews-count);
+}
+
+.product-name-title h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-right: 10px; /* Small space between title and count */
+  margin-bottom: 20px;
 }
 
 .write-review-btn {
@@ -2531,7 +2539,8 @@ input[type="email"] {
 @media (max-width: 768px) {
   /* Stack header and button vertically */
 
-  .product-reviews-header {
+  .product-reviews-header,
+  .product-name-title {
     flex-direction: column;
     align-items: flex-start;
     padding: 0 15px;
@@ -2588,7 +2597,7 @@ input[type="email"] {
   }
 }
 
-/* modal */
+/* Review Modal */
 .modal-overlay {
   margin: 0 auto;
   position: fixed;

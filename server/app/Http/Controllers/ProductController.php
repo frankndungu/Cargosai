@@ -48,6 +48,13 @@ class ProductController extends Controller
         return response()->json($product);
     }
 
+    public function showWithReviews($id)
+    {
+        // Fetch a single product by ID, including its reviews
+        $product = Product::with('reviews')->findOrFail($id); // Assuming you have set up the relationship in Product model
+        return response()->json($product);
+    }
+
     public function store(Request $request)
     {
         // Validate the incoming request data
