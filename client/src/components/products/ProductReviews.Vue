@@ -10,7 +10,9 @@
       </button>
     </div>
 
-    <div v-if="reviews.length === 0 && product">No reviews available.</div>
+    <div v-if="reviews.length === 0 && product">
+      Be the first one to review this product.
+    </div>
     <div v-else>
       <div class="review-card" v-for="review in reviews" :key="review.id">
         <div class="review-header">
