@@ -20,7 +20,7 @@
           <span class="product-price-overview">${{ product.price }}</span>
           <div class="product-rating">
             <span class="product-stars">⭐⭐⭐</span>
-            <span class="product-reviews">({{ product.rating }})</span>
+            <span class="product-reviews">({{ reviews.length }})</span>
             <a
               href="#"
               @click.prevent="scrollToReviews"
