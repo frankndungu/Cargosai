@@ -15,9 +15,12 @@ Route::prefix('products')->group(function () {
 });
 
 // Review Routes
-Route::prefix('products/{productId}')->group(function () {
-    Route::get('/reviews', [ReviewController::class, 'index']); // Get reviews for a product
-    Route::post('/reviews', [ReviewController::class, 'store']); // Store a new review
+Route::prefix('reviews')->group(function () {
+    Route::get('/', [ReviewController::class, 'indexAll']); // Get all reviews
+    Route::get('/products/{productId}', [ReviewController::class, 'index']); // Get reviews for a specific product
+    Route::post('/products/{productId}', [ReviewController::class, 'store']); // Store a new review for a specific product
+    Route::put('/{reviewId}', [ReviewController::class, 'update']); // Update an existing review
+    Route::delete('/{reviewId}', [ReviewController::class, 'destroy']); // Delete a review
 });
 
 // User Route

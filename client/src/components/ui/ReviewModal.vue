@@ -69,8 +69,17 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, defineProps } from "vue";
 import { useStore } from "vuex";
+import axios from "axios"; // Import axios
+
+// Define props
+const props = defineProps({
+  productId: {
+    type: Number,
+    required: true,
+  },
+});
 
 // Access Vuex store
 const store = useStore();
@@ -97,7 +106,8 @@ const closeModal = () => {
 // Submit the review form
 const submitReview = () => {
   if (validateForm()) {
-    console.log("Review submitted:", review.value);
+    // Submit review to API
+    submitReviewToAPI();
     closeModal(); // Close modal after submitting
   }
 };
@@ -130,5 +140,24 @@ const validateForm = () => {
 // Dispatch an action to update the rating in the Vuex store
 const updateRating = (rating) => {
   store.dispatch("updateReviewRating", rating);
+};
+
+// Function to submit the review to the API
+const submitReviewToAPI = async () => {
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_URL}/reviews/products/${props.productId}`,
+      {
+        product_id: props.productId,
+        reviewer_name: review.value.name,
+        rating: review.value.rating,
+        title: review.value.title,
+        content: review.value.content,
+      }
+    );
+    // console.log("Review submitted successfully:", response.data);
+  } catch (error) {
+    console.error("Failed to submit review:", error);
+  }
 };
 </script>
