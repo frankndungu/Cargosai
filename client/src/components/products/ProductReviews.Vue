@@ -10,7 +10,9 @@
       </button>
     </div>
 
-    <div v-if="reviews.length === 0 && product">No reviews available.</div>
+    <div v-if="reviews.length === 0 && product">
+      Be the first one to review this product.
+    </div>
     <div v-else>
       <div class="review-card" v-for="review in reviews" :key="review.id">
         <div class="review-header">
@@ -31,7 +33,13 @@
       </div>
     </div>
 
-    <ReviewModal :isOpen="isModalOpen" @close="closeReviewModal" />
+    <!-- Only render the ReviewModal if product is defined -->
+    <ReviewModal
+      v-if="product"
+      :productId="product.id"
+      :isOpen="isModalOpen"
+      @close="closeReviewModal"
+    />
   </div>
 </template>
 
@@ -52,13 +60,18 @@ const props = defineProps({
   },
 });
 
+// Access Vuex store
 const store = useStore();
+
+// Modal state
 const isModalOpen = computed(() => store.getters.isModalOpen);
 
+// Open the review modal
 const openReviewModal = () => {
   store.dispatch("openModal");
 };
 
+// Close the review modal
 const closeReviewModal = () => {
   store.dispatch("closeModal");
 };

@@ -28,14 +28,10 @@ const product = ref({}); // Initialize product data
 const API_URL = import.meta.env.VITE_API_URL;
 
 const fetchProductInfo = async () => {
-  try {
-    const response = await axios.get(
-      `${API_URL}/products/slug/${route.params.slug}`
-    );
-    product.value = response.data; // Assign the fetched product data
-  } catch (error) {
-    console.error("Error fetching product information:", error);
-  }
+  const response = await axios.get(
+    `${API_URL}/products/slug/${route.params.slug}`
+  );
+  product.value = response.data; // Assign the fetched product data
 };
 
 // Fetch product info when the component mounts
