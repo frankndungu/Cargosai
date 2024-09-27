@@ -129,7 +129,14 @@ export default createStore({
   },
   plugins: [
     createPersistedState({
-      storage: window.localStorage, // Persist state using localStorage
+      storage: window.localStorage,
+      reducer: (state) => ({
+        cart: state.cart, // Only persist cart
+        currentPage: state.currentPage,
+        totalPages: state.totalPages,
+        isModalOpen: state.isModalOpen,
+        // Exclude the review state from being persisted
+      }),
     }),
   ],
 });

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Review;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class ReviewController extends Controller
 {
@@ -32,8 +34,13 @@ class ReviewController extends Controller
             'content' => 'required|string',
         ]);
 
+        // Create a new review
         $review = Review::create($validated);
-        return response()->json($review, 201);
+        return response()->json([
+            'success' => true,
+            'message' => 'Review submitted successfully.',
+            'review' => $review,
+        ], 201);
     }
 
     // Update an existing review
@@ -49,7 +56,11 @@ class ReviewController extends Controller
         $review = Review::findOrFail($reviewId);
         $review->update($validated);
 
-        return response()->json($review);
+        return response()->json([
+            'success' => true,
+            'message' => 'Review updated successfully.',
+            'review' => $review,
+        ]);
     }
 
     // Delete a review
@@ -58,6 +69,9 @@ class ReviewController extends Controller
         $review = Review::findOrFail($reviewId);
         $review->delete();
 
-        return response()->json(null, 204);
+        return response()->json([
+            'success' => true,
+            'message' => 'Review deleted successfully.',
+        ], 204);
     }
 }

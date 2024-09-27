@@ -73,6 +73,12 @@ import { ref, computed, defineProps } from "vue";
 import { useStore } from "vuex";
 import axios from "axios"; // Import axios
 
+// Retrieve CSRF token from the meta tag
+const csrfToken = document
+  .querySelector('meta[name="csrf-token"]')
+  .getAttribute("content");
+axios.defaults.headers.common["X-CSRF-TOKEN"] = csrfToken;
+
 // Define props
 const props = defineProps({
   productId: {
@@ -155,7 +161,12 @@ const submitReviewToAPI = async () => {
         content: review.value.content,
       }
     );
-    // console.log("Review submitted successfully:", response.data);
+
+    // Dispatch action to reset review data in Vuex
+    store.dispatch("resetReview");
+
+    // Optional: You can log or handle the response if needed
+    console.log("Review submitted successfully:", response.data);
   } catch (error) {
     console.error("Failed to submit review:", error);
   }
