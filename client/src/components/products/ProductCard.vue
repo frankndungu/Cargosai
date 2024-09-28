@@ -11,8 +11,8 @@
         <h3 class="product-name">{{ product.name }}</h3>
       </router-link>
       <div class="rating">
-        <span class="stars">⭐ {{ product.rating }}</span>
-        <span class="reviews">({{ product.reviews }})</span>
+        <span class="stars">⭐ {{ product.reviews_avg_rating }}</span>
+        <span class="reviews">({{ product.reviews_count }})</span>
       </div>
       <div class="price-section">
         <span class="price">${{ product.price }}</span>

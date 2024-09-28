@@ -11,19 +11,34 @@ class Product extends Model
     use HasFactory, Sluggable;
 
     protected $table = 'products';
-    protected $fillable = ['name', 'slug', 'price', 'image_url',  'stock', 'thumbnails', 'rating', 'reviews', 'description', 'dimensions', 'weight', 'material', 'vendor_name', 'vendor_email', 'vendor_location'];
+    protected $fillable = [
+        'name',
+        'slug',
+        'price',
+        'image_url',
+        'stock',
+        'thumbnails',
+        'rating',
+        'description',
+        'dimensions',
+        'weight',
+        'material',
+        'vendor_name',
+        'vendor_email',
+        'vendor_location',
+    ];
 
     public function reviews()
     {
-        return $this->hasMany(Review::class); // Define the relationship
+        return $this->hasMany(Review::class);
     }
 
     public function sluggable(): array
     {
         return [
             'slug' => [
-                'source' => 'name'
-            ]
+                'source' => 'name',
+            ],
         ];
     }
 

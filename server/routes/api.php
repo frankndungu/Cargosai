@@ -21,6 +21,7 @@ Route::middleware([RateLimitMiddleware::class])->group(function () {
     Route::prefix('reviews')->group(function () {
         Route::get('/', [ReviewController::class, 'indexAll']); // Get all reviews
         Route::get('/products/{productId}', [ReviewController::class, 'index']); // Get reviews for a specific product
+        Route::get('/products/{productId}/average', [ReviewController::class, 'averageRating']); // Get average rating for a specific product
         Route::post('/products/{productId}', [ReviewController::class, 'store']); // Store a new review for a specific product
         Route::put('/{reviewId}', [ReviewController::class, 'update']); // Update an existing review
         Route::delete('/{reviewId}', [ReviewController::class, 'destroy']); // Delete a review
