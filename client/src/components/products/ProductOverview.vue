@@ -19,14 +19,17 @@
         <div class="product-price-rating">
           <span class="product-price-overview">${{ product.price }}</span>
           <div class="product-rating">
-            <span class="product-stars">⭐⭐⭐</span>
-            <span class="product-reviews">({{ reviews.length }})</span>
-            <a
-              href="#"
-              @click.prevent="scrollToReviews"
-              class="product-review-link"
-              >Add a review</a
-            >
+            <span class="product-average-rating"
+              >⭐ ({{ averageRating }})
+            </span>
+            <span class="product-reviews">
+              <a
+                href="#"
+                @click.prevent="scrollToReviews"
+                class="product-review-link"
+                >{{ reviews.length }} Reviews</a
+              >
+            </span>
           </div>
         </div>
         <button @click="addToCart" class="product-add-to-cart">
@@ -78,6 +81,7 @@ const route = useRoute();
 const store = useStore();
 const product = ref(null);
 const reviews = ref([]); // Create a ref for reviews
+const averageRating = ref(null); // New ref for average rating
 
 // Fetch product data based on the slug
 const fetchProduct = async () => {
@@ -85,9 +89,9 @@ const fetchProduct = async () => {
     const response = await axios.get(
       `${API_URL}/products/slug/${route.params.slug}`
     );
-    // console.log("Fetched Product Data:", response.data); // Log the fetched product data
     product.value = response.data;
     fetchReviews(product.value.id); // Fetch reviews after getting the product
+    fetchAverageRating(product.value.id); // Fetch average rating
   } catch (error) {
     console.error("Failed to fetch product:", error);
   }
@@ -100,9 +104,20 @@ const fetchReviews = async (productId) => {
       `${API_URL}/reviews/products/${productId}`
     );
     reviews.value = response.data; // Assign fetched reviews to the reviews ref
-    // console.log("Fetched Reviews:", reviews.value); // Log the fetched reviews
   } catch (error) {
     console.error("Failed to fetch reviews:", error);
+  }
+};
+
+// Fetch average rating based on product ID
+const fetchAverageRating = async (productId) => {
+  try {
+    const response = await axios.get(
+      `${API_URL}/reviews/products/${productId}/average`
+    );
+    averageRating.value = response.data.average_rating; // Set average rating
+  } catch (error) {
+    console.error("Failed to fetch average rating:", error);
   }
 };
 

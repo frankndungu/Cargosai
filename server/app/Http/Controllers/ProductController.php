@@ -9,50 +9,81 @@ class ProductController extends Controller
 {
     public function index()
     {
-        // Fetch 16 products per page from the database
-        $products = Product::paginate(16);
+        // Fetch 16 products per page with their average rating and review count from reviews
+        $products = Product::withCount('reviews')
+            ->withAvg('reviews', 'rating')
+            ->paginate(16);
+
         $totalProducts = Product::count();
 
-        // Return products as JSON
+        // Format the average rating to 2 decimal points
+        $products->getCollection()->transform(function ($product) {
+            $product->reviews_avg_rating = number_format($product->reviews_avg_rating, 1);
+            return $product;
+        });
+
+        // Return products as JSON, including the calculated average rating and reviews count
         return response()->json([
             'products' => $products,
-            'total' => $totalProducts
+            'total' => $totalProducts,
         ]);
     }
 
-    public function show($id) // Changed from $slug to $id
+    public function show($id)
     {
-        // Fetch a single product by ID
-        $product = Product::find($id);
+        // Fetch a single product by ID including average review rating and total reviews
+        $product = Product::withCount('reviews')
+            ->withAvg('reviews', 'rating')
+            ->find($id);
 
         if (!$product) {
             // Return a 404 response if the product is not found
             return response()->json(['error' => 'Product not found'], 404);
         }
 
-        // Return the product as JSON, including the slug
-        return response()->json($product);
+        // Convert to array to add calculated fields
+        $productData = $product->toArray();
+        $productData['average_rating'] = round($product->reviews_avg_rating, 2); // Adjust precision as needed
+        $productData['total_reviews'] = $product->reviews_count;
+
+        return response()->json($productData);
     }
 
     public function showBySlug($slug)
     {
-        // Fetch a single product by slug
-        $product = Product::where('slug', $slug)->first();
+        // Fetch a single product by slug including average review rating and total reviews
+        $product = Product::withCount('reviews')
+            ->withAvg('reviews', 'rating')
+            ->where('slug', $slug)
+            ->first();
 
         if (!$product) {
             // Return a 404 response if the product is not found
             return response()->json(['error' => 'Product not found'], 404);
         }
 
-        // Return the product as JSON
-        return response()->json($product);
+        // Convert to array to add calculated fields
+        $productData = $product->toArray();
+        $productData['average_rating'] = round($product->reviews_avg_rating, 2); // Adjust precision as needed
+        $productData['total_reviews'] = $product->reviews_count;
+
+        return response()->json($productData);
     }
 
     public function showWithReviews($id)
     {
-        // Fetch a single product by ID, including its reviews
-        $product = Product::with('reviews')->findOrFail($id); // Assuming you have set up the relationship in Product model
-        return response()->json($product);
+        // Fetch a single product by ID, including its reviews and average review rating
+        $product = Product::with('reviews')
+            ->withCount('reviews')
+            ->withAvg('reviews', 'rating')
+            ->findOrFail($id);
+
+        // Convert to array to add calculated fields
+        $productData = $product->toArray();
+        $productData['average_rating'] = round($product->reviews_avg_rating, 2); // Adjust precision as needed
+        $productData['total_reviews'] = $product->reviews_count;
+
+        return response()->json($productData);
     }
 
     public function store(Request $request)
@@ -62,13 +93,11 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'price' => 'required|numeric',
             'image_url' => 'required|string',
-            'rating' => 'nullable|integer',
-            'reviews' => 'nullable|integer',
             'description' => 'nullable|string',
-            'stock' => 'required|integer|min:0', // Validate stock
-            'thumbnails' => 'nullable|array', // Expect an array for thumbnails
-            'thumbnails.*.src' => 'required_with:thumbnails|string', // Each thumbnail must have a 'src'
-            'thumbnails.*.alt' => 'nullable|string', // Each thumbnail can have an 'alt' tag
+            'stock' => 'required|integer|min:0',
+            'thumbnails' => 'nullable|array',
+            'thumbnails.*.src' => 'required_with:thumbnails|string',
+            'thumbnails.*.alt' => 'nullable|string',
             'dimensions' => 'nullable|string',
             'weight' => 'nullable|numeric',
             'material' => 'nullable|string',
@@ -77,26 +106,24 @@ class ProductController extends Controller
             'vendor_location' => 'required|string|max:255',
         ]);
 
-        // Create a new product using the validated data, including thumbnails
+        // Create a new product using the validated data
         $product = Product::create([
             'name' => $validatedData['name'],
             'slug' => $validatedData['name'], // Sluggable trait will generate this automatically
             'price' => $validatedData['price'],
             'image_url' => $validatedData['image_url'],
-            'rating' => $validatedData['rating'] ?? 0, // Default rating to 0 if not provided
-            'reviews' => $validatedData['reviews'] ?? 0, // Default reviews to 0 if not provided
-            'description' => $validatedData['description'] ?? '', // Default description to empty string
-            'stock' => $validatedData['stock'], // Store stock
-            'thumbnails' => $validatedData['thumbnails'] ?? [], // Store the thumbnails as JSON, empty array if not provided
+            'description' => $validatedData['description'] ?? '',
+            'stock' => $validatedData['stock'],
+            'thumbnails' => $validatedData['thumbnails'] ?? [],
             'dimensions' => $validatedData['dimensions'] ?? '',
             'weight' => $validatedData['weight'] ?? null,
             'material' => $validatedData['material'] ?? '',
-            'vendor_name' => $validatedData['vendor_name'], // Save vendor name
-            'vendor_email' => $validatedData['vendor_email'], // Save vendor email
-            'vendor_location' => $validatedData['vendor_location'], // Save vendor location
+            'vendor_name' => $validatedData['vendor_name'],
+            'vendor_email' => $validatedData['vendor_email'],
+            'vendor_location' => $validatedData['vendor_location'],
         ]);
 
         // Return the created product as JSON
-        return response()->json($product, 201); // 201 status code means 'Created'
+        return response()->json($product, 201);
     }
 }

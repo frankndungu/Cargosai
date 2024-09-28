@@ -19,8 +19,33 @@ class ReviewController extends Controller
     // Get reviews for a specific product
     public function index($productId)
     {
-        $reviews = Review::where('product_id', $productId)->get();
+        // Fetch reviews for a specific product and sort them by latest
+        $reviews = Review::where('product_id', $productId)
+            ->orderBy('created_at', 'desc') // Sort by the latest review
+            ->get();
         return response()->json($reviews);
+    }
+
+    // Get average rating for a specific product
+    public function averageRating($productId)
+    {
+        // Fetch reviews for the given product ID
+        $reviews = Review::where('product_id', $productId)->get();
+
+        // Check if there are any reviews
+        if ($reviews->isEmpty()) {
+            return response()->json(['average_rating' => null, 'total_reviews' => 0]);
+        }
+
+        // Calculate the average rating
+        $totalReviews = $reviews->count();
+        $totalRating = $reviews->sum('rating');
+        $averageRating = $totalRating / $totalReviews;
+
+        return response()->json([
+            'average_rating' => round($averageRating, 2), // Round to 2 decimal places
+            'total_reviews' => $totalReviews,
+        ]);
     }
 
     // Store a new review
