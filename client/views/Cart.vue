@@ -31,7 +31,12 @@
                   alt="Product image"
                   class="product-image-cart"
                 />
-                <span>{{ item.name }}</span>
+                <router-link
+                  :to="{ name: 'ProductPage', params: { slug: item.slug } }"
+                  class="item-link"
+                >
+                  {{ item.name }}
+                </router-link>
               </td>
               <td class="cart-price">
                 ${{ (parseFloat(item.price) || 0).toFixed(2) }}
