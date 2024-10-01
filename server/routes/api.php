@@ -2,12 +2,14 @@
 
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\CartController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\RateLimitMiddleware;
+use Illuminate\Session\Middleware\StartSession; // Import the StartSession middleware
 
-// Apply the rate limiting middleware to all routes in this file
-Route::middleware([RateLimitMiddleware::class])->group(function () {
+// Apply the rate limiting and session middleware to all routes in this file
+Route::middleware([RateLimitMiddleware::class, StartSession::class])->group(function () {
     // Product Routes
     Route::prefix('products')->group(function () {
         Route::get('/', [ProductController::class, 'index']); // All products
@@ -26,6 +28,12 @@ Route::middleware([RateLimitMiddleware::class])->group(function () {
         Route::put('/{reviewId}', [ReviewController::class, 'update']); // Update an existing review
         Route::delete('/{reviewId}', [ReviewController::class, 'destroy']); // Delete a review
     });
+
+    // Cart Routes
+    Route::get('/cart', [CartController::class, 'getCart']);
+    Route::post('/cart/add', [CartController::class, 'addItem']);
+    Route::put('/cart/update/{itemId}', [CartController::class, 'updateItem']);
+    Route::delete('/cart/remove/{itemId}', [CartController::class, 'removeItem']);
 
     // User Route
     Route::get('/user', function (Request $request) {

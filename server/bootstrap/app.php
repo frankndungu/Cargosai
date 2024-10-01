@@ -4,6 +4,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use App\Http\Middleware\RateLimitMiddleware;
+use Illuminate\Session\Middleware\StartSession; // Import the session middleware
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -13,7 +14,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->append(RateLimitMiddleware::class); // Register the middleware
+        $middleware->append(RateLimitMiddleware::class); // Register your custom rate limiting middleware
+        $middleware->append(StartSession::class); // Register the session middleware
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

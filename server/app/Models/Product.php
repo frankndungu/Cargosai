@@ -11,6 +11,7 @@ class Product extends Model
     use HasFactory, Sluggable;
 
     protected $table = 'products';
+
     protected $fillable = [
         'name',
         'slug',
@@ -28,6 +29,9 @@ class Product extends Model
         'vendor_location',
     ];
 
+    /**
+     * Relationship: A product can have many reviews.
+     */
     public function reviews()
     {
         return $this->hasMany(Review::class);
