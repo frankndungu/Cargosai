@@ -2009,9 +2009,11 @@ input[type="email"] {
 .cart-table th {
   color: var(--dark-color);
 }
+
 .cart-price {
   font-weight: var(--font-medium);
 }
+
 .product-details {
   display: flex;
   align-items: center;
@@ -2019,6 +2021,9 @@ input[type="email"] {
   cursor: pointer;
 }
 
+.item-link {
+  color: var(--dark-color);
+}
 .product-details:hover {
   text-decoration: underline;
 }

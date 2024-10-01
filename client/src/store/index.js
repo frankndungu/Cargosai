@@ -39,24 +39,26 @@ export default createStore({
   },
   mutations: {
     ADD_TO_CART(state, product) {
-      const item = state.cart.find((cartItem) => cartItem._id === product._id);
+      const item = state.cart.find((cartItem) => cartItem.id === product.id);
       if (item) {
+        // If the product already exists in the cart, update its quantity
         item.quantity += 1;
       } else {
+        // If it's a new product, add it to the cart with an initial quantity
         state.cart.push({ ...product, quantity: 1 });
       }
     },
     REMOVE_FROM_CART(state, id) {
-      state.cart = state.cart.filter((item) => item._id !== id);
+      state.cart = state.cart.filter((item) => item.id !== id);
     },
     INCREASE_ITEM_QUANTITY(state, id) {
-      const item = state.cart.find((cartItem) => cartItem._id === id);
+      const item = state.cart.find((cartItem) => cartItem.id === id);
       if (item) {
         item.quantity += 1;
       }
     },
     DECREASE_ITEM_QUANTITY(state, id) {
-      const item = state.cart.find((cartItem) => cartItem._id === id);
+      const item = state.cart.find((cartItem) => cartItem.id === id);
       if (item && item.quantity > 1) {
         item.quantity -= 1;
       }

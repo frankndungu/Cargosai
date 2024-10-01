@@ -24,37 +24,39 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in cartItems" :key="item._id">
+            <tr v-for="item in cartItems" :key="item.id">
               <td class="product-details">
                 <img
                   :src="item.image_url"
                   alt="Product image"
                   class="product-image-cart"
                 />
-                <span>{{ item.name }}</span>
+                <router-link
+                  :to="{ name: 'ProductPage', params: { slug: item.slug } }"
+                  class="item-link"
+                >
+                  {{ item.name }}
+                </router-link>
               </td>
               <td class="cart-price">
                 ${{ (parseFloat(item.price) || 0).toFixed(2) }}
               </td>
               <td>
                 <div class="quantity-controls">
-                  <button @click="decreaseQuantity(item._id)">-</button>
+                  <button @click="decreaseQuantity(item.id)">-</button>
                   <span>{{ item.quantity }}</span>
-                  <button @click="increaseQuantity(item._id)">+</button>
+                  <button @click="increaseQuantity(item.id)">+</button>
                 </div>
               </td>
               <td class="cart-price">
                 ${{
                   (
-                    parseFloat(item.price) || 0 * (parseInt(item.quantity) || 0)
+                    parseFloat(item.price) * (parseInt(item.quantity) || 0)
                   ).toFixed(2)
                 }}
               </td>
               <td>
-                <button
-                  @click="removeItem(item._id)"
-                  class="transparent-button"
-                >
+                <button @click="removeItem(item.id)" class="transparent-button">
                   Remove
                 </button>
               </td>

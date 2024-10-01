@@ -45,19 +45,17 @@ import PreorderBanner from "../ui/PreorderBanner.vue";
 
 const store = useStore();
 
-// State variables
-const products = ref([]);
-const totalProducts = ref(0);
-const loading = ref(true);
-
 // Computed properties from Vuex store
 const currentPage = computed(() => store.getters.currentPage);
 const totalPages = computed(() => store.getters.totalPages);
+const totalProducts = computed(() => store.getters.totalProducts); // New getter for total products
 
+// State variable for products
+const products = ref([]);
+
+// Fetch products based on the current page
 const fetchProducts = async () => {
-  loading.value = true;
   try {
-    // Fetch products with pagination
     const response = await axios.get(
       `${import.meta.env.VITE_API_URL}/products`,
       {
@@ -65,14 +63,14 @@ const fetchProducts = async () => {
       }
     );
 
-    // Set products and pagination info
+    // Set products in local state
     products.value = response.data.products.data;
-    totalProducts.value = response.data.total;
+
+    // Set total products and total pages in Vuex store
     store.dispatch("setTotalPages", response.data.products.last_page);
+    store.dispatch("setTotalProducts", response.data.total); // Dispatch total products
   } catch (error) {
     console.error("Error fetching products:", error);
-  } finally {
-    loading.value = false;
   }
 };
 
@@ -91,7 +89,7 @@ const previousPage = () => {
   }
 };
 
-// Fetch products when component mounts
+// Fetch products when the component mounts
 onMounted(() => {
   fetchProducts();
 });
