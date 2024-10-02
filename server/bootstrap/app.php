@@ -5,6 +5,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use App\Http\Middleware\RateLimitMiddleware;
 use Illuminate\Session\Middleware\StartSession; // Import the session middleware
+use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful; // Sanctum middleware
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -16,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->append(RateLimitMiddleware::class); // Register your custom rate limiting middleware
         $middleware->append(StartSession::class); // Register the session middleware
+        $middleware->append(EnsureFrontendRequestsAreStateful::class); // Add Sanctum middleware for stateful requests
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
