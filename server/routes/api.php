@@ -7,50 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\RateLimitMiddleware;
 use Illuminate\Session\Middleware\StartSession; // Import the StartSession middleware
-use Illuminate\Support\Facades\Hash;
-use App\Models\User;
-use Illuminate\Support\Facades\Log; // Import the Log facade
 
 // Apply the rate limiting and session middleware to all routes in this file
 Route::middleware([RateLimitMiddleware::class, StartSession::class])->group(function () {
-
-    // Authentication Routes
-    Route::post('/register', function (Request $request) {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
-        ]);
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        return response()->json(['token' => $user->createToken('API Token')->plainTextToken]);
-    });
-
-    Route::post('/login', function (Request $request) {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-
-        $user = User::where('email', $request->email)->first();
-
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json(['message' => 'Invalid credentials'], 401);
-        }
-
-        return response()->json(['token' => $user->createToken('API Token')->plainTextToken]);
-    });
-
-    Route::post('/logout', function (Request $request) {
-        $request->user()->tokens()->delete();
-        return response()->json(['message' => 'Logged out']);
-    })->middleware('auth:sanctum');
-
     // Product Routes
     Route::prefix('products')->group(function () {
         Route::get('/', [ProductController::class, 'index']); // All products
@@ -76,25 +35,8 @@ Route::middleware([RateLimitMiddleware::class, StartSession::class])->group(func
     Route::put('/cart/update/{itemId}', [CartController::class, 'updateItem']);
     Route::delete('/cart/remove/{itemId}', [CartController::class, 'removeItem']);
 
-    // User Route (requires authentication)
+    // User Route
     Route::get('/user', function (Request $request) {
-        try {
-            // Check if the user is authenticated
-            if (!$request->user()) {
-                return response()->json([
-                    'error' => 'Unauthenticated.',
-                    'message' => 'Please log in to access user information.'
-                ], 401); // 401 Unauthorized
-            }
-
-            return response()->json($request->user(), 200);
-        } catch (\Exception $e) {
-            Log::error('Error retrieving user info: ' . $e->getMessage());
-
-            return response()->json([
-                'error' => 'Unable to retrieve user information.',
-                'message' => 'An unexpected error occurred.'
-            ], 500);
-        }
+        return $request->user();
     })->middleware('auth:sanctum');
 });

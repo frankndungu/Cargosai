@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log; // Import the Log facade
 
 class RateLimitMiddleware
 {
@@ -12,12 +13,15 @@ class RateLimitMiddleware
 
     public function handle(Request $request, Closure $next)
     {
-        // Logic to handle rate limiting
+        // Get the client's IP address
         $ip = $request->ip();
         $key = "rate_limit:{$ip}";
 
         // Get the current request count from the cache
         $requests = cache()->get($key, 0);
+
+        // Log the current request count for debugging
+        Log::info("Request count for IP {$ip}: {$requests}");
 
         // Check if the limit has been reached
         if ($requests >= $this->maxRequests) {
