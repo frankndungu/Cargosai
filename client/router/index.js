@@ -6,6 +6,9 @@ import Blog from "../views/Blog.vue";
 import BlogPost from "../views/BlogPost.vue";
 import Contact from "../views/Contact.vue";
 import Shop from "../views/Shop.vue";
+import Login from "../views/Login.vue";
+import Register from "../views/Register.vue";
+import AdminLogin from "../views/AdminLogin.vue";
 import ProductPage from "../views/ProductPage.vue";
 import NotFound from "../views/NotFound.vue";
 import Cart from "../views/Cart.vue";
@@ -18,6 +21,9 @@ const routes = [
   { path: "/blog", component: Blog },
   { path: "/blog/:slug", component: BlogPost, name: "BlogPost", props: true }, // Route for individual blog post
   { path: "/contact", component: Contact },
+  { path: "/login", component: Login },
+  { path: "/register", component: Register },
+  { path: "/admin", component: AdminLogin },
   { path: "/cart", component: Cart },
   { path: "/shop", component: Shop },
   {

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\CartController;
@@ -10,6 +11,12 @@ use Illuminate\Session\Middleware\StartSession; // Import the StartSession middl
 
 // Apply the rate limiting and session middleware to all routes in this file
 Route::middleware([RateLimitMiddleware::class, StartSession::class])->group(function () {
+
+    // Auth Routes
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+
     // Product Routes
     Route::prefix('products')->group(function () {
         Route::get('/', [ProductController::class, 'index']); // All products
