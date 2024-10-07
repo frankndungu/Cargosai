@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\UserController; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\RateLimitMiddleware;
@@ -42,8 +43,13 @@ Route::middleware([RateLimitMiddleware::class, StartSession::class])->group(func
     Route::put('/cart/update/{itemId}', [CartController::class, 'updateItem']);
     Route::delete('/cart/remove/{itemId}', [CartController::class, 'removeItem']);
 
-    // User Route
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    })->middleware('auth:sanctum');
+    // User Routes
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/user', function (Request $request) {
+            return $request->user(); // Get the authenticated user
+        });
+
+        Route::get('/users', [UserController::class, 'index']); // Get all users
+        Route::get('/users/{id}', [UserController::class, 'show']); // Get individual user by ID
+    });
 });
