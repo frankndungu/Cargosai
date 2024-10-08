@@ -57,6 +57,7 @@
 
 <script setup>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 
 // Form data
 const email = ref("");
@@ -68,7 +69,10 @@ const errors = ref({
   password: "",
 });
 
-const handleSubmit = () => {
+// Get router instance for redirection
+const router = useRouter();
+
+const handleSubmit = async () => {
   // Reset error messages
   errors.value.email = "";
   errors.value.password = "";
@@ -89,11 +93,38 @@ const handleSubmit = () => {
 
   // Submit form if there are no errors
   if (!errors.value.email && !errors.value.password) {
-    console.log("Logging in with:", {
-      email: email.value,
-      password: password.value,
-    });
-    // Handle successful login (e.g., call an API or redirect)
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email.value,
+          password: password.value,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Save token and redirect user to dashboard or home page
+        localStorage.setItem("token", data.token); // Store the token in local storage
+        router.push("/dashboard"); // Redirect to the dashboard
+      } else {
+        // Handle errors returned from the backend
+        if (data.error) {
+          alert(data.error);
+        } else if (data.errors) {
+          for (const [key, value] of Object.entries(data.errors)) {
+            errors.value[key] = value[0];
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred during login. Please try again.");
+    }
   } else {
     console.log("Validation failed:", errors.value);
   }

@@ -4,6 +4,12 @@
       <h1 class="register-title">Create an account</h1>
 
       <div class="register-input-group">
+        <label for="name" class="register-label">Your Name</label>
+        <input type="text" id="name" v-model="name" class="register-input" />
+        <span v-if="errors.name" class="error-message">{{ errors.name }}</span>
+      </div>
+
+      <div class="register-input-group">
         <label for="email" class="register-label">Your email</label>
         <input type="email" id="email" v-model="email" class="register-input" />
         <span v-if="errors.email" class="error-message">{{
@@ -53,55 +59,95 @@
 
 <script setup>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 
 // Define form fields
-const email = ref("");
-const password = ref("");
-const confirmPassword = ref("");
+const name = ref(""); // Holds the user's name
+const email = ref(""); // Holds the user's email
+const password = ref(""); // Holds the user's password
+const confirmPassword = ref(""); // Holds the confirmation of the user's password
 
 // Error messages object
 const errors = ref({
-  email: "",
-  password: "",
-  confirmPassword: "",
+  name: "", // Holds error messages for the name field
+  email: "", // Holds error messages for the email field
+  password: "", // Holds error messages for the password field
+  confirmPassword: "", // Holds error messages for the confirmation password field
 });
 
+// router instance
+const router = useRouter();
+
 // Form submission handler
-const handleSubmit = () => {
+const handleSubmit = async () => {
   // Clear previous errors
+  errors.value.name = "";
   errors.value.email = "";
   errors.value.password = "";
   errors.value.confirmPassword = "";
 
-  // Validate email
+  // Validate input fields
+  if (!name.value) {
+    errors.value.name = "Name is required"; // Validate name
+  }
   if (!email.value) {
-    errors.value.email = "Email is required";
+    errors.value.email = "Email is required"; // Validate email
   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
-    errors.value.email = "Please enter a valid email";
+    errors.value.email = "Please enter a valid email"; // Validate email format
   }
-
-  // Validate password
   if (!password.value) {
-    errors.value.password = "Password is required";
-  } else if (password.value.length < 6) {
-    errors.value.password = "Password must be at least 6 characters long";
+    errors.value.password = "Password is required"; // Validate password
+  } else if (password.value.length < 8) {
+    errors.value.password = "Password must be at least 8 characters long"; // Minimum length for password
   }
-
-  // Validate confirm password
   if (!confirmPassword.value) {
-    errors.value.confirmPassword = "Please confirm your password";
+    errors.value.confirmPassword = "Please confirm your password"; // Validate confirmation
   } else if (confirmPassword.value !== password.value) {
-    errors.value.confirmPassword = "Passwords do not match";
+    errors.value.confirmPassword = "Passwords do not match"; // Check if passwords match
   }
 
-  // If no errors, proceed with form submission
+  // If no errors, proceed with API call
   if (
+    !errors.value.name &&
     !errors.value.email &&
     !errors.value.password &&
     !errors.value.confirmPassword
   ) {
-    alert("Form submitted successfully!");
-    // You can handle form submission logic here (e.g., API call)
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: name.value, // Send user's name
+          email: email.value, // Send user's email
+          password: password.value, // Send user's password
+          password_confirmation: confirmPassword.value, // Send confirmation password
+        }),
+      });
+
+      const data = await response.json(); // Parse the response
+
+      if (response.ok) {
+        // Handle successful registration
+        alert("Registration successful!");
+        router.push("/dashboard"); // Redirect to the home page after successful registration
+      } else {
+        // Handle errors returned from the backend
+        if (data.error) {
+          alert(data.error);
+        } else if (data.errors) {
+          // Display validation errors from backend
+          for (const [key, value] of Object.entries(data.errors)) {
+            errors.value[key] = value[0]; // Get the first error message for each field
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred during registration. Please try again."); // Handle network errors
+    }
   }
 };
 </script>

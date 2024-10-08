@@ -12,6 +12,8 @@ import AdminLogin from "../views/AdminLogin.vue";
 import ProductPage from "../views/ProductPage.vue";
 import Recovery from "../views/Recovery.vue";
 import NotFound from "../views/NotFound.vue";
+import AdminDashboard from "../views/AdminDashboard.vue";
+import UserDashboard from "../views/UserDashboard.vue";
 import Cart from "../views/Cart.vue";
 import TermsOfService from "../views/TermsOfService.vue";
 import FrequentlyAskedQuestions from "../views/FrequentlyAskedQuestions.vue";
@@ -26,6 +28,8 @@ const routes = [
   { path: "/register", component: Register },
   { path: "/admin", component: AdminLogin },
   { path: "/recovery", component: Recovery },
+  { path: "/admin/dashboard", component: AdminDashboard },
+  { path: "/dashboard", component: UserDashboard },
   { path: "/cart", component: Cart },
   { path: "/shop", component: Shop },
   {
