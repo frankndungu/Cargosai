@@ -1,18 +1,14 @@
 <template>
   <div class="register-container">
     <form @submit.prevent="handleSubmit" class="register-form">
-      <!-- Title inside the form -->
       <h1 class="register-title">Create an account</h1>
 
       <div class="register-input-group">
         <label for="email" class="register-label">Your email</label>
-        <input
-          type="email"
-          id="email"
-          v-model="email"
-          class="register-input"
-          required
-        />
+        <input type="email" id="email" v-model="email" class="register-input" />
+        <span v-if="errors.email" class="error-message">{{
+          errors.email
+        }}</span>
       </div>
 
       <div class="register-input-group">
@@ -22,8 +18,10 @@
           id="password"
           v-model="password"
           class="register-input"
-          required
         />
+        <span v-if="errors.password" class="error-message">{{
+          errors.password
+        }}</span>
       </div>
 
       <div class="register-input-group">
@@ -35,13 +33,16 @@
           id="confirm-password"
           v-model="confirmPassword"
           class="register-input"
-          required
         />
+        <span v-if="errors.confirmPassword" class="error-message">{{
+          errors.confirmPassword
+        }}</span>
       </div>
 
       <button type="submit" class="register-submit-btn">
         Create an account
       </button>
+
       <p class="register-footer">
         Already have an account?
         <router-link to="/login" class="register-link">Login here</router-link>
@@ -53,20 +54,65 @@
 <script setup>
 import { ref } from "vue";
 
+// Define form fields
 const email = ref("");
 const password = ref("");
 const confirmPassword = ref("");
 
+// Error messages object
+const errors = ref({
+  email: "",
+  password: "",
+  confirmPassword: "",
+});
+
+// Form submission handler
 const handleSubmit = () => {
-  // Handle form submission logic
-  console.log("Form submitted:", {
-    email: email.value,
-    password: password.value,
-  });
+  // Clear previous errors
+  errors.value.email = "";
+  errors.value.password = "";
+  errors.value.confirmPassword = "";
+
+  // Validate email
+  if (!email.value) {
+    errors.value.email = "Email is required";
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+    errors.value.email = "Please enter a valid email";
+  }
+
+  // Validate password
+  if (!password.value) {
+    errors.value.password = "Password is required";
+  } else if (password.value.length < 6) {
+    errors.value.password = "Password must be at least 6 characters long";
+  }
+
+  // Validate confirm password
+  if (!confirmPassword.value) {
+    errors.value.confirmPassword = "Please confirm your password";
+  } else if (confirmPassword.value !== password.value) {
+    errors.value.confirmPassword = "Passwords do not match";
+  }
+
+  // If no errors, proceed with form submission
+  if (
+    !errors.value.email &&
+    !errors.value.password &&
+    !errors.value.confirmPassword
+  ) {
+    alert("Form submitted successfully!");
+    // You can handle form submission logic here (e.g., API call)
+  }
 };
 </script>
 
 <style scoped>
+.error-message {
+  color: var(--error-message); /* Ensure you define an error color */
+  margin-top: 5px;
+  font-weight: bold;
+}
+
 .register-container {
   display: flex;
   flex-direction: column;

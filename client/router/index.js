@@ -10,6 +10,7 @@ import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
 import AdminLogin from "../views/AdminLogin.vue";
 import ProductPage from "../views/ProductPage.vue";
+import Recovery from "../views/Recovery.vue";
 import NotFound from "../views/NotFound.vue";
 import Cart from "../views/Cart.vue";
 import TermsOfService from "../views/TermsOfService.vue";
@@ -24,6 +25,7 @@ const routes = [
   { path: "/login", component: Login },
   { path: "/register", component: Register },
   { path: "/admin", component: AdminLogin },
+  { path: "/recovery", component: Recovery },
   { path: "/cart", component: Cart },
   { path: "/shop", component: Shop },
   {

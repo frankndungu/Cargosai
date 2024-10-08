@@ -8,13 +8,11 @@
       <!-- Email Input -->
       <div class="login-input-group">
         <label for="email" class="login-label">Your email</label>
-        <input
-          type="email"
-          id="email"
-          v-model="email"
-          class="login-input"
-          required
-        />
+        <input type="email" id="email" v-model="email" class="login-input" />
+        <!-- Display email error -->
+        <span v-if="errors.email" class="error-message">{{
+          errors.email
+        }}</span>
       </div>
 
       <!-- Password Input -->
@@ -25,8 +23,11 @@
           id="password"
           v-model="password"
           class="login-input"
-          required
         />
+        <!-- Display password error -->
+        <span v-if="errors.password" class="error-message">{{
+          errors.password
+        }}</span>
       </div>
 
       <!-- Remember me and Forgot Password -->
@@ -35,7 +36,9 @@
           <input type="checkbox" id="remember-me" />
           <label for="remember-me" class="login-label">Remember me</label>
         </div>
-        <a href="#" class="login-forgot-link">Forgot password?</a>
+        <router-link to="/recovery" class="login-forgot-link"
+          >Forgot password?</router-link
+        >
       </div>
 
       <!-- Sign In Button -->
@@ -55,15 +58,45 @@
 <script setup>
 import { ref } from "vue";
 
+// Form data
 const email = ref("");
 const password = ref("");
 
+// Error messages
+const errors = ref({
+  email: "",
+  password: "",
+});
+
 const handleSubmit = () => {
-  // Handle login logic
-  console.log("Logging in with:", {
-    email: email.value,
-    password: password.value,
-  });
+  // Reset error messages
+  errors.value.email = "";
+  errors.value.password = "";
+
+  // Validate email
+  if (!email.value) {
+    errors.value.email = "Email is required";
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+    errors.value.email = "Please enter a valid email";
+  }
+
+  // Validate password
+  if (!password.value) {
+    errors.value.password = "Password is required";
+  } else if (password.value.length < 6) {
+    errors.value.password = "Password must be at least 6 characters long";
+  }
+
+  // Submit form if there are no errors
+  if (!errors.value.email && !errors.value.password) {
+    console.log("Logging in with:", {
+      email: email.value,
+      password: password.value,
+    });
+    // Handle successful login (e.g., call an API or redirect)
+  } else {
+    console.log("Validation failed:", errors.value);
+  }
 };
 </script>
 
@@ -74,12 +107,13 @@ const handleSubmit = () => {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background-color: #f9f5e4;
+  background: var(--background-color);
   padding: 20px;
 }
 
 .login-form {
-  background-color: #fff;
+  border: 1px solid;
+  background-color: var(--secondary-color);
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
@@ -110,15 +144,17 @@ const handleSubmit = () => {
 
 .login-input {
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--dark-color);
   border-radius: 5px;
   width: 100%;
   box-sizing: border-box;
 }
 
-.login-input:focus {
-  outline: none;
-  border-color: #333;
+/* Error message */
+.error-message {
+  color: var(--error-message);
+  font-size: 0.9rem;
+  margin-top: 5px;
 }
 
 /* Remember me and Forgot Password section */
@@ -139,8 +175,9 @@ const handleSubmit = () => {
 }
 
 .login-forgot-link {
-  color: #000;
+  color: var(--dark-color);
   text-decoration: none;
+  font-weight: bold;
 }
 
 .login-forgot-link:hover {
@@ -149,8 +186,8 @@ const handleSubmit = () => {
 
 /* Sign In Button */
 .login-submit-btn {
-  background-color: #000;
-  color: #fff;
+  background-color: var(--dark-tint);
+  color: var(--background-color);
   padding: 10px;
   border: none;
   border-radius: 5px;
@@ -159,7 +196,13 @@ const handleSubmit = () => {
 }
 
 .login-submit-btn:hover {
-  background-color: #333;
+  background-color: var(--dark-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0);
+}
+
+.login-submit-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(15, 15, 15, 0.6);
 }
 
 /* Sign Up Link */
@@ -169,8 +212,9 @@ const handleSubmit = () => {
 }
 
 .login-signup-link {
-  color: #000;
+  color: var(--dark-color);
   text-decoration: none;
+  font-weight: bold;
 }
 
 .login-signup-link:hover {
