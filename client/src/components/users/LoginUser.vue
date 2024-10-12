@@ -1,21 +1,16 @@
 <template>
   <div class="login-container">
-    <!-- Login Form -->
     <form @submit.prevent="handleSubmit" class="login-form">
-      <!-- Title -->
       <h1 class="login-title">Sign in to your account</h1>
 
-      <!-- Email Input -->
       <div class="login-input-group">
         <label for="email" class="login-label">Your email</label>
         <input type="email" id="email" v-model="email" class="login-input" />
-        <!-- Display email error -->
         <span v-if="errors.email" class="error-message">{{
           errors.email
         }}</span>
       </div>
 
-      <!-- Password Input -->
       <div class="login-input-group">
         <label for="password" class="login-label">Password</label>
         <input
@@ -24,13 +19,11 @@
           v-model="password"
           class="login-input"
         />
-        <!-- Display password error -->
         <span v-if="errors.password" class="error-message">{{
           errors.password
         }}</span>
       </div>
 
-      <!-- Remember me and Forgot Password -->
       <div class="login-auxiliary">
         <div class="login-checkbox">
           <input type="checkbox" id="remember-me" />
@@ -41,10 +34,8 @@
         >
       </div>
 
-      <!-- Sign In Button -->
       <button type="submit" class="login-submit-btn">Sign in</button>
 
-      <!-- Sign up link -->
       <p class="login-footer">
         Don’t have an account yet?
         <router-link to="/register" class="login-signup-link"
@@ -57,41 +48,31 @@
 
 <script setup>
 import { ref } from "vue";
+import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 
-// Form data
+const store = useStore();
+const router = useRouter();
 const email = ref("");
 const password = ref("");
-
-// Error messages
-const errors = ref({
-  email: "",
-  password: "",
-});
-
-// Get router instance for redirection
-const router = useRouter();
+const errors = ref({ email: "", password: "" });
 
 const handleSubmit = async () => {
-  // Reset error messages
   errors.value.email = "";
   errors.value.password = "";
 
-  // Validate email
   if (!email.value) {
     errors.value.email = "Email is required";
   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
     errors.value.email = "Please enter a valid email";
   }
 
-  // Validate password
   if (!password.value) {
     errors.value.password = "Password is required";
   } else if (password.value.length < 6) {
     errors.value.password = "Password must be at least 6 characters long";
   }
 
-  // Submit form if there are no errors
   if (!errors.value.email && !errors.value.password) {
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/login`, {
@@ -99,20 +80,16 @@ const handleSubmit = async () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          email: email.value,
-          password: password.value,
-        }),
+        body: JSON.stringify({ email: email.value, password: password.value }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        // Save token and redirect user to dashboard or home page
-        localStorage.setItem("token", data.token); // Store the token in local storage
-        router.push("/dashboard"); // Redirect to the dashboard
+        localStorage.setItem("token", data.token);
+        await store.dispatch("fetchUser"); // Fetch user data from API
+        router.push("/dashboard");
       } else {
-        // Handle errors returned from the backend
         if (data.error) {
           alert(data.error);
         } else if (data.errors) {
@@ -125,8 +102,6 @@ const handleSubmit = async () => {
       console.error("Error:", error);
       alert("An error occurred during login. Please try again.");
     }
-  } else {
-    console.log("Validation failed:", errors.value);
   }
 };
 </script>

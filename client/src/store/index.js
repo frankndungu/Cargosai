@@ -1,5 +1,6 @@
 import { createStore } from "vuex";
 import createPersistedState from "vuex-persistedstate";
+import router from "../../router/index"; // Import router
 
 export default createStore({
   state: {
@@ -13,7 +14,7 @@ export default createStore({
       title: "",
       content: "",
     },
-    user: null, // Add user state to store the logged-in user data
+    user: null, // Store the logged-in user data
   },
   getters: {
     cartItems: (state) => state.cart,
@@ -33,19 +34,14 @@ export default createStore({
     },
     currentPage: (state) => state.currentPage,
     totalPages: (state) => state.totalPages,
-
     isModalOpen: (state) => state.isModalOpen,
     reviewData: (state) => state.review,
-
-    // Getter to check if the user is authenticated
     isAuthenticated: (state) => !!state.user,
-
-    // Getter to extract the first name from the 'name' field
     userFirstName: (state) => {
       if (state.user && state.user.name) {
-        return state.user.name.split(" ")[0]; // Get the first part of the name
+        return state.user.name.split(" ")[0];
       }
-      return ""; // Return empty string if no name found
+      return "";
     },
   },
   mutations: {
@@ -60,12 +56,11 @@ export default createStore({
     REMOVE_FROM_CART(state, id) {
       state.cart = state.cart.filter((item) => item.id !== id);
     },
-
     SET_USER(state, user) {
-      state.user = user; // Store the user data
+      state.user = user;
     },
     LOGOUT_USER(state) {
-      state.user = null; // Clear the user data on logout
+      state.user = null;
     },
   },
   actions: {
@@ -75,15 +70,13 @@ export default createStore({
     removeFromCart({ commit }, id) {
       commit("REMOVE_FROM_CART", id);
     },
-
-    // Action to fetch the user from the API
     async fetchUser({ commit }) {
       try {
         const response = await fetch("http://localhost:8000/api/user", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`, // Include token if needed
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
 
@@ -92,15 +85,15 @@ export default createStore({
         }
 
         const user = await response.json();
-        commit("SET_USER", user); // Store user data in Vuex
+        commit("SET_USER", user);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
     },
-
     logout({ commit }) {
       commit("LOGOUT_USER");
-      localStorage.removeItem("token"); // Clear token on logout
+      localStorage.removeItem("token");
+      router.push("/login"); // Redirect to login after logout
     },
   },
   plugins: [
@@ -111,6 +104,7 @@ export default createStore({
         currentPage: state.currentPage,
         totalPages: state.totalPages,
         isModalOpen: state.isModalOpen,
+        user: state.user, // Persist user state
       }),
     }),
   ],

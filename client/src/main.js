@@ -15,6 +15,12 @@ const csrfToken = document
 axios.defaults.headers.common["X-CSRF-TOKEN"] = csrfToken;
 
 const app = createApp(App);
+
+// Fetch user data on app load if token exists
+if (localStorage.getItem("token")) {
+  store.dispatch("fetchUser");
+}
+
 app.use(store);
 app.use(ToastPlugin);
 app.use(router);
