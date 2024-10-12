@@ -62,6 +62,18 @@ export default createStore({
     LOGOUT_USER(state) {
       state.user = null;
     },
+    INCREASE_ITEM_QUANTITY(state, id) {
+      const item = state.cart.find((cartItem) => cartItem.id === id);
+      if (item) {
+        item.quantity += 1;
+      }
+    },
+    DECREASE_ITEM_QUANTITY(state, id) {
+      const item = state.cart.find((cartItem) => cartItem.id === id);
+      if (item && item.quantity > 1) {
+        item.quantity -= 1;
+      }
+    },
   },
   actions: {
     addToCart({ commit }, product) {
@@ -69,6 +81,12 @@ export default createStore({
     },
     removeFromCart({ commit }, id) {
       commit("REMOVE_FROM_CART", id);
+    },
+    increaseItemQuantity({ commit }, id) {
+      commit("INCREASE_ITEM_QUANTITY", id);
+    },
+    decreaseItemQuantity({ commit }, id) {
+      commit("DECREASE_ITEM_QUANTITY", id);
     },
     async fetchUser({ commit }) {
       try {
@@ -90,10 +108,22 @@ export default createStore({
         console.error("Error fetching user data:", error);
       }
     },
-    logout({ commit }) {
-      commit("LOGOUT_USER");
-      localStorage.removeItem("token");
-      router.push("/login"); // Redirect to login after logout
+    async logout({ commit }) {
+      try {
+        await fetch("http://localhost:8000/api/logout", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        commit("LOGOUT_USER");
+        localStorage.removeItem("token");
+        router.push("/login");
+      } catch (error) {
+        console.error("Error logging out:", error);
+      }
     },
   },
   plugins: [
