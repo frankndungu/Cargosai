@@ -48,7 +48,6 @@ Route::middleware([RateLimitMiddleware::class, StartSession::class])->group(func
         Route::get('/user', function (Request $request) {
             return $request->user(); // Get the authenticated user
         });
-
         Route::get('/users', [UserController::class, 'index']); // Get all users
         Route::get('/users/{id}', [UserController::class, 'show']); // Get individual user by ID
     });

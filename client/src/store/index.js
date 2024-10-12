@@ -6,13 +6,14 @@ export default createStore({
     cart: [],
     currentPage: 1,
     totalPages: 0,
-    isModalOpen: false, // To manage the modal state
+    isModalOpen: false,
     review: {
       name: "",
       rating: 0,
       title: "",
       content: "",
     },
+    user: null, // Add user state to store the logged-in user data
   },
   getters: {
     cartItems: (state) => state.cart,
@@ -33,63 +34,38 @@ export default createStore({
     currentPage: (state) => state.currentPage,
     totalPages: (state) => state.totalPages,
 
-    // New getters for modal and review state
     isModalOpen: (state) => state.isModalOpen,
     reviewData: (state) => state.review,
+
+    // Getter to check if the user is authenticated
+    isAuthenticated: (state) => !!state.user,
+
+    // Getter to extract the first name from the 'name' field
+    userFirstName: (state) => {
+      if (state.user && state.user.name) {
+        return state.user.name.split(" ")[0]; // Get the first part of the name
+      }
+      return ""; // Return empty string if no name found
+    },
   },
   mutations: {
     ADD_TO_CART(state, product) {
       const item = state.cart.find((cartItem) => cartItem.id === product.id);
       if (item) {
-        // If the product already exists in the cart, update its quantity
         item.quantity += 1;
       } else {
-        // If it's a new product, add it to the cart with an initial quantity
         state.cart.push({ ...product, quantity: 1 });
       }
     },
     REMOVE_FROM_CART(state, id) {
       state.cart = state.cart.filter((item) => item.id !== id);
     },
-    INCREASE_ITEM_QUANTITY(state, id) {
-      const item = state.cart.find((cartItem) => cartItem.id === id);
-      if (item) {
-        item.quantity += 1;
-      }
-    },
-    DECREASE_ITEM_QUANTITY(state, id) {
-      const item = state.cart.find((cartItem) => cartItem.id === id);
-      if (item && item.quantity > 1) {
-        item.quantity -= 1;
-      }
-    },
-    SET_CURRENT_PAGE(state, page) {
-      state.currentPage = page;
-    },
-    SET_TOTAL_PAGES(state, pages) {
-      state.totalPages = pages;
-    },
 
-    // Mutations for handling modal and review state
-    OPEN_MODAL(state) {
-      state.isModalOpen = true;
+    SET_USER(state, user) {
+      state.user = user; // Store the user data
     },
-    CLOSE_MODAL(state) {
-      state.isModalOpen = false;
-    },
-    UPDATE_REVIEW(state, reviewData) {
-      state.review = { ...state.review, ...reviewData };
-    },
-    UPDATE_REVIEW_RATING(state, rating) {
-      state.review.rating = rating;
-    },
-    RESET_REVIEW(state) {
-      state.review = {
-        name: "",
-        rating: 0,
-        title: "",
-        content: "",
-      };
+    LOGOUT_USER(state) {
+      state.user = null; // Clear the user data on logout
     },
   },
   actions: {
@@ -99,45 +75,42 @@ export default createStore({
     removeFromCart({ commit }, id) {
       commit("REMOVE_FROM_CART", id);
     },
-    increaseItemQuantity({ commit }, id) {
-      commit("INCREASE_ITEM_QUANTITY", id);
-    },
-    decreaseItemQuantity({ commit }, id) {
-      commit("DECREASE_ITEM_QUANTITY", id);
-    },
-    setCurrentPage({ commit }, page) {
-      commit("SET_CURRENT_PAGE", page);
-    },
-    setTotalPages({ commit }, pages) {
-      commit("SET_TOTAL_PAGES", pages);
+
+    // Action to fetch the user from the API
+    async fetchUser({ commit }) {
+      try {
+        const response = await fetch("http://localhost:8000/api/user", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`, // Include token if needed
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch user data.");
+        }
+
+        const user = await response.json();
+        commit("SET_USER", user); // Store user data in Vuex
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
     },
 
-    // Actions for handling modal and review state
-    openModal({ commit }) {
-      commit("OPEN_MODAL");
-    },
-    closeModal({ commit }) {
-      commit("CLOSE_MODAL");
-    },
-    updateReview({ commit }, reviewData) {
-      commit("UPDATE_REVIEW", reviewData);
-    },
-    updateReviewRating({ commit }, rating) {
-      commit("UPDATE_REVIEW_RATING", rating);
-    },
-    resetReview({ commit }) {
-      commit("RESET_REVIEW");
+    logout({ commit }) {
+      commit("LOGOUT_USER");
+      localStorage.removeItem("token"); // Clear token on logout
     },
   },
   plugins: [
     createPersistedState({
       storage: window.localStorage,
       reducer: (state) => ({
-        cart: state.cart, // Only persist cart
+        cart: state.cart,
         currentPage: state.currentPage,
         totalPages: state.totalPages,
         isModalOpen: state.isModalOpen,
-        // Exclude the review state from being persisted
       }),
     }),
   ],
