@@ -90,7 +90,7 @@ export default createStore({
     },
     async fetchUser({ commit }) {
       try {
-        const response = await fetch("http://localhost:8000/api/user", {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/user`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -110,7 +110,7 @@ export default createStore({
     },
     async logout({ commit }) {
       try {
-        await fetch("http://localhost:8000/api/logout", {
+        await fetch(`${import.meta.env.VITE_API_URL}/logout`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
