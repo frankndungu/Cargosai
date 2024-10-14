@@ -23,9 +23,9 @@ const props = defineProps({
 
 <style scoped>
 .card {
-  background-color: var(--modal-color);
+  background-color: var(--background-color);
   border-radius: 0.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
   padding: 1.5rem;
   margin-bottom: 1.5rem;
 }
@@ -44,14 +44,14 @@ const props = defineProps({
 }
 
 .stat-item {
-  background-color: var(--stat-color);
+  background-color: var(--secondary-color);
   padding: 1rem;
   border-radius: 0.375rem;
 }
 
 .stat-name {
   font-size: 0.875rem;
-  color: var(--stat-name);
+  color: var(--reviews-count);
 }
 
 .stat-value {

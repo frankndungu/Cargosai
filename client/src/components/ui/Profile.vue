@@ -1,7 +1,5 @@
-<!-- ProfileView.vue -->
 <template>
   <div class="profile-view">
-    <h1>My Profile</h1>
     <div class="card">
       <h2>Personal Information</h2>
       <div class="form-group">
@@ -37,11 +35,26 @@ const saveProfile = () => {
 </script>
 
 <style scoped>
-.profile-view h1 {
-  font-size: 1.875rem;
-  font-weight: 600;
-  color: #1f2937;
+.card {
+  background-color: var(--background-color);
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  padding: 1.5rem;
   margin-bottom: 1.5rem;
+}
+
+.card h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--dark-color);
+  margin-bottom: 1rem;
+}
+
+.profile-view h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--dark-color);
+  margin-bottom: 1rem;
 }
 
 .form-group {
@@ -57,7 +70,28 @@ const saveProfile = () => {
 .form-group input {
   width: 100%;
   padding: 0.5rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid;
+  background: var(--background-color);
   border-radius: 0.375rem;
+}
+
+.action-button {
+  padding: 0.5rem 1rem;
+  background: var(--dark-tint);
+  color: var(--background-color);
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.action-button:hover {
+  background-color: var(--dark-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.action-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(15, 15, 15, 0.6);
 }
 </style>

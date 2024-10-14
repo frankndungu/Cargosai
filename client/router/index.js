@@ -13,11 +13,14 @@ import AdminLogin from "../views/AdminLogin.vue";
 import ProductPage from "../views/ProductPage.vue";
 import Recovery from "../views/Recovery.vue";
 import NotFound from "../views/NotFound.vue";
-import AdminDashboard from "../views/AdminDashboard.vue";
-import UserDashboard from "../views/UserDashboard.vue";
 import Cart from "../views/Cart.vue";
 import TermsOfService from "../views/TermsOfService.vue";
 import FrequentlyAskedQuestions from "../views/FrequentlyAskedQuestions.vue";
+import AdminDashboard from "../views/AdminDashboard.vue";
+import UserDashboard from "../views/UserDashboard.vue";
+import UserProfile from "../views/UserProfile.vue"; // Import the UserProfile component
+import UserOrders from "../views/UserOrders.vue"; // Import the UserOrders component
+import UserWishlist from "../views/UserWishlist.vue"; // Import the UserWishlist component
 
 const routes = [
   { path: "/", component: Home },
@@ -30,11 +33,30 @@ const routes = [
   { path: "/admin", component: AdminLogin },
   { path: "/recovery", component: Recovery },
   { path: "/admin/dashboard", component: AdminDashboard },
+
+  // Dashboard routes
   {
     path: "/dashboard",
     component: UserDashboard,
     meta: { requiresAuth: true },
   },
+  {
+    path: "/dashboard/profile",
+    component: UserProfile, // Separate profile page
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/dashboard/orders",
+    component: UserOrders, // Separate orders page
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/dashboard/wishlist",
+    component: UserWishlist, // Separate wishlist page
+    meta: { requiresAuth: true },
+  },
+
+  // Other routes
   { path: "/cart", component: Cart },
   { path: "/shop", component: Shop },
   {

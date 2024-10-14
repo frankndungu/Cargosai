@@ -19,9 +19,9 @@ const props = defineProps({
 
 <style scoped>
 .card {
-  background-color: var(--modal-color);
+  background-color: var(--background-color);
   border-radius: 0.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
   padding: 1.5rem;
   margin-bottom: 1.5rem;
 }
