@@ -55,4 +55,10 @@ const navItems = [
   height: 1.25rem;
   margin-right: 0.75rem;
 }
+
+@media (max-width: 769px) {
+  .nav-item {
+    padding: 0.75rem 20px;
+  }
+}
 </style>

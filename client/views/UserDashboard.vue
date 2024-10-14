@@ -4,7 +4,6 @@
 
     <main class="main-content">
       <h1>Welcome back, {{ user.name }}!</h1>
-
       <UserInfoCard :user="user" />
       <OrderSummary :stats="orderStats" />
       <QuickActions :actions="quickActions" />
@@ -46,7 +45,7 @@ const quickActions = [
 
 .main-content {
   flex: 1;
-  padding: 2rem;
+  padding: 25px 50px;
 }
 
 .main-content h1 {
