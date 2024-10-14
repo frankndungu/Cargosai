@@ -40,7 +40,6 @@
             <router-link to="/dashboard" @click="closeMenu">
               <button>Go to Dashboard</button>
             </router-link>
-            <button @click="logout">Logout</button>
           </template>
         </template>
         <template v-else>
