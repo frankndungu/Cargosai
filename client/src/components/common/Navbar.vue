@@ -38,7 +38,11 @@
           </template>
           <template v-else>
             <router-link to="/dashboard" @click="closeMenu">
-              <button>Go to Dashboard</button>
+              <img
+                src="https://res.cloudinary.com/kwishi/image/upload/v1729077994/user_1_jcoth0.svg"
+                alt="User Icon"
+                class="navbar__user-icon"
+              />
             </router-link>
           </template>
         </template>
