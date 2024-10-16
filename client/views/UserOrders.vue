@@ -59,9 +59,11 @@
 </template>
 
 <script setup>
-import Sidebar from "@/components/ui/Sidebar.vue";
 import { ref, computed } from "vue";
+import { useRouter } from "vue-router"; // Import useRouter
+import Sidebar from "@/components/ui/Sidebar.vue";
 
+const router = useRouter(); // Initialize router
 const searchQuery = ref("");
 const orders = ref([
   {
@@ -96,8 +98,9 @@ const filteredOrders = computed(() => {
   );
 });
 
+// Update viewOrder to use router.push with the correct path
 const viewOrder = (orderId) => {
-  console.log("View order:", orderId);
+  router.push({ name: "OrderDetails", params: { id: orderId } }); // Pass the orderId as a parameter
 };
 
 const cancelOrder = (orderId) => {

@@ -20,6 +20,7 @@ import AdminDashboard from "../views/AdminDashboard.vue";
 import UserDashboard from "../views/UserDashboard.vue";
 import UserProfile from "../views/UserProfile.vue"; // Import the UserProfile component
 import UserOrders from "../views/UserOrders.vue"; // Import the UserOrders component
+import OrderDetails from "../views/OrderDetails.vue"; // Import the OrderDetails component
 import UserWishlist from "../views/UserWishlist.vue"; // Import the UserWishlist component
 
 const routes = [
@@ -48,6 +49,13 @@ const routes = [
   {
     path: "/dashboard/orders",
     component: UserOrders, // Separate orders page
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/dashboard/orders/:id",
+    component: OrderDetails,
+    name: "OrderDetails",
+    props: true,
     meta: { requiresAuth: true },
   },
   {
