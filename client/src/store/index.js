@@ -87,6 +87,14 @@ export default createStore({
       // Mutation to reset review data
       state.review = { name: "", rating: 0, title: "", content: "" };
     },
+    SET_TOTAL_PAGES(state, totalPages) {
+      // Mutation to set total pages
+      state.totalPages = totalPages;
+    },
+    SET_TOTAL_PRODUCTS(state, totalProducts) {
+      // Mutation to set total products
+      state.totalProducts = totalProducts;
+    },
   },
   actions: {
     addToCart({ commit }, product) {
@@ -116,6 +124,12 @@ export default createStore({
     resetReview({ commit }) {
       // Action to reset review
       commit("RESET_REVIEW");
+    },
+    setTotalPages({ commit }, totalPages) {
+      commit("SET_TOTAL_PAGES", totalPages);
+    },
+    setTotalProducts({ commit }, totalProducts) {
+      commit("SET_TOTAL_PRODUCTS", totalProducts);
     },
     async fetchUser({ commit }) {
       try {
