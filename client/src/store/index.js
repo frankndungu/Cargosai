@@ -1,3 +1,4 @@
+// store/index.js
 import { createStore } from "vuex";
 import createPersistedState from "vuex-persistedstate";
 import router from "../../router/index"; // Import router
@@ -7,7 +8,7 @@ export default createStore({
     cart: [],
     currentPage: 1,
     totalPages: 0,
-    isModalOpen: false,
+    isModalOpen: false, // State to control modal visibility
     review: {
       name: "",
       rating: 0,
@@ -34,8 +35,8 @@ export default createStore({
     },
     currentPage: (state) => state.currentPage,
     totalPages: (state) => state.totalPages,
-    isModalOpen: (state) => state.isModalOpen,
-    reviewData: (state) => state.review,
+    isModalOpen: (state) => state.isModalOpen, // Getter for modal state
+    reviewData: (state) => state.review, // Getter for review data
     isAuthenticated: (state) => !!state.user,
     userFirstName: (state) => {
       if (state.user && state.user.name) {
@@ -74,6 +75,18 @@ export default createStore({
         item.quantity -= 1;
       }
     },
+    SET_MODAL_OPEN(state, isOpen) {
+      // Mutation to set modal state
+      state.isModalOpen = isOpen;
+    },
+    SET_REVIEW_RATING(state, rating) {
+      // Mutation to set review rating
+      state.review.rating = rating;
+    },
+    RESET_REVIEW(state) {
+      // Mutation to reset review data
+      state.review = { name: "", rating: 0, title: "", content: "" };
+    },
   },
   actions: {
     addToCart({ commit }, product) {
@@ -87,6 +100,22 @@ export default createStore({
     },
     decreaseItemQuantity({ commit }, id) {
       commit("DECREASE_ITEM_QUANTITY", id);
+    },
+    openModal({ commit }) {
+      // Action to open modal
+      commit("SET_MODAL_OPEN", true);
+    },
+    closeModal({ commit }) {
+      // Action to close modal
+      commit("SET_MODAL_OPEN", false);
+    },
+    updateReviewRating({ commit }, rating) {
+      // Action to update review rating
+      commit("SET_REVIEW_RATING", rating);
+    },
+    resetReview({ commit }) {
+      // Action to reset review
+      commit("RESET_REVIEW");
     },
     async fetchUser({ commit }) {
       try {
@@ -135,6 +164,7 @@ export default createStore({
         totalPages: state.totalPages,
         isModalOpen: state.isModalOpen,
         user: state.user, // Persist user state
+        review: state.review, // Persist review state
       }),
     }),
   ],
