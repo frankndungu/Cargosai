@@ -31,5 +31,3 @@ const navItems = [
   { name: "Logout", href: "/logout", icon: LogOutIcon },
 ];
 </script>
-
-<style scoped></style>
