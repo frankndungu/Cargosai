@@ -30,22 +30,19 @@ class OrderController extends Controller
     }
 
     // Create a new order
-    // Create a new order
     public function create(Request $request)
     {
         $user = $request->user();
 
-        // Validate the request data
         $request->validate([
-            'items' => 'required|array', // Ensure items are provided
-            'total_price' => 'required|numeric', // Ensure a total amount is provided
-            'status' => 'required|string|max:255', // Ensure status is provided
+            'items' => 'required|array',
+            'total_price' => 'required|numeric',
+            'status' => 'required|string|in:Pending,Canceled,Shipped,Delivered',
         ]);
 
-        // Create a new order
         $order = Order::create([
             'user_id' => $user->id,
-            'total_price' => $request->total_price, // Updated to match migration
+            'total_price' => $request->total_price,
             'status' => $request->status,
         ]);
 
@@ -63,7 +60,7 @@ class OrderController extends Controller
         }
 
         $request->validate([
-            'status' => 'required|string|max:255',
+            'status' => 'required|string|in:Pending,Canceled,Shipped,Delivered',
         ]);
 
         $order->status = $request->status;
@@ -71,6 +68,7 @@ class OrderController extends Controller
 
         return response()->json(['message' => 'Order status updated successfully', 'order' => $order], 200);
     }
+
 
     // Delete a specific order
     public function destroy($id, Request $request)
