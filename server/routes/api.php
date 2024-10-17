@@ -5,6 +5,8 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\UserController; 
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\OrderDetailsController; // Add the OrderDetailsController
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\RateLimitMiddleware;
@@ -50,5 +52,15 @@ Route::middleware([RateLimitMiddleware::class, StartSession::class])->group(func
         });
         Route::get('/users', [UserController::class, 'index']); // Get all users
         Route::get('/users/{id}', [UserController::class, 'show']); // Get individual user by ID
+
+        // Orders Routes
+        Route::prefix('orders')->group(function () {
+            Route::get('/', [OrderController::class, 'index']); // Get all orders for the authenticated user
+            Route::get('{order}', [OrderController::class, 'show']); // Get a specific order by ID
+            Route::get('{order}/details', [OrderDetailsController::class, 'show']); // Get details of a specific order
+            Route::post('/', [OrderController::class, 'create']); // Create a new order
+            Route::put('{order}/status', [OrderController::class, 'updateStatus']); // Update order status
+            Route::delete('{order}', [OrderController::class, 'destroy']); // Delete a specific order
+        });
     });
 });
