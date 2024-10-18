@@ -26,12 +26,12 @@
             </thead>
             <tbody>
               <tr v-for="order in filteredOrders" :key="order.id">
-                <td>{{ order.id }}</td>
-                <td>{{ order.date }}</td>
+                <td>{{ order.formatted_id }}</td>
+                <td>{{ new Date(order.created_at).toLocaleDateString() }}</td>
                 <td :class="getStatusClass(order.status)">
                   {{ order.status }}
                 </td>
-                <td>${{ order.total | currency }}</td>
+                <td>${{ order.total_price.toFixed(2) }}</td>
                 <td>
                   <button
                     @click="cancelOrder(order.id)"
@@ -59,58 +59,71 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
-import { useRouter } from "vue-router"; // Import useRouter
+import { ref, computed, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import axios from "axios";
 import Sidebar from "@/components/ui/Sidebar.vue";
 
-const router = useRouter(); // Initialize router
+// Set up router and data
+const router = useRouter();
 const searchQuery = ref("");
-const orders = ref([
-  {
-    id: "001",
-    date: "2024-10-01",
-    status: "Pending",
-    total: 1500,
-  },
-  {
-    id: "002",
-    date: "2024-10-05",
-    status: "Shipped",
-    total: 3000,
-  },
-  {
-    id: "003",
-    date: "2024-10-10",
-    status: "Delivered",
-    total: 2000,
-  },
-  {
-    id: "004",
-    date: "2024-10-12",
-    status: "Canceled",
-    total: 1200,
-  },
-]);
+const orders = ref([]);
+const API_URL = import.meta.env.VITE_API_URL; // Use the environment variable
 
-const filteredOrders = computed(() => {
-  return orders.value.filter((order) =>
-    order.id.toLowerCase().includes(searchQuery.value.toLowerCase())
-  );
+// Fetch orders when the component is mounted
+onMounted(async () => {
+  try {
+    const response = await axios.get(`${API_URL}/orders`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`, // Replace with your auth mechanism if different
+      },
+    });
+    // console.log(response.data); // Check the structure of response data
+    orders.value = response.data; // Adjust this if the response has a different structure
+  } catch (error) {
+    // console.error("Failed to fetch orders:", error);
+  }
 });
 
-// Update viewOrder to use router.push with the correct path
+// Filter the orders based on the search query
+const filteredOrders = computed(() => {
+  return orders.value
+    ? orders.value.filter((order) =>
+        order.id
+          .toString()
+          .toLowerCase()
+          .includes(searchQuery.value.toLowerCase())
+      )
+    : [];
+});
+
+// Navigate to the order details page
 const viewOrder = (orderId) => {
-  router.push({ name: "OrderDetails", params: { id: orderId } }); // Pass the orderId as a parameter
+  router.push({ name: "OrderDetails", params: { id: orderId } });
 };
 
-const cancelOrder = (orderId) => {
-  const order = orders.value.find((o) => o.id === orderId);
-  if (order && order.status === "Pending") {
-    order.status = "Canceled";
-    console.log("Order canceled:", orderId);
+// Cancel an order if it is in the 'Pending' state
+const cancelOrder = async (orderId) => {
+  try {
+    await axios.put(
+      `${API_URL}/orders/${orderId}/status`,
+      { status: "Canceled" },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    const order = orders.value.find((o) => o.id === orderId);
+    if (order) {
+      order.status = "Canceled";
+    }
+  } catch (error) {
+    // console.error("Failed to cancel order:", error);
   }
 };
 
+// Get CSS classes for order status
 const getStatusClass = (status) => {
   switch (status.toLowerCase()) {
     case "pending":
@@ -223,16 +236,6 @@ const getStatusClass = (status) => {
   background: var(--background-color);
   color: var(--dark-color);
   cursor: not-allowed;
-}
-
-.cancel-btn:hover:not(:disabled) {
-  background: transparent;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.cancel-btn:focus:not(:disabled) {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(15, 15, 15, 0.6);
 }
 
 .no-orders {
