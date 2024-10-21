@@ -4,6 +4,7 @@
     <main class="user-content">
       <Profile />
       <Shipping />
+      <Billing />
     </main>
   </div>
 </template>
@@ -12,12 +13,13 @@
 import Sidebar from "@/components/ui/Sidebar.vue";
 import Profile from "@/components/ui/Profile.vue";
 import Shipping from "@/components/ui/Shipping.vue";
+import Billing from "@/components/ui/Billing.vue";
 </script>
 
 <style scoped>
 .dashboard {
   display: flex;
-  height: 150vh;
+  height: 240vh;
   background: var(--background-color);
 }
 
