@@ -27,7 +27,7 @@ import { useToast } from "vue-toast-notification";
 const toast = useToast();
 
 const user = ref({
-  id: null, // Add id property to the user object
+  id: null,
   name: "",
   email: "",
   phone: "",
@@ -43,10 +43,10 @@ onMounted(async () => {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     });
-    user.value.id = userResponse.data.id; // Get the user ID
+    user.value.id = userResponse.data.id;
     user.value.name = userResponse.data.name;
     user.value.email = userResponse.data.email;
-    user.value.phone = userResponse.data.phonenumber || ""; // Set phone if available
+    user.value.phone = userResponse.data.phonenumber || "";
   } catch (error) {
     console.error("Error fetching user data:", error);
     toast.error("Failed to load user data.");
@@ -55,21 +55,53 @@ onMounted(async () => {
 
 const saveProfile = async () => {
   try {
-    // Ensure user.id is present before sending the request
     if (!user.value.id) {
       throw new Error("User ID is missing.");
     }
 
-    // Update user profile
-    await axios.put(`${API_URL}/users/${user.value.id}`, user.value, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
-    toast.success("Profile updated successfully!");
+    // If phone number is present, update the profile
+    if (user.value.phone) {
+      await axios.put(
+        `${API_URL}/users/${user.value.id}`,
+        {
+          name: user.value.name,
+          email: user.value.email,
+          phonenumber: user.value.phone,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      toast.success("Profile updated successfully!");
+    } else {
+      // If phone number is not present, create it using a POST request
+      await addPhoneNumber();
+    }
   } catch (error) {
     console.error("Error updating profile:", error);
     toast.error("Failed to update profile.");
+  }
+};
+
+const addPhoneNumber = async () => {
+  try {
+    await axios.post(
+      `${API_URL}/users/${user.value.id}/phonenumber`,
+      {
+        phonenumber: user.value.phone,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    toast.success("Phone number added successfully!");
+  } catch (error) {
+    console.error("Error adding phone number:", error);
+    toast.error("Failed to add phone number.");
   }
 };
 </script>
