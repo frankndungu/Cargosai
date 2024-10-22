@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://localhost:3000'],
+    'allowed_origins' => ['http://localhost:3000', 'https://h4z3099s-3000.inc1.devtunnels.ms/'],
 
     'allowed_origins_patterns' => [],
 

@@ -5,18 +5,34 @@
       <div class="order-details">
         <h2>Order Details for Order ID: {{ orderId }}</h2>
         <div v-if="order">
-          <p><strong>Date:</strong> {{ order.date }}</p>
+          <p>
+            <strong>Date:</strong>
+            {{ new Date(order.created_at).toLocaleDateString() }}
+          </p>
           <p>
             <strong>Status:</strong>
             <span :class="getStatusClass(order.status)">{{
               order.status
             }}</span>
           </p>
-          <p><strong>Total:</strong> ${{ order.total | currency }}</p>
+          <p><strong>Total:</strong> ${{ order.total_price | currency }}</p>
+
           <h3>Items:</h3>
-          <ul>
-            <li v-for="item in order.items" :key="item.id">
-              {{ item.name }} - ${{ item.price }} x {{ item.quantity }}
+          <ul class="items-list">
+            <li v-for="item in order.items" :key="item.id" class="item">
+              <img
+                :src="item.image_url"
+                alt="Product image"
+                class="product-image"
+              />
+              <div class="item-details">
+                <p class="item-name">{{ item.name }}</p>
+                <p class="item-price">
+                  ${{ item.price | currency }} x {{ item.quantity }} = ${{
+                    (item.price * item.quantity).toFixed(2)
+                  }}
+                </p>
+              </div>
             </li>
           </ul>
         </div>
@@ -31,48 +47,29 @@
 import Sidebar from "@/components/ui/Sidebar.vue";
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-
-const route = useRoute();
-const router = useRouter();
+import axios from "axios";
 
 // Get the order ID from the route parameters
+const route = useRoute();
+const router = useRouter();
 const orderId = route.params.id;
-
-// Mock data for demonstration purposes
-const orders = [
-  {
-    id: "001",
-    date: "2024-10-01",
-    status: "Pending",
-    total: 1500,
-    items: [
-      { id: "item1", name: "Product A", price: 500, quantity: 2 },
-      { id: "item2", name: "Product B", price: 500, quantity: 1 },
-    ],
-  },
-  {
-    id: "002",
-    date: "2024-10-05",
-    status: "Shipped",
-    total: 3000,
-    items: [{ id: "item3", name: "Product C", price: 1000, quantity: 3 }],
-  },
-  {
-    id: "003",
-    date: "2024-10-10",
-    status: "Delivered",
-    total: 2000,
-    items: [{ id: "item4", name: "Product D", price: 1000, quantity: 2 }],
-  },
-];
+const API_URL = import.meta.env.VITE_API_URL;
 
 // Reactive variable to hold the order details
 const order = ref(null);
 
-// Fetch order details based on orderId
-const fetchOrderDetails = () => {
-  const foundOrder = orders.find((o) => o.id === orderId);
-  order.value = foundOrder || null; // Set the order or null if not found
+// Fetch order details from the backend based on orderId
+const fetchOrderDetails = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/orders/${orderId}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    order.value = response.data;
+  } catch (error) {
+    console.error("Failed to fetch order details:", error);
+  }
 };
 
 // Lifecycle hook to fetch order details on component mount
@@ -126,6 +123,39 @@ const currency = (value) => {
 
 .status-canceled {
   color: red;
+}
+
+.items-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  padding: 10px 0;
+}
+
+.product-image {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+.item-details {
+  flex-grow: 1;
+}
+
+.item-name {
+  font-weight: 600;
+}
+
+.item-price {
+  color: var(--secondary-color);
 }
 
 button {

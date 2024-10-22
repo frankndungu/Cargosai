@@ -52,6 +52,10 @@ Route::middleware([RateLimitMiddleware::class, StartSession::class])->group(func
         });
         Route::get('/users', [UserController::class, 'index']); // Get all users
         Route::get('/users/{id}', [UserController::class, 'show']); // Get individual user by ID
+        Route::put('/users/{id}', [UserController::class, 'update']); // Add this line to update user
+        Route::post('/users/{id}/phonenumber', [UserController::class, 'createPhoneNumber']); // Create phone number
+        Route::put('/users/{id}/phonenumber', [UserController::class, 'updatePhoneNumber']); // Update phone number
+        Route::delete('/users/{id}/phonenumber', [UserController::class, 'deletePhoneNumber']); // Delete phone number
 
         // Orders Routes
         Route::prefix('orders')->group(function () {

@@ -20,17 +20,57 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import axios from "axios";
+import { useToast } from "vue-toast-notification";
+
+const toast = useToast();
 
 const user = ref({
-  name: "John Doe",
-  email: "john@example.com",
-  phone: "+1 123-456-7890",
+  id: null, // Add id property to the user object
+  name: "",
+  email: "",
+  phone: "",
 });
 
-const saveProfile = () => {
-  console.log("Profile saved:", user.value);
-  // Implement actual save logic here
+const API_URL = import.meta.env.VITE_API_URL;
+
+onMounted(async () => {
+  try {
+    // Fetch user info
+    const userResponse = await axios.get(`${API_URL}/user`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    user.value.id = userResponse.data.id; // Get the user ID
+    user.value.name = userResponse.data.name;
+    user.value.email = userResponse.data.email;
+    user.value.phone = userResponse.data.phonenumber || ""; // Set phone if available
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    toast.error("Failed to load user data.");
+  }
+});
+
+const saveProfile = async () => {
+  try {
+    // Ensure user.id is present before sending the request
+    if (!user.value.id) {
+      throw new Error("User ID is missing.");
+    }
+
+    // Update user profile
+    await axios.put(`${API_URL}/users/${user.value.id}`, user.value, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    toast.success("Profile updated successfully!");
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    toast.error("Failed to update profile.");
+  }
 };
 </script>
 
