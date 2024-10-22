@@ -38,7 +38,7 @@ class UserController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
-            'phonenumber' => 'nullable|string|max:15', // Adjust the validation as needed
+            'phonenumber' => 'nullable|string|max:15|unique:users,phonenumber,' . $id, // Unique validation excluding the current user's ID
         ]);
 
         // Update user data
@@ -51,7 +51,7 @@ class UserController extends Controller
     public function createPhoneNumber(Request $request, $id)
     {
         $request->validate([
-            'phonenumber' => 'required|string|max:20',
+            'phonenumber' => 'required|string|max:20|unique:users,phonenumber',
         ]);
 
         $user = User::find($id);
@@ -66,22 +66,22 @@ class UserController extends Controller
 
     // Update the phone number for a user
     public function updatePhoneNumber(Request $request, $id)
-{
-    $request->validate([
-        'phonenumber' => 'required|string|max:20',
-    ]);
+    {
+        $request->validate([
+            'phonenumber' => 'required|string|max:20|unique:users,phonenumber,' . $id, // Ensure phone number is unique but exclude the current user's ID
+        ]);
 
-    $user = User::find($id);
-    
-    if (!$user) {
-        return response()->json(['message' => 'User not found'], 404);
+        $user = User::find($id);
+        
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $user->phonenumber = $request->phonenumber;
+        $user->save();
+
+        return response()->json(['message' => 'Phone number updated successfully.'], 200);
     }
-
-    $user->phonenumber = $request->phonenumber;
-    $user->save();
-
-    return response()->json(['message' => 'Phone number updated successfully.'], 200);
-}
 
     // Delete the phone number for a user
     public function deletePhoneNumber($id)
