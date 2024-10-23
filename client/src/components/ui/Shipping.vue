@@ -45,13 +45,13 @@
 import { ref, onMounted } from "vue";
 import axios from "axios";
 import { useToast } from "vue-toast-notification";
-import { useStore } from "vuex"; // Import useStore from Vuex
+import { useStore } from "vuex";
 
 const toast = useToast();
 const API_URL = import.meta.env.VITE_API_URL;
 
-const store = useStore(); // Access the Vuex store
-const userId = store.state.user.id; // Get the logged-in user's ID
+const store = useStore();
+const userId = store.state.user.id;
 
 const shippingAddress = ref({
   id: null,
@@ -64,7 +64,7 @@ const shippingAddress = ref({
 
 const countries = ref([]);
 
-// Fetch countries from API
+// Fetch countries and shipping address
 onMounted(async () => {
   try {
     const response = await axios.get("https://restcountries.com/v3.1/all");
@@ -95,6 +95,9 @@ onMounted(async () => {
         city: address.city,
         postalCode: address.postal_code,
       };
+    } else {
+      // Show info toast if no address is found
+      toast.info("No shipping address found, please enter one.");
     }
   } catch (error) {
     console.error("Error fetching countries or address:", error);
@@ -126,7 +129,7 @@ const saveShippingAddress = async () => {
       await axios.post(
         `${API_URL}/shipping-address/create`,
         {
-          user_id: userId, // Use the dynamic user ID
+          user_id: userId,
           address1: shippingAddress.value.address1,
           country: shippingAddress.value.country,
           state: shippingAddress.value.state,
@@ -177,7 +180,8 @@ const saveShippingAddress = async () => {
   font-weight: 500;
 }
 
-.form-group input {
+.form-group input,
+.form-group select {
   width: 100%;
   padding: 0.5rem;
   border: 1px solid;

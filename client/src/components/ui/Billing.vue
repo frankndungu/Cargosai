@@ -19,12 +19,12 @@
         />
       </div>
       <div class="form-group">
-        <label for="billingCity">City:</label>
-        <input id="billingCity" v-model="billingAddress.city" type="text" />
-      </div>
-      <div class="form-group">
         <label for="billingState">State/Province:</label>
         <input id="billingState" v-model="billingAddress.state" type="text" />
+      </div>
+      <div class="form-group">
+        <label for="billingCity">City:</label>
+        <input id="billingCity" v-model="billingAddress.city" type="text" />
       </div>
       <div class="form-group">
         <label for="billingPostalCode">Postal Code:</label>
@@ -43,88 +43,97 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import { useStore } from "vuex";
+import axios from "axios";
 import { useToast } from "vue-toast-notification";
+import { useStore } from "vuex";
+
+const toast = useToast();
+const API_URL = import.meta.env.VITE_API_URL;
 
 const store = useStore();
-const toast = useToast();
+const userId = store.state.user.id; // Get the logged-in user's ID
+
 const billingAddress = ref({
+  id: null,
   address1: "",
   country: "",
-  city: "",
   state: "",
+  city: "",
   postalCode: "",
 });
 
-const fetchBillingAddress = async () => {
+onMounted(async () => {
   try {
-    const userId = store.state.user.id;
-    // console.log("Fetching billing address for user ID:", userId);
-
-    const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/billing-address/user/${userId}`,
+    // Fetch existing billing address for the user
+    const response = await axios.get(
+      `${API_URL}/billing-address/user/${userId}`,
       {
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }
     );
-    if (!response.ok) {
-      throw new Error("Failed to fetch billing address.");
-    }
-    const data = await response.json();
-    // console.log("Fetched billing address:", data);
 
-    // If data exists, map it to the billingAddress object
-    if (Array.isArray(data) && data.length > 0) {
+    if (response.data.length > 0) {
+      const address = response.data[0];
       billingAddress.value = {
-        address1: data[0].address1 || "",
-        country: data[0].country || "",
-        city: data[0].city || "",
-        state: data[0].state || "",
-        postalCode: data[0].postal_code || "",
+        id: address.id,
+        address1: address.address1,
+        country: address.country,
+        state: address.state,
+        city: address.city,
+        postalCode: address.postal_code,
       };
     } else {
       toast.info("No billing address found, please enter one.");
     }
   } catch (error) {
-    toast.error("Error fetching billing address.");
     console.error("Error fetching billing address:", error);
+    toast.error("Failed to load billing address.");
   }
-};
+});
 
 const saveBillingAddress = async () => {
   try {
-    const userId = store.state.user.id;
-    // console.log("Saving billing address for user ID:", userId);
-    // console.log("Billing address to save:", billingAddress.value);
+    const headers = {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    };
 
-    const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/billing-address/create`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+    if (billingAddress.value.id) {
+      // Update existing billing address
+      await axios.put(
+        `${API_URL}/billing-address/update/${billingAddress.value.id}`,
+        {
+          address1: billingAddress.value.address1,
+          country: billingAddress.value.country,
+          state: billingAddress.value.state,
+          city: billingAddress.value.city,
+          postal_code: billingAddress.value.postalCode,
         },
-        body: JSON.stringify({ ...billingAddress.value, user_id: userId }),
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Failed to save billing address.");
+        { headers }
+      );
+      toast.success("Billing address updated successfully!");
+    } else {
+      // Create new billing address
+      await axios.post(
+        `${API_URL}/billing-address/create`,
+        {
+          user_id: userId,
+          address1: billingAddress.value.address1,
+          country: billingAddress.value.country,
+          state: billingAddress.value.state,
+          city: billingAddress.value.city,
+          postal_code: billingAddress.value.postalCode,
+        },
+        { headers }
+      );
+      toast.success("Billing address saved successfully!");
     }
-
-    toast.success("Billing Address saved successfully!");
   } catch (error) {
-    toast.error("Error saving billing address.");
     console.error("Error saving billing address:", error);
+    toast.error("Failed to save billing address.");
   }
 };
-
-// Fetch the billing address on component mount
-onMounted(fetchBillingAddress);
 </script>
 
 <style scoped>
