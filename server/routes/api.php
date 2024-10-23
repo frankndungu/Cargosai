@@ -4,9 +4,10 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\CartController;
-use App\Http\Controllers\UserController; 
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrderController;
-use App\Http\Controllers\OrderDetailsController; // Add the OrderDetailsController
+use App\Http\Controllers\OrderDetailsController;
+use App\Http\Controllers\ShippingAddressController; // Add the ShippingAddressController
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\RateLimitMiddleware;
@@ -52,10 +53,18 @@ Route::middleware([RateLimitMiddleware::class, StartSession::class])->group(func
         });
         Route::get('/users', [UserController::class, 'index']); // Get all users
         Route::get('/users/{id}', [UserController::class, 'show']); // Get individual user by ID
-        Route::put('/users/{id}', [UserController::class, 'update']); // Add this line to update user
+        Route::put('/users/{id}', [UserController::class, 'update']); // Update user
         Route::post('/users/{id}/phonenumber', [UserController::class, 'createPhoneNumber']); // Create phone number
         Route::put('/users/{id}/phonenumber', [UserController::class, 'updatePhoneNumber']); // Update phone number
         Route::delete('/users/{id}/phonenumber', [UserController::class, 'deletePhoneNumber']); // Delete phone number
+
+        // Shipping Address Routes
+        Route::prefix('shipping-address')->group(function () {
+            Route::get('/user/{userId}', [ShippingAddressController::class, 'index']); // Fetch all addresses for a user
+            Route::post('/create', [ShippingAddressController::class, 'store']); // Store new shipping address
+            Route::put('/update/{id}', [ShippingAddressController::class, 'update']); // Update an existing shipping address
+            Route::get('/{id}', [ShippingAddressController::class, 'show']); // Get a specific shipping address by ID
+        });
 
         // Orders Routes
         Route::prefix('orders')->group(function () {

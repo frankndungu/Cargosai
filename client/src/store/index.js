@@ -44,6 +44,8 @@ export default createStore({
       }
       return "";
     },
+    // New getter to retrieve the user ID
+    userId: (state) => (state.user ? state.user.id : null), // Getter for user ID
   },
   mutations: {
     ADD_TO_CART(state, product) {

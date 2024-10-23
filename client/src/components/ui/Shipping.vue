@@ -8,15 +8,23 @@
       </div>
       <div class="form-group">
         <label for="country">Country:</label>
-        <input id="country" v-model="shippingAddress.country" type="text" />
-      </div>
-      <div class="form-group">
-        <label for="city">City:</label>
-        <input id="city" v-model="shippingAddress.city" type="text" />
+        <select id="country" v-model="shippingAddress.country">
+          <option
+            v-for="country in countries"
+            :key="country.code"
+            :value="country.name"
+          >
+            {{ country.name }}
+          </option>
+        </select>
       </div>
       <div class="form-group">
         <label for="state">State/Province:</label>
         <input id="state" v-model="shippingAddress.state" type="text" />
+      </div>
+      <div class="form-group">
+        <label for="city">City:</label>
+        <input id="city" v-model="shippingAddress.city" type="text" />
       </div>
       <div class="form-group">
         <label for="postalCode">Postal Code:</label>
@@ -34,19 +42,105 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import axios from "axios";
+import { useToast } from "vue-toast-notification";
+import { useStore } from "vuex"; // Import useStore from Vuex
+
+const toast = useToast();
+const API_URL = import.meta.env.VITE_API_URL;
+
+const store = useStore(); // Access the Vuex store
+const userId = store.state.user.id; // Get the logged-in user's ID
 
 const shippingAddress = ref({
-  address: "",
+  id: null,
+  address1: "",
   country: "",
-  city: "",
   state: "",
+  city: "",
   postalCode: "",
 });
 
-const saveShippingAddress = () => {
-  console.log("Shipping Address saved:", shippingAddress.value);
-  // Implement actual save logic here, such as making an API call
+const countries = ref([]);
+
+// Fetch countries from API
+onMounted(async () => {
+  try {
+    const response = await axios.get("https://restcountries.com/v3.1/all");
+    countries.value = response.data
+      .map((country) => ({
+        name: country.name.common,
+        code: country.cca2,
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+
+    // Fetch existing shipping address for the user
+    const addressResponse = await axios.get(
+      `${API_URL}/shipping-address/user/${userId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+
+    if (addressResponse.data.length > 0) {
+      const address = addressResponse.data[0];
+      shippingAddress.value = {
+        id: address.id,
+        address1: address.address1,
+        country: address.country,
+        state: address.state,
+        city: address.city,
+        postalCode: address.postal_code,
+      };
+    }
+  } catch (error) {
+    console.error("Error fetching countries or address:", error);
+    toast.error("Failed to load countries or shipping address.");
+  }
+});
+
+// Save or update shipping address
+const saveShippingAddress = async () => {
+  try {
+    const headers = {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    };
+
+    if (shippingAddress.value.id) {
+      await axios.put(
+        `${API_URL}/shipping-address/update/${shippingAddress.value.id}`,
+        {
+          address1: shippingAddress.value.address1,
+          country: shippingAddress.value.country,
+          state: shippingAddress.value.state,
+          city: shippingAddress.value.city,
+          postal_code: shippingAddress.value.postalCode,
+        },
+        { headers }
+      );
+      toast.success("Shipping address updated successfully!");
+    } else {
+      await axios.post(
+        `${API_URL}/shipping-address/create`,
+        {
+          user_id: userId, // Use the dynamic user ID
+          address1: shippingAddress.value.address1,
+          country: shippingAddress.value.country,
+          state: shippingAddress.value.state,
+          city: shippingAddress.value.city,
+          postal_code: shippingAddress.value.postalCode,
+        },
+        { headers }
+      );
+      toast.success("Shipping address saved successfully!");
+    }
+  } catch (error) {
+    console.error("Error saving shipping address:", error);
+    toast.error("Failed to save shipping address.");
+  }
 };
 </script>
 
