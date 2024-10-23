@@ -12,11 +12,16 @@
       </div>
       <div class="form-group">
         <label for="billingCountry">Country:</label>
-        <input
-          id="billingCountry"
-          v-model="billingAddress.country"
-          type="text"
-        />
+        <select id="billingCountry" v-model="billingAddress.country">
+          <option value="" disabled>Select your country</option>
+          <option
+            v-for="country in countries"
+            :key="country.code"
+            :value="country.name"
+          >
+            {{ country.name }}
+          </option>
+        </select>
       </div>
       <div class="form-group">
         <label for="billingState">State/Province:</label>
@@ -62,6 +67,8 @@ const billingAddress = ref({
   postalCode: "",
 });
 
+const countries = ref([]); // Array to hold countries
+
 onMounted(async () => {
   try {
     // Fetch existing billing address for the user
@@ -87,9 +94,20 @@ onMounted(async () => {
     } else {
       toast.info("No billing address found, please enter one.");
     }
+
+    // Fetch countries from the REST Countries API
+    const countriesResponse = await axios.get(
+      "https://restcountries.com/v3.1/all"
+    );
+    countries.value = countriesResponse.data
+      .map((country) => ({
+        name: country.name.common,
+        code: country.cca2,
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name));
   } catch (error) {
-    console.error("Error fetching billing address:", error);
-    toast.error("Failed to load billing address.");
+    console.error("Error fetching billing address or countries:", error);
+    toast.error("Failed to load billing address or countries.");
   }
 });
 
@@ -169,7 +187,8 @@ const saveBillingAddress = async () => {
   font-weight: 500;
 }
 
-.form-group input {
+.form-group input,
+.form-group select {
   width: 100%;
   padding: 0.5rem;
   border: 1px solid;
