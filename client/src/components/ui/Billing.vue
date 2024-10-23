@@ -42,8 +42,12 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { useStore } from "vuex";
+import { useToast } from "vue-toast-notification";
 
+const store = useStore();
+const toast = useToast();
 const billingAddress = ref({
   address1: "",
   country: "",
@@ -52,16 +56,75 @@ const billingAddress = ref({
   postalCode: "",
 });
 
-const saveBilling = ref(false);
+const fetchBillingAddress = async () => {
+  try {
+    const userId = store.state.user.id;
+    // console.log("Fetching billing address for user ID:", userId);
 
-const saveBillingAddress = () => {
-  console.log("Billing Address saved:", billingAddress.value);
-  // Implement actual save logic here, such as making an API call
-  if (saveBilling.value) {
-    // Logic to save billing address to user's profile if checked
-    console.log("Billing Address saved to profile:", billingAddress.value);
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/billing-address/user/${userId}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch billing address.");
+    }
+    const data = await response.json();
+    // console.log("Fetched billing address:", data);
+
+    // If data exists, map it to the billingAddress object
+    if (Array.isArray(data) && data.length > 0) {
+      billingAddress.value = {
+        address1: data[0].address1 || "",
+        country: data[0].country || "",
+        city: data[0].city || "",
+        state: data[0].state || "",
+        postalCode: data[0].postal_code || "",
+      };
+    } else {
+      toast.info("No billing address found, please enter one.");
+    }
+  } catch (error) {
+    toast.error("Error fetching billing address.");
+    console.error("Error fetching billing address:", error);
   }
 };
+
+const saveBillingAddress = async () => {
+  try {
+    const userId = store.state.user.id;
+    // console.log("Saving billing address for user ID:", userId);
+    // console.log("Billing address to save:", billingAddress.value);
+
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/billing-address/create`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({ ...billingAddress.value, user_id: userId }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to save billing address.");
+    }
+
+    toast.success("Billing Address saved successfully!");
+  } catch (error) {
+    toast.error("Error saving billing address.");
+    console.error("Error saving billing address:", error);
+  }
+};
+
+// Fetch the billing address on component mount
+onMounted(fetchBillingAddress);
 </script>
 
 <style scoped>

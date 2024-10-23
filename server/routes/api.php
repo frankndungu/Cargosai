@@ -8,6 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderDetailsController;
 use App\Http\Controllers\ShippingAddressController; // Add the ShippingAddressController
+use App\Http\Controllers\BillingAddressController; // Add the BillingAddressController
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\RateLimitMiddleware;
@@ -64,6 +65,14 @@ Route::middleware([RateLimitMiddleware::class, StartSession::class])->group(func
             Route::post('/create', [ShippingAddressController::class, 'store']); // Store new shipping address
             Route::put('/update/{id}', [ShippingAddressController::class, 'update']); // Update an existing shipping address
             Route::get('/{id}', [ShippingAddressController::class, 'show']); // Get a specific shipping address by ID
+        });
+
+        // Billing Address Routes
+        Route::prefix('billing-address')->group(function () {
+            Route::get('/user/{userId}', [BillingAddressController::class, 'index']); // Fetch all billing addresses for a user
+            Route::post('/create', [BillingAddressController::class, 'store']); // Store new billing address
+            Route::put('/update/{id}', [BillingAddressController::class, 'update']); // Update an existing billing address
+            Route::get('/{id}', [BillingAddressController::class, 'show']); // Get a specific billing address by ID
         });
 
         // Orders Routes
