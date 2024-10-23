@@ -34,7 +34,6 @@
         <template v-if="isAuthenticated">
           <template v-if="isDashboard">
             <span class="navbar__user">Hi, {{ userFirstName }}</span>
-            <button @click="logout">Logout</button>
           </template>
           <template v-else>
             <router-link to="/dashboard" @click="closeMenu">
@@ -85,9 +84,5 @@ const toggleMenu = () => {
 
 const closeMenu = () => {
   isMenuOpen.value = false;
-};
-
-const logout = () => {
-  store.dispatch("logout");
 };
 </script>
