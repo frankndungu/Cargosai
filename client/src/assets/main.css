@@ -2864,6 +2864,7 @@ textarea.error {
 @media (max-width: 768px) {
   .dashboard {
     flex-direction: column;
+    height: auto;
   }
 
   .sidebar {

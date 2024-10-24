@@ -38,6 +38,7 @@ import Billing from "@/components/ui/Billing.vue";
 @media (max-width: 768px) {
   .dashboard {
     flex-direction: column;
+    height: auto;
   }
 
   .sidebar {
