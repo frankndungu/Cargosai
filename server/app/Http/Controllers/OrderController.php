@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\OrderItem; // Ensure this is included
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
+use Exception;
 
 class OrderController extends Controller
 {
@@ -40,11 +43,15 @@ class OrderController extends Controller
 
     // Create a new order
     public function create(Request $request)
-    {
+{
+    try {
         $user = $request->user();
 
         $request->validate([
             'items' => 'required|array',
+            'items.*.product_id' => 'required|integer|exists:products,id',
+            'items.*.price' => 'required|numeric',
+            'items.*.quantity' => 'required|integer|min:1',
             'total_price' => 'required|numeric',
             'status' => 'required|string|in:Pending,Canceled,Shipped,Delivered',
         ]);
@@ -55,8 +62,31 @@ class OrderController extends Controller
             'status' => $request->status,
         ]);
 
+        // Create each order item
+        foreach ($request->items as $item) {
+            OrderItem::create([
+                'order_id' => $order->id,
+                'product_id' => $item['product_id'],
+                'price' => $item['price'],
+                'quantity' => $item['quantity'],
+                'total' => $item['price'] * $item['quantity'], // Calculate total
+            ]);
+        }
+
         return response()->json(['message' => 'Order created successfully', 'order' => $order], 201);
+
+    } catch (QueryException $qe) {
+        return response()->json([
+            'message' => 'Database error during order creation',
+            'error' => $qe->getMessage()
+        ], 500);
+    } catch (Exception $e) {
+        return response()->json([
+            'message' => 'An error occurred during order creation',
+            'error' => $e->getMessage()
+        ], 500);
     }
+}
 
     // Update the status of a specific order
     public function updateStatus(Request $request, $id)
