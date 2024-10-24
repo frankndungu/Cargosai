@@ -87,14 +87,13 @@ onMounted(async () => {
 
 // Filter the orders based on the search query
 const filteredOrders = computed(() => {
-  return orders.value
-    ? orders.value.filter((order) =>
-        order.id
-          .toString()
-          .toLowerCase()
-          .includes(searchQuery.value.toLowerCase())
-      )
-    : [];
+  if (!searchQuery.value) return orders.value; // Return all orders if search query is empty
+  return orders.value.filter((order) =>
+    order.formatted_id
+      .toString()
+      .toLowerCase()
+      .includes(searchQuery.value.toLowerCase())
+  );
 });
 
 // Navigate to the order details page
