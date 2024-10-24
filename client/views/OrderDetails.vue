@@ -3,9 +3,9 @@
     <Sidebar />
     <main class="main-content">
       <div class="order-details">
-        <h2>Order ID: {{ orderId }}</h2>
+        <h2>Order ID: #{{ orderId }}</h2>
         <div v-if="order" class="order-info">
-          <p>
+          <p class="date">
             <strong>Date:</strong>
             {{ new Date(order.created_at).toLocaleDateString() }}
           </p>
@@ -15,7 +15,9 @@
               {{ order.status }}
             </span>
           </p>
-          <p><strong>Total:</strong> ${{ order.total_price | currency }}</p>
+          <p class="total">
+            <strong>Total:</strong> ${{ order.total_price.toFixed(2) }}
+          </p>
 
           <h3>Items:</h3>
           <ul class="items-list">
@@ -28,8 +30,8 @@
               <div class="item-details">
                 <p class="item-name">{{ item.name }}</p>
                 <p class="item-price">
-                  ${{ item.price | currency }} x {{ item.quantity }} = ${{
-                    (item.price * item.quantity).toFixed(2)
+                  ${{ validatePrice(item.price) }} x {{ item.quantity }} = ${{
+                    validatePrice(item.price * item.quantity)
                   }}
                 </p>
                 <p class="item-description">{{ item.description }}</p>
@@ -37,7 +39,7 @@
             </li>
           </ul>
         </div>
-        <p v-else>Loading order details...</p>
+        <p v-else>Loading your order details...</p>
         <button @click="goBack" class="back-button">Back to Orders</button>
       </div>
     </main>
@@ -48,41 +50,27 @@
 import Sidebar from "@/components/ui/Sidebar.vue";
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import axios from "axios";
 
-// Dummy data for testing
-const order = ref({
-  id: 123,
-  created_at: "2024-10-24T10:00:00Z",
-  status: "Shipped",
-  total_price: 120.5,
-  items: [
-    {
-      id: 1,
-      name: "Maasai Beaded Necklace",
-      price: 30.0,
-      quantity: 2,
-      image_url: "https://via.placeholder.com/100",
-      description: "A beautiful handmade Maasai beaded necklace.",
-    },
-    {
-      id: 2,
-      name: "African Print Dress",
-      price: 60.0,
-      quantity: 1,
-      image_url: "https://via.placeholder.com/100",
-      description: "Elegant African print dress made with vibrant fabrics.",
-    },
-  ],
-});
-
+const order = ref(null);
 const route = useRoute();
 const router = useRouter();
-const orderId = route.params.id || order.value.id;
+const orderId = route.params.id;
 
-// Mock fetch function since we are using dummy data
-onMounted(() => {
-  // Normally, you would call your fetchOrderDetails method here.
-  console.log("Order details loaded with dummy data.");
+// Fetch order details when the component is mounted
+onMounted(async () => {
+  const API_URL = import.meta.env.VITE_API_URL; // Use the environment variable
+  try {
+    const response = await axios.get(`${API_URL}/orders/${orderId}/details`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`, // Replace with your auth mechanism if different
+      },
+    });
+    order.value = response.data; // Adjust based on the structure of your response
+    // console.log("Fetched order details:", order.value); // Log the order details
+  } catch (error) {
+    console.error("Failed to fetch order details:", error);
+  }
 });
 
 // Method to go back to the orders page
@@ -106,9 +94,16 @@ const getStatusClass = (status) => {
   }
 };
 
-// Currency filter for formatting total amounts
-const currency = (value) => {
-  return parseFloat(value).toFixed(2);
+// Validate price before formatting
+const validatePrice = (price) => {
+  if (typeof price === "number") {
+    return price.toFixed(2);
+  } else if (typeof price === "string" && !isNaN(price)) {
+    return parseFloat(price).toFixed(2);
+  } else {
+    console.warn("Invalid price value:", price);
+    return "0.00"; // Default value if price is invalid
+  }
 };
 </script>
 
@@ -128,6 +123,13 @@ const currency = (value) => {
   margin-bottom: 8px;
   color: var(--dark-color);
   line-height: 1.5;
+}
+
+.date {
+  font-weight: 650;
+}
+.total {
+  font-weight: 650;
 }
 
 .order-details h2 {
@@ -154,7 +156,7 @@ const currency = (value) => {
 }
 
 .status-delivered {
-  background: var(--shipped-color);
+  background: var(--green-color);
   color: var(--background-color);
   padding: 5px 10px;
   border-radius: 5px;
@@ -162,7 +164,7 @@ const currency = (value) => {
 }
 
 .status-canceled {
-  background: var(--cancel-color);
+  background: var(--canceled-color);
   color: var(--background-color);
   padding: 5px 10px;
   border-radius: 5px;
@@ -195,18 +197,22 @@ const currency = (value) => {
 }
 
 .item-name {
-  font-weight: 600;
+  font-weight: 700;
   color: var(--dark-color);
 }
 
 .item-price {
   color: var(--dark-color);
+  font-weight: 650;
 }
 
 .item-description {
   color: var(--dark-color);
   font-size: 0.9rem;
   margin-top: 5px;
+  font-weight: 600;
+  font-style: oblique;
+  line-height: 1.5;
 }
 
 .back-button {
