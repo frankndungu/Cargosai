@@ -1,12 +1,13 @@
 <template>
-  <div v-if="product" class="product-overview-wrapper">
+  <div class="product-overview-wrapper" v-if="product" data-aos="fade-up">
     <!-- Product Image Section -->
-    <div class="product-overview-container">
+    <div class="product-overview-container" data-aos="fade-left">
       <div class="product-overview-image">
         <img :src="product.image_url" alt="Product Image" />
       </div>
+
       <!-- Product Details Section -->
-      <div class="product-overview-details">
+      <div class="product-overview-details" data-aos="fade-right">
         <div class="product-status">
           <span v-if="product.stock > 0" class="product-status-badge">
             In stock
@@ -19,9 +20,7 @@
         <div class="product-price-rating">
           <span class="product-price-overview">${{ product.price }}</span>
           <div class="product-rating">
-            <span class="product-average-rating"
-              >⭐ ({{ averageRating }})
-            </span>
+            <span class="product-average-rating">⭐ ({{ averageRating }})</span>
             <span class="product-reviews">
               <a
                 href="#"
@@ -43,9 +42,11 @@
         </div>
       </div>
     </div>
+
     <div
       v-if="product.thumbnails && product.thumbnails.length > 0"
       class="product-overview-thumbnails"
+      data-aos="fade-up"
     >
       <img
         v-for="(thumbnail, index) in product.thumbnails"
@@ -56,13 +57,13 @@
         @click="setCurrentImage(thumbnail.src)"
       />
     </div>
-  </div>
 
-  <!-- Product information -->
-  <div class="product-info-container">
-    <ProductInformation />
-    <Vendor />
-    <ProductReviews :reviews="reviews" :product="product" />
+    <!-- Product information -->
+    <div class="product-info-container" data-aos="fade-up">
+      <ProductInformation />
+      <Vendor />
+      <ProductReviews :reviews="reviews" :product="product" />
+    </div>
   </div>
 </template>
 
@@ -70,6 +71,8 @@
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
+import AOS from "aos";
+import "aos/dist/aos.css";
 import { useStore } from "vuex";
 import ProductInformation from "../products/ProductInformation.vue";
 import Vendor from "../products/Vendor.vue";
@@ -80,8 +83,8 @@ const API_URL = import.meta.env.VITE_API_URL;
 const route = useRoute();
 const store = useStore();
 const product = ref(null);
-const reviews = ref([]); // Create a ref for reviews
-const averageRating = ref(null); // New ref for average rating
+const reviews = ref([]);
+const averageRating = ref(null);
 
 // Fetch product data based on the slug
 const fetchProduct = async () => {
@@ -90,8 +93,8 @@ const fetchProduct = async () => {
       `${API_URL}/products/slug/${route.params.slug}`
     );
     product.value = response.data;
-    fetchReviews(product.value.id); // Fetch reviews after getting the product
-    fetchAverageRating(product.value.id); // Fetch average rating
+    await fetchReviews(product.value.id); // Fetch reviews after getting the product
+    await fetchAverageRating(product.value.id); // Fetch average rating
   } catch (error) {
     console.error("Failed to fetch product:", error);
   }
@@ -121,10 +124,12 @@ const fetchAverageRating = async (productId) => {
   }
 };
 
+// Update the product image when a thumbnail is clicked
 const setCurrentImage = (image) => {
-  product.value.image_url = image; // Update the product image when a thumbnail is clicked
+  product.value.image_url = image;
 };
 
+// Add product to cart
 const addToCart = () => {
   if (product.value) {
     store.dispatch("addToCart", product.value);
@@ -141,7 +146,181 @@ const scrollToReviews = () => {
   }
 };
 
+// Initialize fetching of product and AOS
 onMounted(() => {
   fetchProduct();
+  AOS.init(); // Initialize AOS for scroll animations
 });
 </script>
+
+<style>
+/* Product Overview */
+.product-overview-wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 40px 50px;
+  margin: 0 auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+.product-overview-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 50px;
+  align-items: flex-start;
+}
+.product-overview-image {
+  flex: 1;
+  max-width: 300px;
+}
+.product-overview-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  object-fit: cover;
+}
+.product-overview-details {
+  flex: 2;
+}
+
+/* Product Status Badge */
+.product-status {
+  margin-bottom: 10px;
+}
+
+.product-status-badge {
+  background: var(--green-color);
+  color: var(--background-color);
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  display: inline-block;
+}
+
+.product-status-badge-out {
+  background: var(--error-message);
+  color: var(--background-color);
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  display: inline-block;
+}
+
+/* Product Title */
+.product-title-overview {
+  font-size: var(--font-size-large);
+  font-weight: var(--font-bold);
+  margin-bottom: 20px;
+}
+
+/* Price and Rating Section */
+.product-price-rating {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.product-price-overview {
+  font-size: 1.9rem;
+  font-weight: bold;
+  color: var(--accent-color);
+}
+
+.product-rating {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.product-average-rating {
+  font-size: 1.2rem;
+}
+
+.product-review-link {
+  margin-left: 10px;
+  font-size: 1.2rem;
+  text-decoration: underline;
+  color: var(--dark-color);
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* Add to Cart Button */
+.product-add-to-cart {
+  background: var(--dark-tint);
+  color: var(--background-color);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+.product-add-to-cart:hover {
+  background-color: var(--dark-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.product-add-to-cart:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(15, 15, 15, 0.6);
+}
+
+.product-vendor-info {
+  margin-top: 15px;
+  padding: 10px;
+  width: 45%;
+  background: var(--secondary-color);
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+/* Thumbnails */
+.product-overview-thumbnails {
+  display: flex;
+  gap: 10px;
+  margin-left: -5px;
+  justify-content: flex-start;
+}
+.product-thumbnail {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border: 1px solid var(--dark-color-border);
+  border-radius: 5px;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+.product-thumbnail:hover {
+  border-color: var(--dark-color);
+}
+
+.product-info-container {
+  margin-top: 40px; /* Adjust this value as needed */
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .product-overview-wrapper {
+    padding: 40px 20px;
+  }
+  .product-overview-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  .product-overview-image,
+  .product-overview-details {
+    max-width: 100%;
+  }
+  .product-overview-thumbnails {
+    margin-top: 20px;
+  }
+  .product-vendor-info {
+    margin-top: 20px;
+    width: 100%;
+  }
+  .product-title-overview {
+    font-size: var(--h2-font-size);
+  }
+}
+</style>
