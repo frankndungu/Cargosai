@@ -57,9 +57,7 @@
         @click="setCurrentImage(thumbnail.src)"
       />
     </div>
-
-    <!-- Product information -->
-    <div class="product-info-container" data-aos="fade-up">
+    <div class="product-info">
       <ProductInformation />
       <Vendor />
       <ProductReviews :reviews="reviews" :product="product" />
@@ -74,6 +72,7 @@ import axios from "axios";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { useStore } from "vuex";
+import { useToast } from "vue-toast-notification";
 import ProductInformation from "../products/ProductInformation.vue";
 import Vendor from "../products/Vendor.vue";
 import ProductReviews from "../products/ProductReviews.vue";
@@ -82,6 +81,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 const route = useRoute();
 const store = useStore();
+const toast = useToast(); // Initialize toast
 const product = ref(null);
 const reviews = ref([]);
 const averageRating = ref(null);
@@ -133,13 +133,14 @@ const setCurrentImage = (image) => {
 const addToCart = () => {
   if (product.value) {
     store.dispatch("addToCart", product.value);
+    toast.success(`${product.value.name} has been added to your cart!`); // Show toast notification
   }
 };
 
 // Scroll to ProductReviews component
 const scrollToReviews = () => {
   const reviewsSection = document.querySelector(
-    ".product-info-container > .product-reviews-section"
+    ".product-info > .product-reviews-section"
   );
   if (reviewsSection) {
     reviewsSection.scrollIntoView({ behavior: "smooth" });
@@ -290,13 +291,10 @@ onMounted(() => {
   border-radius: 5px;
   cursor: pointer;
   transition: border-color 0.3s;
+  margin-bottom: 40px;
 }
 .product-thumbnail:hover {
   border-color: var(--dark-color);
-}
-
-.product-info-container {
-  margin-top: 40px; /* Adjust this value as needed */
 }
 
 /* Responsive Styles */
@@ -312,8 +310,12 @@ onMounted(() => {
   .product-overview-details {
     max-width: 100%;
   }
+  .product-add-to-cart {
+    width: 100%;
+  }
   .product-overview-thumbnails {
     margin-top: 20px;
+    justify-content: center;
   }
   .product-vendor-info {
     margin-top: 20px;
