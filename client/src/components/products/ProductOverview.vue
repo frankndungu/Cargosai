@@ -159,10 +159,10 @@ onMounted(() => {
 .product-overview-wrapper {
   display: flex;
   flex-direction: column;
+  background: var(--background-color);
   padding: 40px 50px;
   margin: 0 auto;
   border-radius: 10px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
 .product-overview-container {
   display: flex;
