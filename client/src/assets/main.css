@@ -2904,7 +2904,8 @@ textarea.error {
 }
 
 .admin-sales-chart {
-  background: #ddd;
+  background: var(--dark-color);
+  color: var(--background-color);
   padding: 20px;
   height: auto;
   text-align: center;
