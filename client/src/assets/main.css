@@ -2743,3 +2743,269 @@ textarea.error {
     height: auto;
   }
 }
+
+/* Admin Dashboard Styles */
+.admin-dashboard-container {
+  display: flex;
+  flex-direction: column;
+  padding: 40px 50px;
+  background: var(--background-color);
+}
+
+.admin-dashboard-header {
+  padding-bottom: 20px;
+  border-bottom: 1px solid #ccc;
+}
+
+.admin-nav-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.admin-nav-links {
+  display: flex;
+  gap: 20px;
+}
+
+.admin-nav-links a {
+  text-decoration: none;
+  color: var(--dark-color);
+}
+
+.admin-dashboard-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.admin-dashboard-title {
+  font-size: 1.8em;
+  color: var(--dark-colosr);
+}
+
+.admin-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.admin-date-picker {
+  padding: 5px 10px;
+  background: var(--background-color);
+  color: var(--dark-color);
+}
+
+.admin-download {
+  background: var(--dark-tint);
+  color: var(--background-color);
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.admin-download:hover {
+  background-color: var(--dark-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0);
+}
+
+.admin-download:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(15, 15, 15, 0.6);
+}
+
+.admin-dashboard-main {
+  width: 100%;
+}
+
+.admin-overview-tabs {
+  display: flex;
+  margin-top: 20px;
+}
+
+.admin-tab-button {
+  padding: 10px 20px;
+  margin-right: 10px;
+  border: none;
+  background: #ddd;
+  color: var(--dark-color-lighter);
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.admin-tab-button.active {
+  background: var(--dark-color);
+  color: var(--background-color);
+}
+
+.admin-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.admin-card {
+  background: var(--dark-color);
+  padding: 20px;
+  color: var(--background-color);
+  text-align: left; /* Align text to the left */
+  border-radius: 10px;
+  transition: background-color 0.3s;
+}
+
+.admin-card:hover {
+  background: #222;
+}
+
+.admin-card-content {
+  display: flex;
+  justify-content: space-between; /* Space between text and icon */
+  align-items: center;
+}
+
+.admin-card h3 {
+  margin: 0;
+  font-size: 1.2em;
+  color: var(--background-color);
+}
+
+.admin-card-icon {
+  font-size: 1em; /* Very small icon size */
+  font-weight: 650;
+  color: var(--background-color); /* Adjust icon color if needed */
+}
+
+.admin-card-value {
+  font-size: 1.8em;
+  margin: 10px 0;
+}
+
+.admin-card-change {
+  font-size: 0.9em;
+}
+
+.positive {
+  color: var(--green-color);
+}
+
+.neutral {
+  color: var(--green-color);
+}
+
+.admin-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.admin-sales-chart {
+  background: #ddd;
+  padding: 20px;
+  height: auto;
+  text-align: center;
+  border-radius: 10px;
+}
+
+.admin-recent-sales {
+  background: var(--dark-color);
+  padding: 20px;
+  color: var(--background-color);
+  border-radius: 10px;
+}
+
+.admin-recent-sales:hover {
+  background: #222;
+}
+
+.admin-recent-sales h3 {
+  margin-bottom: 10px;
+}
+
+.admin-recent-sales p {
+  margin: 2px 0 20px;
+  color: var(--background-color);
+}
+
+.admin-sales-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.admin-sales-name {
+  font-weight: bold;
+  color: var(--background-color);
+}
+
+.admin-sales-amount {
+  font-weight: 700;
+  color: var(--green-color);
+  font-size: 1.2em;
+  margin-top: 5px;
+}
+
+.admin-sales-email {
+  color: var(--background-color);
+  font-size: 0.9em;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .admin-dashboard-container {
+    padding: 20px;
+  }
+
+  .admin-nav-top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .admin-nav-links {
+    margin-bottom: 10px;
+  }
+
+  .admin-dashboard-actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .admin-actions {
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .admin-overview-tabs {
+    flex-direction: column;
+    gap: 10px; /* Adds spacing between tabs in mobile view */
+    width: 100%; /* Ensures tabs use full width */
+  }
+
+  .admin-tab-button {
+    width: 100%; /* Full width for tabs in mobile view */
+    text-align: left;
+    padding: 15px;
+  }
+
+  .admin-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .admin-card-value {
+    font-size: 1.5em; /* Adjust card value size */
+  }
+
+  .admin-content {
+    grid-template-columns: 1fr; /* Stack columns in mobile view */
+  }
+
+  .admin-sales-chart {
+    height: 300px; /* Fixed height for better appearance */
+  }
+}
