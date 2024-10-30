@@ -9,7 +9,6 @@
           <a href="#">Customers</a>
           <a href="#">Orders</a>
         </div>
-        <div class="admin-avatar">Admin Avatar ▼</div>
       </div>
 
       <!-- Dashboard Title and Actions -->
@@ -91,20 +90,16 @@
 </template>
 
 <script setup>
-import AdminAvatar from "@/components/admin/AdminAvatar.vue";
-
-const adminAvatarUrl = "https://via.placeholder.com/50"; // Replace with actual avatar URL
-const adminName = "John Doe"; // Replace with the logged-in admin name
-// Dummy data and functionality can be added here if needed
+// Optional script setup if needed
 </script>
 
 <style>
 /* Admin Dashboard Styles */
 .admin-dashboard-container {
-  display: flex;
-  flex-direction: column;
+  width: 100vw;
   padding: 40px 50px;
   background-color: #f4f4f9;
+  overflow-x: hidden;
 }
 
 .admin-dashboard-header {
@@ -116,7 +111,7 @@ const adminName = "John Doe"; // Replace with the logged-in admin name
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 .admin-nav-links {
@@ -129,22 +124,11 @@ const adminName = "John Doe"; // Replace with the logged-in admin name
   color: #333;
 }
 
-.admin-nav-links a:hover {
-  color: #555;
-}
-
-.admin-avatar {
-  cursor: pointer;
-  background: #444;
-  padding: 5px 10px;
-  border-radius: 20px;
-  color: #fff;
-}
-
 .admin-dashboard-actions {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .admin-dashboard-title {
@@ -154,7 +138,8 @@ const adminName = "John Doe"; // Replace with the logged-in admin name
 
 .admin-actions {
   display: flex;
-  gap: 20px;
+  gap: 10px;
+  align-items: center;
 }
 
 .admin-date-picker {
@@ -209,10 +194,6 @@ const adminName = "John Doe"; // Replace with the logged-in admin name
   transition: background-color 0.3s;
 }
 
-.admin-card:hover {
-  background-color: #444;
-}
-
 .admin-card h3 {
   margin: 0;
   font-size: 1.2em;
@@ -238,7 +219,7 @@ const adminName = "John Doe"; // Replace with the logged-in admin name
 
 .admin-content {
   display: grid;
-  grid-template-columns: 2fr 1fr; /* Adjusted to reduce chart width */
+  grid-template-columns: 2fr 1fr;
   gap: 20px;
   margin-top: 20px;
 }
@@ -265,16 +246,6 @@ const adminName = "John Doe"; // Replace with the logged-in admin name
 .admin-recent-sales p {
   margin: 2px 0 20px;
   color: #bbb;
-}
-
-.admin-recent-sales ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.admin-recent-sales li {
-  margin-top: 20px;
 }
 
 .admin-sales-item {
@@ -304,6 +275,7 @@ const adminName = "John Doe"; // Replace with the logged-in admin name
 @media (max-width: 768px) {
   .admin-dashboard-container {
     padding: 20px;
+    width: 100vw;
   }
 
   .admin-nav-top {
@@ -315,34 +287,32 @@ const adminName = "John Doe"; // Replace with the logged-in admin name
     margin-bottom: 10px;
   }
 
-  .admin-nav-links a {
-    padding: 5px 10px;
-  }
-
-  .admin-dashboard-title {
-    font-size: 1.5em;
-  }
-
-  .admin-actions {
+  .admin-dashboard-actions {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .admin-date-picker {
-    margin-bottom: 10px;
+  .admin-actions {
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .admin-overview-tabs {
+    flex-direction: column;
+    gap: 10px; /* Adds spacing between tabs in mobile view */
+    width: 100%; /* Ensures tabs use full width */
   }
 
   .admin-tab-button {
-    margin-right: 0;
-    margin-bottom: 10px;
+    width: 100%; /* Full width for tabs in mobile view */
+    text-align: left;
+    padding: 15px;
   }
 
   .admin-cards {
     grid-template-columns: repeat(2, 1fr);
-  }
-
-  .admin-card {
-    padding: 15px;
   }
 
   .admin-card-value {
@@ -351,22 +321,6 @@ const adminName = "John Doe"; // Replace with the logged-in admin name
 
   .admin-content {
     grid-template-columns: 1fr;
-  }
-
-  .admin-sales-chart {
-    margin-bottom: 20px;
-  }
-
-  .admin-recent-sales {
-    margin-top: 0;
-  }
-
-  .admin-recent-sales ul li {
-    margin-top: 15px;
-  }
-
-  .admin-sales-amount {
-    font-size: 1em;
   }
 }
 </style>
