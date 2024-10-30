@@ -3007,6 +3007,14 @@ textarea.error {
   }
 
   .admin-sales-chart {
-    height: 300px; /* Fixed height for better appearance */
+    height: auto; /* Make height auto for better responsiveness */
+    padding: 15px; /* Adjust padding */
+    margin-bottom: 20px; /* Add margin for spacing */
+  }
+
+  /* Ensure the chart can scale down */
+  .admin-sales-chart canvas {
+    max-width: 100%; /* Ensure the chart canvas doesn't exceed its container */
+    height: auto; /* Maintain aspect ratio */
   }
 }
