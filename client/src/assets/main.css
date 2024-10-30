@@ -2953,6 +2953,7 @@ textarea.error {
 .admin-sales-email {
   color: var(--background-color);
   font-size: 0.9em;
+  font-weight: 300;
 }
 
 /* Responsive Styles */
