@@ -15,7 +15,8 @@
       <div class="admin-dashboard-actions">
         <h1 class="admin-dashboard-title">Dashboard</h1>
         <div class="admin-actions">
-          <input type="date" class="admin-date-picker" />
+          <!-- Date Range Picker -->
+          <VueDatePicker v-model="date" range class="admin-date-picker" />
           <button class="admin-download">Download</button>
         </div>
       </div>
@@ -102,7 +103,19 @@
 </template>
 
 <script setup>
-// Optional script setup if needed
+import VueDatePicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
+
+import { ref, onMounted } from "vue";
+
+const date = ref();
+
+// For demo purposes assign range from the current date
+onMounted(() => {
+  const startDate = new Date();
+  const endDate = new Date(new Date().setDate(startDate.getDate() + 7));
+  date.value = [startDate, endDate];
+});
 </script>
 
 <style>
@@ -156,6 +169,8 @@
 
 .admin-date-picker {
   padding: 5px 10px;
+  background: var(--background-color);
+  color: var(--dark-color);
 }
 
 .admin-download {
