@@ -108,10 +108,10 @@
 <style>
 /* Admin Dashboard Styles */
 .admin-dashboard-container {
-  width: 100vw;
+  display: flex;
+  flex-direction: column;
   padding: 40px 50px;
   background: var(--background-color);
-  overflow-x: hidden;
 }
 
 .admin-dashboard-header {
@@ -217,6 +217,10 @@
   transition: background-color 0.3s;
 }
 
+.admin-card:hover {
+  background: #222;
+}
+
 .admin-card-content {
   display: flex;
   justify-content: space-between; /* Space between text and icon */
@@ -274,6 +278,10 @@
   border-radius: 10px;
 }
 
+.admin-recent-sales:hover {
+  background: #222;
+}
+
 .admin-recent-sales h3 {
   margin-bottom: 10px;
 }
@@ -310,7 +318,6 @@
 @media (max-width: 768px) {
   .admin-dashboard-container {
     padding: 20px;
-    width: 100vw;
   }
 
   .admin-nav-top {
