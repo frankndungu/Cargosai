@@ -33,22 +33,34 @@
       <!-- Cards Section -->
       <div class="admin-cards">
         <div class="admin-card">
-          <h3>Total Revenue</h3>
+          <div class="admin-card-content">
+            <h3>Total Revenue</h3>
+            <i class="fas fa-dollar-sign admin-card-icon"></i>
+          </div>
           <p class="admin-card-value">$45,231.89</p>
           <p class="admin-card-change positive">+20.1% from last month</p>
         </div>
         <div class="admin-card">
-          <h3>Subscriptions</h3>
+          <div class="admin-card-content">
+            <h3>Orders</h3>
+            <i class="fa-solid fa-bag-shopping admin-card-icon"></i>
+          </div>
           <p class="admin-card-value">+2350</p>
           <p class="admin-card-change positive">+18.0% from last month</p>
         </div>
         <div class="admin-card">
-          <h3>Sales</h3>
+          <div class="admin-card-content">
+            <h3>Sales</h3>
+            <i class="fas fa-wallet admin-card-icon"></i>
+          </div>
           <p class="admin-card-value">+12,234</p>
           <p class="admin-card-change positive">+19% from last month</p>
         </div>
         <div class="admin-card">
-          <h3>Active Now</h3>
+          <div class="admin-card-content">
+            <h3>Active Now</h3>
+            <i class="fa-solid fa-users admin-card-icon"></i>
+          </div>
           <p class="admin-card-value">+573</p>
           <p class="admin-card-change neutral">+201 since last hour</p>
         </div>
@@ -98,7 +110,7 @@
 .admin-dashboard-container {
   width: 100vw;
   padding: 40px 50px;
-  background-color: #f4f4f9;
+  background: var(--background-color);
   overflow-x: hidden;
 }
 
@@ -121,7 +133,7 @@
 
 .admin-nav-links a {
   text-decoration: none;
-  color: #333;
+  color: var(--dark-color);
 }
 
 .admin-dashboard-actions {
@@ -133,7 +145,7 @@
 
 .admin-dashboard-title {
   font-size: 1.8em;
-  color: #333;
+  color: var(--dark-colosr);
 }
 
 .admin-actions {
@@ -147,11 +159,22 @@
 }
 
 .admin-download {
-  background: #ff6347;
-  color: #fff;
+  background: var(--dark-tint);
+  color: var(--background-color);
   border: none;
-  padding: 5px 10px;
+  border-radius: 5px;
+  padding: 10px 20px;
   cursor: pointer;
+}
+
+.admin-download:hover {
+  background-color: var(--dark-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0);
+}
+
+.admin-download:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(15, 15, 15, 0.6);
 }
 
 .admin-dashboard-main {
@@ -167,15 +190,15 @@
   padding: 10px 20px;
   margin-right: 10px;
   border: none;
-  background-color: #ddd;
-  color: #333;
+  background: #ddd;
+  color: var(--dark-color-lighter);
   cursor: pointer;
   border-radius: 5px;
 }
 
 .admin-tab-button.active {
-  background-color: #333;
-  color: #fff;
+  background: var(--dark-color);
+  color: var(--background-color);
 }
 
 .admin-cards {
@@ -186,18 +209,30 @@
 }
 
 .admin-card {
-  background-color: #222;
+  background: var(--dark-color);
   padding: 20px;
-  color: #fff;
-  text-align: center;
+  color: var(--background-color);
+  text-align: left; /* Align text to the left */
   border-radius: 10px;
   transition: background-color 0.3s;
+}
+
+.admin-card-content {
+  display: flex;
+  justify-content: space-between; /* Space between text and icon */
+  align-items: center;
 }
 
 .admin-card h3 {
   margin: 0;
   font-size: 1.2em;
-  color: #ff6347;
+  color: var(--background-color);
+}
+
+.admin-card-icon {
+  font-size: 1em; /* Very small icon size */
+  font-weight: 650;
+  color: var(--background-color); /* Adjust icon color if needed */
 }
 
 .admin-card-value {
@@ -210,11 +245,11 @@
 }
 
 .positive {
-  color: #4caf50;
+  color: var(--green-color);
 }
 
 .neutral {
-  color: #ffeb3b;
+  color: var(--green-color);
 }
 
 .admin-content {
@@ -225,7 +260,7 @@
 }
 
 .admin-sales-chart {
-  background-color: #ddd;
+  background: #ddd;
   padding: 20px;
   height: auto;
   text-align: center;
@@ -233,9 +268,9 @@
 }
 
 .admin-recent-sales {
-  background-color: #333;
+  background: var(--dark-color);
   padding: 20px;
-  color: #fff;
+  color: var(--background-color);
   border-radius: 10px;
 }
 
@@ -245,7 +280,7 @@
 
 .admin-recent-sales p {
   margin: 2px 0 20px;
-  color: #bbb;
+  color: var(--background-color);
 }
 
 .admin-sales-item {
@@ -256,18 +291,18 @@
 
 .admin-sales-name {
   font-weight: bold;
-  color: #fff;
+  color: var(--background-color);
 }
 
 .admin-sales-amount {
-  font-weight: bold;
-  color: #4caf50;
+  font-weight: 700;
+  color: var(--green-color);
   font-size: 1.2em;
   margin-top: 5px;
 }
 
 .admin-sales-email {
-  color: #bbb;
+  color: var(--background-color);
   font-size: 0.9em;
 }
 
@@ -316,11 +351,15 @@
   }
 
   .admin-card-value {
-    font-size: 1.5em;
+    font-size: 1.5em; /* Adjust card value size */
   }
 
   .admin-content {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* Stack columns in mobile view */
+  }
+
+  .admin-sales-chart {
+    height: 300px; /* Fixed height for better appearance */
   }
 }
 </style>
