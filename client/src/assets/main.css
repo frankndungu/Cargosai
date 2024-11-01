@@ -2849,16 +2849,13 @@ textarea.error {
 }
 
 .admin-card {
-  background: var(--dark-color);
+  background: var(--background-color);
   padding: 20px;
-  color: var(--background-color);
+  color: var(--dark-color);
   text-align: left; /* Align text to the left */
   border-radius: 10px;
   transition: background-color 0.3s;
-}
-
-.admin-card:hover {
-  background: #222;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
 }
 
 .admin-card-content {
@@ -2870,18 +2867,20 @@ textarea.error {
 .admin-card h3 {
   margin: 0;
   font-size: 1.2em;
-  color: var(--background-color);
+  color: var(--dark-color);
+  font-weight: 800;
 }
 
 .admin-card-icon {
   font-size: 1em; /* Very small icon size */
-  font-weight: 650;
-  color: var(--background-color); /* Adjust icon color if needed */
+  font-weight: 550;
+  color: var(--dark-color); /* Adjust icon color if needed */
 }
 
 .admin-card-value {
   font-size: 1.8em;
   margin: 10px 0;
+  font-weight: 600;
 }
 
 .admin-card-change {
@@ -2889,11 +2888,8 @@ textarea.error {
 }
 
 .positive {
-  color: var(--green-color);
-}
-
-.neutral {
-  color: var(--green-color);
+  color: var(--dark-color);
+  font-weight: 550;
 }
 
 .admin-content {
@@ -2904,23 +2900,21 @@ textarea.error {
 }
 
 .admin-sales-chart {
-  background: var(--dark-color);
-  color: var(--background-color);
+  background: var(--background-color);
+  color: var(--dark-color);
   padding: 20px;
   height: auto;
   text-align: center;
   border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
 }
 
 .admin-recent-sales {
-  background: var(--dark-color);
+  background: var(--background-color);
   padding: 20px;
-  color: var(--background-color);
+  color: var(--dark-color);
   border-radius: 10px;
-}
-
-.admin-recent-sales:hover {
-  background: #222;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
 }
 
 .admin-recent-sales h3 {
@@ -2929,7 +2923,7 @@ textarea.error {
 
 .admin-recent-sales p {
   margin: 2px 0 20px;
-  color: var(--background-color);
+  color: var(--dark-color);
 }
 
 .admin-sales-item {
@@ -2940,20 +2934,20 @@ textarea.error {
 
 .admin-sales-name {
   font-weight: bold;
-  color: var(--background-color);
+  color: var(--dark-color);
 }
 
 .admin-sales-amount {
   font-weight: 700;
-  color: var(--green-color);
+  color: var(--dark-color);
   font-size: 1.2em;
   margin-top: 5px;
 }
 
 .admin-sales-email {
-  color: var(--background-color);
+  color: var(--dark-color);
   font-size: 0.9em;
-  font-weight: 300;
+  font-weight: 350;
 }
 
 /* Responsive Styles */

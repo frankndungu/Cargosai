@@ -50,8 +50,8 @@ const chartData = ref({
   datasets: [
     {
       label: "Sales ($)",
-      backgroundColor: "rgba(250, 249, 246, 1)", // Set bars to white
-      borderColor: "rgba(250, 249, 246, 1)", // Set border color to white
+      backgroundColor: "rgba(15, 15, 15, 1)", // Set bars to white
+      borderColor: "rgba(15, 15, 15, 1)", // Set border color to white
       data: salesData,
     },
   ],
@@ -64,13 +64,13 @@ const chartOptions = ref({
     legend: {
       position: "top",
       labels: {
-        color: "#faf9f6", // Set legend text color to white
+        color: "#0f0f0f", // Set legend text color to white
       },
     },
     title: {
       display: true,
       text: "Monthly Sales Data",
-      color: "#faf9f6", // Set title text color to white
+      color: "#0f0f0f", // Set title text color to white
     },
     tooltip: {
       callbacks: {
@@ -83,12 +83,12 @@ const chartOptions = ref({
   scales: {
     x: {
       ticks: {
-        color: "#faf9f6", // Set X-axis tick color to white
+        color: "#0f0f0f", // Set X-axis tick color to white
       },
     },
     y: {
       ticks: {
-        color: "#faf9f6", // Set Y-axis tick color to white
+        color: "#0f0f0f", // Set Y-axis tick color to white
       },
     },
   },
