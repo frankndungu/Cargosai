@@ -20,7 +20,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'phonenumber', // Add the phonenumber field here
+        'phonenumber', // Phone number field
+        'role',        // Add the role field here
     ];
 
     /**
