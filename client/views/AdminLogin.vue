@@ -3,7 +3,7 @@
     <!-- Login Form -->
     <form @submit.prevent="handleSubmit" class="login-form">
       <!-- Title -->
-      <h1 class="login-title">Welcome back Admin ⚡</h1>
+      <h1 class="login-title">Welcome back Sir! ⚡</h1>
 
       <!-- Email Input -->
       <div class="login-input-group">
@@ -29,6 +29,9 @@
         />
       </div>
 
+      <!-- Error Message -->
+      <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+
       <!-- Sign In Button -->
       <button type="submit" class="login-submit-btn">Sign in</button>
     </form>
@@ -37,16 +40,32 @@
 
 <script setup>
 import { ref } from "vue";
+import axios from "axios";
+import { useRouter } from "vue-router";
 
 const email = ref("");
 const password = ref("");
+const errorMessage = ref("");
+const router = useRouter();
 
-const handleSubmit = () => {
-  // Handle login logic
-  console.log("Logging in with:", {
-    email: email.value,
-    password: password.value,
-  });
+const handleSubmit = async () => {
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_URL}/admin/login`,
+      {
+        email: email.value,
+        password: password.value,
+      }
+    );
+
+    // Store token in local storage
+    localStorage.setItem("adminToken", response.data.token);
+
+    // Redirect to the admin dashboard
+    router.push("/admin/dashboard");
+  } catch (error) {
+    errorMessage.value = error.response?.data?.message || "Unauthorized access";
+  }
 };
 </script>
 
@@ -75,9 +94,11 @@ const handleSubmit = () => {
 /* Title */
 .login-title {
   font-size: 1.5rem;
-  font-weight: bold;
+  font-weight: 900;
   margin-bottom: 20px;
   text-align: center;
+  font-family: "Courier New", Courier, monospace;
+  letter-spacing: 2px;
 }
 
 .login-input-group {
@@ -104,6 +125,14 @@ const handleSubmit = () => {
   border-color: #333;
 }
 
+/* Error Message */
+.error-message {
+  color: var(--error-message);
+  font-size: 0.9rem;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
 /* Sign In Button */
 .login-submit-btn {
   background: var(--dark-tint);
@@ -116,7 +145,13 @@ const handleSubmit = () => {
 }
 
 .login-submit-btn:hover {
-  background-color: #333;
+  background-color: var(--dark-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0);
+}
+
+.login-submit-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(15, 15, 15, 0.6);
 }
 
 /* Responsiveness */
