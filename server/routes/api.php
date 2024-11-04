@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\AdminController; // Import AdminController
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderDetailsController;
@@ -21,6 +22,16 @@ Route::middleware([RateLimitMiddleware::class, StartSession::class])->group(func
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+
+    //Admin route
+    Route::post('/admin/login', [AdminController::class, 'login']);
+    
+    Route::middleware(['auth:sanctum'])->prefix('admin')->group(function () {
+        Route::get('/users', [UserController::class, 'index']); // Get all users
+        Route::get('/users/{id}', [UserController::class, 'show']); // Get individual user by ID
+        Route::put('/users/{id}', [UserController::class, 'update']); // Update user
+        Route::delete('/users/{id}', [UserController::class, 'destroy']); // Delete user
+    });
 
     // Product Routes
     Route::prefix('products')->group(function () {
@@ -52,7 +63,6 @@ Route::middleware([RateLimitMiddleware::class, StartSession::class])->group(func
         Route::get('/user', function (Request $request) {
             return $request->user(); // Get the authenticated user
         });
-        Route::get('/users', [UserController::class, 'index']); // Get all users
         Route::get('/users/{id}', [UserController::class, 'show']); // Get individual user by ID
         Route::put('/users/{id}', [UserController::class, 'update']); // Update user
         Route::post('/users/{id}/phonenumber', [UserController::class, 'createPhoneNumber']); // Create phone number
