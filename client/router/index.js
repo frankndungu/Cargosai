@@ -18,10 +18,10 @@ import TermsOfService from "../views/TermsOfService.vue";
 import FrequentlyAskedQuestions from "../views/FrequentlyAskedQuestions.vue";
 import AdminDashboard from "../views/AdminDashboard.vue";
 import UserDashboard from "../views/UserDashboard.vue";
-import UserProfile from "../views/UserProfile.vue"; // Import the UserProfile component
-import UserOrders from "../views/UserOrders.vue"; // Import the UserOrders component
-import OrderDetails from "../views/OrderDetails.vue"; // Import the OrderDetails component
-import UserWishlist from "../views/UserWishlist.vue"; // Import the UserWishlist component
+import UserProfile from "../views/UserProfile.vue";
+import UserOrders from "../views/UserOrders.vue";
+import OrderDetails from "../views/OrderDetails.vue";
+import UserWishlist from "../views/UserWishlist.vue";
 
 const routes = [
   { path: "/", component: Home },
@@ -33,9 +33,15 @@ const routes = [
   { path: "/register", component: Register },
   { path: "/admin/login", component: AdminLogin },
   { path: "/recovery", component: Recovery },
-  { path: "/admin/dashboard", component: AdminDashboard },
 
-  // Dashboard routes
+  // Admin Dashboard routes
+  {
+    path: "/admin/dashboard",
+    component: AdminDashboard,
+    meta: { requiresAuth: true, requiresAdmin: true }, // Guard for admin
+  },
+
+  // User Dashboard routes
   {
     path: "/dashboard",
     component: UserDashboard,
@@ -43,12 +49,12 @@ const routes = [
   },
   {
     path: "/dashboard/profile",
-    component: UserProfile, // Separate profile page
+    component: UserProfile,
     meta: { requiresAuth: true },
   },
   {
     path: "/dashboard/orders",
-    component: UserOrders, // Separate orders page
+    component: UserOrders,
     meta: { requiresAuth: true },
   },
   {
@@ -60,7 +66,7 @@ const routes = [
   },
   {
     path: "/dashboard/wishlist",
-    component: UserWishlist, // Separate wishlist page
+    component: UserWishlist,
     meta: { requiresAuth: true },
   },
 
@@ -87,12 +93,25 @@ const router = createRouter({
 // Navigation Guard
 router.beforeEach((to, from, next) => {
   const isAuthenticated = store.getters.isAuthenticated;
+  const userRole = store.getters.userRole;
 
   if (
     to.matched.some((record) => record.meta.requiresAuth) &&
     !isAuthenticated
   ) {
     next({ path: "/login" }); // Redirect to login if not authenticated
+  } else if (
+    to.matched.some((record) => record.meta.requiresAdmin) &&
+    userRole !== "admin"
+  ) {
+    next({ path: "/404" }); // Redirect to 404 if not an admin
+  } else if (to.path === "/login" && isAuthenticated) {
+    // Redirect to user dashboard if already logged in as a user
+    if (userRole === "user") {
+      next({ path: "/dashboard" });
+    } else if (userRole === "admin") {
+      next({ path: "/admin/dashboard" }); // Redirect to admin dashboard if logged in as an admin
+    }
   } else {
     next(); // Proceed to the route
   }

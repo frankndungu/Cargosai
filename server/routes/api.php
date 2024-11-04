@@ -23,7 +23,7 @@ Route::middleware([RateLimitMiddleware::class, StartSession::class])->group(func
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
-    //Admin route
+    //Admin Routes
     Route::post('/admin/login', [AdminController::class, 'login']);
     
     Route::middleware(['auth:sanctum'])->prefix('admin')->group(function () {

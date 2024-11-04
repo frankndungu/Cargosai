@@ -1,8 +1,6 @@
 <template>
   <div class="login-container">
-    <!-- Login Form -->
     <form @submit.prevent="handleSubmit" class="login-form">
-      <!-- Title -->
       <h1 class="login-title">Welcome back Sir! ⚡</h1>
 
       <!-- Email Input -->
@@ -33,38 +31,65 @@
       <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 
       <!-- Sign In Button -->
-      <button type="submit" class="login-submit-btn">Sign in</button>
+      <button type="submit" class="login-submit-btn" :disabled="isLoading">
+        {{ isLoading ? "Signing in..." : "Sign in" }}
+      </button>
     </form>
   </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
-import axios from "axios";
 import { useRouter } from "vue-router";
+import { useStore } from "vuex";
+
+const router = useRouter();
+const store = useStore();
 
 const email = ref("");
 const password = ref("");
 const errorMessage = ref("");
-const router = useRouter();
+const isLoading = ref(false);
 
 const handleSubmit = async () => {
   try {
-    const response = await axios.post(
+    isLoading.value = true;
+    errorMessage.value = "";
+
+    const response = await fetch(
       `${import.meta.env.VITE_API_URL}/admin/login`,
       {
-        email: email.value,
-        password: password.value,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email.value,
+          password: password.value,
+        }),
       }
     );
 
-    // Store token in local storage
-    localStorage.setItem("adminToken", response.data.token);
+    const data = await response.json();
 
-    // Redirect to the admin dashboard
+    if (!response.ok) {
+      // Display an error message without redirecting
+      throw new Error(data.message || "Login failed");
+    }
+
+    // Store the token
+    localStorage.setItem("token", data.token);
+
+    // Store user role if included in the response
+    await store.dispatch("fetchUser"); // Ensure this method updates the user role in the Vuex store
+
+    // Redirect to admin dashboard
     router.push("/admin/dashboard");
   } catch (error) {
-    errorMessage.value = error.response?.data?.message || "Unauthorized access";
+    // Set the error message for display
+    errorMessage.value = error.message || "An error occurred during login";
+  } finally {
+    isLoading.value = false;
   }
 };
 </script>

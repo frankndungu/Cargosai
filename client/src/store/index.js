@@ -44,8 +44,8 @@ export default createStore({
       }
       return "";
     },
-    // New getter to retrieve the user ID
     userId: (state) => (state.user ? state.user.id : null), // Getter for user ID
+    userRole: (state) => (state.user ? state.user.role : null), // Getter for user role
   },
   mutations: {
     ADD_TO_CART(state, product) {
