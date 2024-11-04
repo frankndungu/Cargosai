@@ -13,7 +13,6 @@ use App\Http\Controllers\BillingAddressController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\RateLimitMiddleware;
-use App\Http\Middleware\AdminMiddleware; // Import AdminMiddleware
 use Illuminate\Session\Middleware\StartSession;
 
 // Apply rate limiting and session middleware to all routes in this file
@@ -102,12 +101,5 @@ Route::middleware([RateLimitMiddleware::class, StartSession::class])->group(func
             Route::put('{order}/status', [OrderController::class, 'updateStatus']);
             Route::delete('{order}', [OrderController::class, 'destroy']);
         });
-    });
-
-    // Admin Routes (Protected by AdminMiddleware)
-    Route::middleware(['auth:sanctum', AdminMiddleware::class])->group(function () {
-        // Define your admin-specific routes here
-        Route::get('/admin/dashboard', [AdminDashboardController::class, 'index']); // Example admin route
-        // Add more admin routes as needed
     });
 });
