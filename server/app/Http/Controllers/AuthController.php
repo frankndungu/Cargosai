@@ -57,35 +57,6 @@ class AuthController extends Controller
         return response()->json(['token' => $token, 'user' => $user], 200);
     }
 
-    // Log in an admin
-    public function adminLogin(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-        ]);
-
-        $user = User::where('email', $request->email)->first();
-
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json(['message' => 'Invalid credentials'], 401);
-        }
-
-        // Check if the user is an admin
-        if ($user->role !== 'admin') {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-
-        // Generate a token for the admin
-        $token = $user->createToken('admin-token', ['admin'])->plainTextToken;
-
-        return response()->json([
-            'message' => 'Admin login successful',
-            'token' => $token,
-            'user' => $user
-        ], 200);
-    }
-
     // Log out the user
     public function logout(Request $request)
     {

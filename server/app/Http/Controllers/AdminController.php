@@ -9,6 +9,28 @@ use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
+
+    // Method to create a new admin user
+    public function createAdminUser(Request $request)
+    {
+        // Validate the request data
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6|confirmed', // Assuming you want to confirm the password
+        ]);
+
+        // Create the admin user
+        $admin = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password), // Hash the password
+            'role' => 'admin', // Set the role to admin
+        ]);
+
+        return response()->json(['message' => 'Admin user created successfully', 'admin' => $admin], 201);
+    }
+
     // Admin login method
     public function login(Request $request)
     {
@@ -41,6 +63,13 @@ class AdminController extends Controller
     {
         $users = User::all();
         return response()->json($users);
+    }
+
+    // Method to list all admin users
+    public function listAdmins()
+    {
+        $admins = User::where('role', 'admin')->get();
+        return response()->json($admins);
     }
 
     // Method to update a user's role

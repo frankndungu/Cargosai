@@ -21,13 +21,14 @@ Route::middleware([RateLimitMiddleware::class, StartSession::class])->group(func
     // Auth Routes
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
-    Route::post('/admin/login', [AuthController::class, 'adminLogin']); // Admin login route
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
     //Admin route
     Route::post('/admin/login', [AdminController::class, 'login']);
     
     Route::middleware(['auth:sanctum'])->prefix('admin')->group(function () {
+        Route::post('/create', [AdminController::class, 'createAdminUser']); // Create admin user
+        Route::get('/admins', [AdminController::class, 'listAdmins']); // Get all admins
         Route::get('/users', [UserController::class, 'index']); // Get all users
         Route::get('/users/{id}', [UserController::class, 'show']); // Get individual user by ID
         Route::put('/users/{id}', [UserController::class, 'update']); // Update user
