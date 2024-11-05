@@ -122,7 +122,6 @@ const handleSubmit = async () => {
   font-weight: 900;
   margin-bottom: 20px;
   text-align: center;
-  font-family: "Courier New", Courier, monospace;
   letter-spacing: 2px;
 }
 

@@ -16,12 +16,15 @@ import NotFound from "../views/NotFound.vue";
 import Cart from "../views/Cart.vue";
 import TermsOfService from "../views/TermsOfService.vue";
 import FrequentlyAskedQuestions from "../views/FrequentlyAskedQuestions.vue";
-import AdminDashboard from "../views/AdminDashboard.vue";
 import UserDashboard from "../views/UserDashboard.vue";
 import UserProfile from "../views/UserProfile.vue";
 import UserOrders from "../views/UserOrders.vue";
 import OrderDetails from "../views/OrderDetails.vue";
 import UserWishlist from "../views/UserWishlist.vue";
+import AdminDashboard from "../views/AdminDashboard.vue";
+import AdminProducts from "../views/AdminProducts.vue";
+import AdminCustomers from "../views/AdminCustomers.vue";
+import AdminOrders from "../views/AdminOrders.vue";
 
 const routes = [
   { path: "/", component: Home },
@@ -39,6 +42,28 @@ const routes = [
     path: "/admin/dashboard",
     component: AdminDashboard,
     meta: { requiresAuth: true, requiresAdmin: true },
+    children: [
+      {
+        path: "",
+        component: AdminDashboard, // Default view for the dashboard
+        meta: { requiresAuth: true, requiresAdmin: true },
+      },
+      {
+        path: "products",
+        component: AdminProducts,
+        meta: { requiresAuth: true, requiresAdmin: true },
+      },
+      {
+        path: "customers",
+        component: AdminCustomers,
+        meta: { requiresAuth: true, requiresAdmin: true },
+      },
+      {
+        path: "orders",
+        component: AdminOrders,
+        meta: { requiresAuth: true, requiresAdmin: true },
+      },
+    ],
   },
 
   // User Dashboard routes
