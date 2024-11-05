@@ -38,7 +38,7 @@ const routes = [
   {
     path: "/admin/dashboard",
     component: AdminDashboard,
-    meta: { requiresAuth: true, requiresAdmin: true }, // Guard for admin
+    meta: { requiresAuth: true, requiresAdmin: true },
   },
 
   // User Dashboard routes

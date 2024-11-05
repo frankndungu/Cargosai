@@ -10,16 +10,22 @@
         </router-link>
       </div>
 
-      <div class="navbar__toggle" v-if="!isDashboard" @click="toggleMenu">
+      <!-- Toggle Menu for guests and users only -->
+      <div
+        v-if="!isAdmin && !isDashboard"
+        class="navbar__toggle"
+        @click="toggleMenu"
+      >
         <div :class="{ 'navbar__toggle-bar': true, active: isMenuOpen }"></div>
         <div :class="{ 'navbar__toggle-bar': true, active: isMenuOpen }"></div>
         <div :class="{ 'navbar__toggle-bar': true, active: isMenuOpen }"></div>
       </div>
 
+      <!-- Navbar Links for guests and users only -->
       <ul
         class="navbar__links"
         :class="{ 'navbar__links--open': isMenuOpen }"
-        v-if="!isDashboard"
+        v-if="!isAdmin && !isDashboard"
       >
         <li><router-link to="/about" @click="closeMenu">About</router-link></li>
         <li>
@@ -32,8 +38,16 @@
 
       <div class="navbar__actions">
         <template v-if="isAuthenticated">
-          <template v-if="isDashboard">
-            <span class="navbar__user">Hi, {{ userFirstName }}</span>
+          <template v-if="isAdmin">
+            <!-- Admin User Icon and Logout Button -->
+            <router-link to="/admin/dashboard" @click="closeMenu">
+              <img
+                src="https://res.cloudinary.com/kwishi/image/upload/v1729077994/user_1_jcoth0.svg"
+                alt="User Icon"
+                class="navbar__user-icon"
+              />
+            </router-link>
+            <button @click="logout" class="navbar__logout-btn">Logout</button>
           </template>
           <template v-else>
             <router-link to="/dashboard" @click="closeMenu">
@@ -51,7 +65,13 @@
           </router-link>
         </template>
 
-        <router-link to="/cart" @click="closeMenu" class="navbar__cart">
+        <!-- Cart link only for non-admins -->
+        <router-link
+          v-if="!isAdmin"
+          to="/cart"
+          @click="closeMenu"
+          class="navbar__cart"
+        >
           <img
             src="https://res.cloudinary.com/kwishi/image/upload/v1725263913/shopping-bag-icon_h04zp7.webp"
             alt="Cart"
@@ -74,9 +94,9 @@ const store = useStore();
 const route = useRoute();
 const isMenuOpen = ref(false);
 const isDashboard = computed(() => route.path.startsWith("/dashboard"));
-const cartItemCount = computed(() => store.getters.cartItemCount);
 const isAuthenticated = computed(() => store.getters.isAuthenticated);
-const userFirstName = computed(() => store.getters.userFirstName);
+const isAdmin = computed(() => store.getters.userRole === "admin"); // Check if user is admin
+const cartItemCount = computed(() => store.getters.cartItemCount);
 
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value;
@@ -84,5 +104,10 @@ const toggleMenu = () => {
 
 const closeMenu = () => {
   isMenuOpen.value = false;
+};
+
+// Admin logout function
+const logout = () => {
+  store.dispatch("logout");
 };
 </script>
