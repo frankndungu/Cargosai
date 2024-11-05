@@ -1,8 +1,26 @@
 <template>
   <div class="admin-overview-tabs">
-    <button class="admin-tab-button active">Overview</button>
-    <button class="admin-tab-button">Analytics</button>
-    <button class="admin-tab-button">Reports</button>
-    <button class="admin-tab-button">Notifications</button>
+    <button
+      v-for="tab in tabs"
+      :key="tab"
+      :class="['admin-tab-button', { active: activeTab === tab }]"
+      @click="setActiveTab(tab)"
+    >
+      {{ tab }}
+    </button>
   </div>
 </template>
+
+<script setup>
+import { ref } from "vue";
+import { defineEmits } from "vue";
+
+const tabs = ["Overview", "Sales", "Reports", "Notifications"];
+const activeTab = ref(tabs[0]); // Start with "Overview" as active
+const emit = defineEmits(["updateActiveTab"]);
+
+function setActiveTab(tab) {
+  activeTab.value = tab;
+  emit("updateActiveTab", tab);
+}
+</script>
