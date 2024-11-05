@@ -21,6 +21,7 @@ import UserProfile from "../views/UserProfile.vue";
 import UserOrders from "../views/UserOrders.vue";
 import OrderDetails from "../views/OrderDetails.vue";
 import UserWishlist from "../views/UserWishlist.vue";
+import AdminLayout from "../layouts/AdminLayout.vue";
 import AdminDashboard from "../views/AdminDashboard.vue";
 import AdminProducts from "../views/AdminProducts.vue";
 import AdminCustomers from "../views/AdminCustomers.vue";
@@ -39,29 +40,33 @@ const routes = [
 
   // Admin Dashboard routes
   {
-    path: "/admin/dashboard",
-    component: AdminDashboard,
+    path: "/admin",
+    component: AdminLayout,
     meta: { requiresAuth: true, requiresAdmin: true },
     children: [
       {
-        path: "",
-        component: AdminDashboard, // Default view for the dashboard
-        meta: { requiresAuth: true, requiresAdmin: true },
+        path: "dashboard",
+        name: "AdminDashboard",
+        component: AdminDashboard,
+        meta: { title: "Dashboard" },
       },
       {
         path: "products",
+        name: "AdminProducts",
         component: AdminProducts,
-        meta: { requiresAuth: true, requiresAdmin: true },
+        meta: { title: "Products" },
       },
       {
         path: "customers",
+        name: "AdminCustomers",
         component: AdminCustomers,
-        meta: { requiresAuth: true, requiresAdmin: true },
+        meta: { title: "Customers" },
       },
       {
         path: "orders",
+        name: "AdminOrders",
         component: AdminOrders,
-        meta: { requiresAuth: true, requiresAdmin: true },
+        meta: { title: "Orders" },
       },
     ],
   },

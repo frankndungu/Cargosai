@@ -1,8 +1,5 @@
 <template>
   <div class="admin-dashboard-container">
-    <!-- Top Navigation Bar -->
-    <AdminHeader />
-
     <!-- Main Dashboard Content -->
     <div class="admin-dashboard-main">
       <AdminTabs />
@@ -22,7 +19,6 @@
 </template>
 
 <script setup>
-import AdminHeader from "@/components/admin/AdminHeader.vue";
 import AdminTabs from "@/components/admin/AdminTabs.vue";
 import AdminCard from "@/components/admin/AdminCard.vue";
 import AdminSalesChart from "@/components/admin/AdminSalesChart.vue";

@@ -2839,6 +2839,7 @@ textarea.error {
 }
 
 .admin-dashboard-main {
+  margin-top: -30px;
   width: 100%;
 }
 
