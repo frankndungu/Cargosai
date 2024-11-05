@@ -1,5 +1,5 @@
 <template>
-  <footer class="footer">
+  <footer v-if="userRole !== 'admin'" class="footer">
     <div class="footer__content">
       <div class="footer__left">
         <div class="footer__logo">
@@ -50,3 +50,11 @@
     </div>
   </footer>
 </template>
+
+<script setup>
+import { computed } from "vue";
+import { useStore } from "vuex";
+
+const store = useStore();
+const userRole = computed(() => store.getters.userRole);
+</script>
