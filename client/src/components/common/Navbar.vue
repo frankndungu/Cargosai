@@ -100,10 +100,11 @@ const isAdmin = computed(() => store.getters.userRole === "admin");
 const cartItemCount = computed(() => store.getters.cartItemCount);
 
 // Dicebear avatar URLs
-const adminAvatarUrl = "https://api.dicebear.com/9.x/adventurer-neutral/svg";
+const adminAvatarUrl =
+  "https://api.dicebear.com/9.x/adventurer-neutral/svg?radius=50";
 const userAvatarUrl = computed(() => {
   const initials = store.getters.userInitials || "User";
-  return `https://api.dicebear.com/9.x/initials/svg?seed=${initials}`;
+  return `https://api.dicebear.com/9.x/initials/svg?seed=${initials}&radius=50&backgroundColor=000000`;
 });
 
 const toggleMenu = () => {
