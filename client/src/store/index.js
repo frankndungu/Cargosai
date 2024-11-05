@@ -38,9 +38,12 @@ export default createStore({
     isModalOpen: (state) => state.isModalOpen, // Getter for modal state
     reviewData: (state) => state.review, // Getter for review data
     isAuthenticated: (state) => !!state.user,
-    userFirstName: (state) => {
+    userInitials: (state) => {
       if (state.user && state.user.name) {
-        return state.user.name.split(" ")[0];
+        // Split the name into parts and take the first letter of each part
+        const nameParts = state.user.name.split(" ");
+        const initials = nameParts.map((part) => part.charAt(0)).join("");
+        return initials.toUpperCase();
       }
       return "";
     },

@@ -39,21 +39,22 @@
       <div class="navbar__actions">
         <template v-if="isAuthenticated">
           <template v-if="isAdmin">
-            <!-- Admin User Icon and Logout Button -->
+            <!-- Admin Avatar and Logout Button -->
             <router-link to="/admin/dashboard" @click="closeMenu">
               <img
-                src="https://res.cloudinary.com/kwishi/image/upload/v1729077994/user_1_jcoth0.svg"
-                alt="User Icon"
+                :src="adminAvatarUrl"
+                alt="Admin Avatar"
                 class="navbar__user-icon"
               />
             </router-link>
             <button @click="logout" class="navbar__logout-btn">Logout</button>
           </template>
           <template v-else>
+            <!-- User Avatar -->
             <router-link to="/dashboard" @click="closeMenu">
               <img
-                src="https://res.cloudinary.com/kwishi/image/upload/v1729077994/user_1_jcoth0.svg"
-                alt="User Icon"
+                :src="userAvatarUrl"
+                alt="User Avatar"
                 class="navbar__user-icon"
               />
             </router-link>
@@ -95,8 +96,15 @@ const route = useRoute();
 const isMenuOpen = ref(false);
 const isDashboard = computed(() => route.path.startsWith("/dashboard"));
 const isAuthenticated = computed(() => store.getters.isAuthenticated);
-const isAdmin = computed(() => store.getters.userRole === "admin"); // Check if user is admin
+const isAdmin = computed(() => store.getters.userRole === "admin");
 const cartItemCount = computed(() => store.getters.cartItemCount);
+
+// Dicebear avatar URLs
+const adminAvatarUrl = "https://api.dicebear.com/9.x/adventurer-neutral/svg";
+const userAvatarUrl = computed(() => {
+  const initials = store.getters.userInitials || "User";
+  return `https://api.dicebear.com/9.x/initials/svg?seed=${initials}`;
+});
 
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value;
@@ -106,7 +114,7 @@ const closeMenu = () => {
   isMenuOpen.value = false;
 };
 
-// Admin logout function
+// Logout function for admin
 const logout = () => {
   store.dispatch("logout");
 };
