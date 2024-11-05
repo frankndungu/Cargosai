@@ -2804,7 +2804,7 @@ textarea.error {
 
 .admin-dashboard-title {
   font-size: 1.8em;
-  color: var(--dark-colosr);
+  color: var(--dark-color);
 }
 
 .admin-actions {
@@ -2839,7 +2839,7 @@ textarea.error {
 }
 
 .admin-dashboard-main {
-  margin-top: -30px;
+  margin-top: -50px;
   width: 100%;
 }
 
