@@ -99,6 +99,10 @@ export default createStore({
     SET_TOTAL_PRODUCTS(state, totalProducts) {
       state.totalProducts = totalProducts; // Mutation to update total products
     },
+    REMOVE_PRODUCT(state, productId) {
+      // New mutation to remove a product by ID
+      state.cart = state.cart.filter((product) => product.id !== productId);
+    },
   },
   actions: {
     addToCart({ commit }, product) {
@@ -169,6 +173,29 @@ export default createStore({
         router.push("/login");
       } catch (error) {
         console.error("Error logging out:", error);
+      }
+    },
+    async deleteProduct({ commit }, productId) {
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/products/${productId}`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to delete the product");
+        }
+
+        // After deleting, remove the product from the store state
+        commit("REMOVE_PRODUCT", productId);
+      } catch (error) {
+        console.error("Error deleting product:", error);
       }
     },
   },

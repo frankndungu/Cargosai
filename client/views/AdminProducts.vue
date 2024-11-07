@@ -37,7 +37,7 @@
           v-for="(product, index) in products"
           :key="product.id"
         >
-          <div class="column">{{ product.name }}</div>
+          <div class="column-name">{{ product.name }}</div>
           <div class="column">{{ product.stock }}</div>
           <div class="column">{{ product.vendor_name }}</div>
           <div class="column">${{ product.price }}</div>
@@ -52,7 +52,9 @@
               </button>
               <div class="dropdown-content">
                 <a href="#">Edit</a>
-                <a href="#">Delete</a>
+                <a href="#" @click.prevent="deleteProduct(product.id)"
+                  >Delete</a
+                >
               </div>
             </div>
           </div>
@@ -91,8 +93,10 @@
 import { ref, onMounted, computed } from "vue";
 import { useStore } from "vuex";
 import axios from "axios";
+import { useToast } from "vue-toast-notification"; // Import Vue Toast
 
 const store = useStore();
+const toast = useToast();
 
 const currentPage = computed(() => store.getters.currentPage);
 const totalPages = computed(() => store.getters.totalPages);
@@ -109,7 +113,7 @@ const fetchProducts = async () => {
       {
         params: {
           page: currentPage.value,
-          per_page: 16, // set to 16 items per page
+          per_page: 16,
           search: searchQuery.value,
         },
       }
@@ -120,6 +124,36 @@ const fetchProducts = async () => {
     store.dispatch("setTotalProducts", response.data.total);
   } catch (error) {
     console.error("Error fetching products:", error);
+  }
+};
+
+// Delete a product by ID
+const deleteProduct = async (productId) => {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/products/${productId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Add Authorization header with token
+        },
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to delete the product");
+    }
+
+    // Optionally, show a success message or handle state update
+    toast.success("Product deleted successfully!");
+    // Remove product from state or trigger another update
+    // Example:
+    // commit('REMOVE_PRODUCT', productId);
+  } catch (error) {
+    toast.error(error.message || "An error occurred");
   }
 };
 
@@ -140,7 +174,7 @@ const previousPage = () => {
 
 // Search function
 const searchProducts = () => {
-  store.dispatch("setCurrentPage", 1); // reset to first page on new search
+  store.dispatch("setCurrentPage", 1);
   fetchProducts();
 };
 
@@ -262,7 +296,12 @@ onMounted(() => {
 
 .column-title {
   padding: 0 8px;
-  font-weight: bold;
+  font-weight: bolder;
+}
+
+.column-name {
+  font-weight: 550;
+  padding: 0 8px;
 }
 
 .column {
