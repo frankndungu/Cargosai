@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -88,6 +89,11 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
+        // Check if the logged-in user is an admin
+        if (Auth::user()->role !== 'admin') {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
         // Validate the incoming request data
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
@@ -109,7 +115,7 @@ class ProductController extends Controller
         // Create a new product using the validated data
         $product = Product::create([
             'name' => $validatedData['name'],
-            'slug' => $validatedData['name'], // Sluggable trait will generate this automatically
+            // Remove manual setting of 'slug' because Sluggable will automatically handle this
             'price' => $validatedData['price'],
             'image_url' => $validatedData['image_url'],
             'description' => $validatedData['description'] ?? '',
@@ -125,5 +131,61 @@ class ProductController extends Controller
 
         // Return the created product as JSON
         return response()->json($product, 201);
+    }
+
+    public function update(Request $request, $id)
+    {
+        // Ensure only admins can update products
+        if (Auth::user()->role !== 'admin') {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        // Find the product
+        $product = Product::find($id);
+        if (!$product) {
+            return response()->json(['error' => 'Product not found'], 404);
+        }
+
+        // Validate the incoming request data
+        $validatedData = $request->validate([
+            'name' => 'string|max:255',
+            'price' => 'numeric',
+            'image_url' => 'string',
+            'description' => 'nullable|string',
+            'stock' => 'integer|min:0',
+            'thumbnails' => 'nullable|array',
+            'thumbnails.*.src' => 'required_with:thumbnails|string',
+            'thumbnails.*.alt' => 'nullable|string',
+            'dimensions' => 'nullable|string',
+            'weight' => 'nullable|numeric',
+            'material' => 'nullable|string',
+            'vendor_name' => 'string|max:255',
+            'vendor_email' => 'email|max:255',
+            'vendor_location' => 'string|max:255',
+        ]);
+
+        // Update the product with the validated data
+        $product->update($validatedData);
+
+        return response()->json($product, 200);
+    }
+
+    public function destroy($id)
+    {
+        // Ensure only admins can delete products
+        if (Auth::user()->role !== 'admin') {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        // Find the product
+        $product = Product::find($id);
+        if (!$product) {
+            return response()->json(['error' => 'Product not found'], 404);
+        }
+
+        // Delete the product
+        $product->delete();
+
+        return response()->json(['message' => 'Product deleted successfully'], 200);
     }
 }

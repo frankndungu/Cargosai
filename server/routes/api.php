@@ -41,7 +41,11 @@ Route::middleware([RateLimitMiddleware::class, StartSession::class])->group(func
         Route::get('{id}', [ProductController::class, 'show']);
         Route::get('slug/{slug}', [ProductController::class, 'showBySlug']);
         Route::get('{id}/with-reviews', [ProductController::class, 'showWithReviews']);
-        Route::post('/', [ProductController::class, 'store']);
+        // Apply auth middleware for store method to require login
+        Route::post('/', [ProductController::class, 'store'])->middleware('auth:sanctum');
+        Route::put('{id}', [ProductController::class, 'update'])->middleware('auth:sanctum');
+        Route::delete('{id}', [ProductController::class, 'destroy'])->middleware('auth:sanctum');
+    
     });
 
     // Review Routes
