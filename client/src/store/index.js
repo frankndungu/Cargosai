@@ -100,8 +100,10 @@ export default createStore({
       state.totalProducts = totalProducts; // Mutation to update total products
     },
     REMOVE_PRODUCT(state, productId) {
-      // New mutation to remove a product by ID
+      // Mutation to remove a product from cart or store
       state.cart = state.cart.filter((product) => product.id !== productId);
+      // Decrease total products by 1 after deletion
+      state.totalProducts -= 1;
     },
   },
   actions: {
@@ -192,7 +194,7 @@ export default createStore({
           throw new Error("Failed to delete the product");
         }
 
-        // After deleting, remove the product from the store state
+        // After deleting, remove the product from the store state and update the total products
         commit("REMOVE_PRODUCT", productId);
       } catch (error) {
         console.error("Error deleting product:", error);
