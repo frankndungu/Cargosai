@@ -1,7 +1,13 @@
 <template>
   <div class="admin-products">
     <div class="top-actions">
-      <input type="text" class="search-bar" placeholder="Search for products" />
+      <input
+        type="text"
+        class="search-bar"
+        placeholder="Search for products"
+        v-model="searchQuery"
+        @input="searchProducts"
+      />
       <div class="right-actions">
         <button class="add-product">Add product</button>
         <div class="dropdown">
@@ -28,13 +34,13 @@
       <div class="table-body">
         <div
           class="table-row"
-          v-for="(product, index) in paginatedProducts"
+          v-for="(product, index) in products"
           :key="product.id"
         >
           <div class="column">{{ product.name }}</div>
           <div class="column">{{ product.stock }}</div>
-          <div class="column">{{ product.vendor }}</div>
-          <div class="column">{{ product.price }}</div>
+          <div class="column">{{ product.vendor_name }}</div>
+          <div class="column">${{ product.price }}</div>
           <div class="column">
             <div
               class="actions-dropdown"
@@ -55,14 +61,26 @@
     </div>
 
     <div class="bottom-actions">
-      <div class="pagination-info">Showing 1-10 of 1000</div>
+      <div class="pagination-info">
+        Showing {{ products.length }} of {{ totalProducts }} products
+      </div>
       <div class="pagination-buttons">
         <button
-          v-for="page in totalPages"
-          :key="page"
-          @click="currentPage = page"
+          class="pagination-button"
+          @click="previousPage"
+          :disabled="currentPage === 1"
         >
-          {{ page }}
+          &laquo; Previous
+        </button>
+        <span class="pagination-page-info"
+          >Page {{ currentPage }} of {{ totalPages }}</span
+        >
+        <button
+          class="pagination-button"
+          @click="nextPage"
+          :disabled="currentPage === totalPages"
+        >
+          Next &raquo;
         </button>
       </div>
     </div>
@@ -70,55 +88,74 @@
 </template>
 
 <script setup>
-import { ref, computed, reactive, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, computed } from "vue";
+import { useStore } from "vuex";
+import axios from "axios";
 
-const products = ref([
-  { id: 1, name: "Product 1", stock: 10, vendor: "Vendor A", price: 9.99 },
-  { id: 2, name: "Product 2", stock: 5, vendor: "Vendor B", price: 14.99 },
-]);
+const store = useStore();
 
-const itemsPerPage = 10;
-const currentPage = ref(1);
+const currentPage = computed(() => store.getters.currentPage);
+const totalPages = computed(() => store.getters.totalPages);
+const totalProducts = computed(() => store.getters.totalProducts);
 
-const totalPages = computed(() =>
-  Math.ceil(products.value.length / itemsPerPage)
-);
-const paginatedProducts = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage;
-  const end = start + itemsPerPage;
-  return products.value.slice(start, end);
-});
+const products = ref([]);
+const searchQuery = ref("");
 
-const activeDropdowns = reactive({});
+// Fetch products from API
+const fetchProducts = async () => {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_URL}/products`,
+      {
+        params: {
+          page: currentPage.value,
+          per_page: 16, // set to 16 items per page
+          search: searchQuery.value,
+        },
+      }
+    );
 
-const toggleDropdown = (index) => {
-  // Close all dropdowns before opening the current one
-  Object.keys(activeDropdowns).forEach((key) => {
-    if (key !== String(index)) {
-      activeDropdowns[key] = false;
-    }
-  });
-  // Toggle the current dropdown
-  activeDropdowns[index] = !activeDropdowns[index];
-};
-
-// Add clickaway functionality
-const dropdownRef = ref(null);
-const handleClickOutside = (event) => {
-  // Close all dropdowns if the click is outside any dropdown
-  if (dropdownRef.value && !dropdownRef.value.contains(event.target)) {
-    Object.keys(activeDropdowns).forEach((key) => {
-      activeDropdowns[key] = false;
-    });
+    products.value = response.data.products.data;
+    store.dispatch("setTotalPages", response.data.products.last_page);
+    store.dispatch("setTotalProducts", response.data.total);
+  } catch (error) {
+    console.error("Error fetching products:", error);
   }
 };
 
-onMounted(() => {
-  document.addEventListener("click", handleClickOutside);
-});
+// Pagination methods
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    store.dispatch("setCurrentPage", currentPage.value + 1);
+    fetchProducts();
+  }
+};
 
-onUnmounted(() => {
-  document.removeEventListener("click", handleClickOutside);
+const previousPage = () => {
+  if (currentPage.value > 1) {
+    store.dispatch("setCurrentPage", currentPage.value - 1);
+    fetchProducts();
+  }
+};
+
+// Search function
+const searchProducts = () => {
+  store.dispatch("setCurrentPage", 1); // reset to first page on new search
+  fetchProducts();
+};
+
+// Toggle dropdown visibility
+const activeDropdowns = ref({});
+const toggleDropdown = (index) => {
+  Object.keys(activeDropdowns.value).forEach((key) => {
+    if (key !== String(index)) activeDropdowns.value[key] = false;
+  });
+  activeDropdowns.value[index] = !activeDropdowns.value[index];
+};
+
+// Initialize fetch on mount
+onMounted(() => {
+  fetchProducts();
 });
 </script>
 
@@ -148,12 +185,22 @@ onUnmounted(() => {
 
 .add-product {
   background: var(--dark-tint);
-  color: white;
+  color: var(--background-color);
   border: none;
   padding: 8px 16px;
   border-radius: 4px;
   cursor: pointer;
   margin-right: 8px;
+}
+
+.add-product:hover {
+  background-color: var(--dark-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0);
+}
+
+.add-product:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(15, 15, 15, 0.6);
 }
 
 .actions-button {
@@ -185,14 +232,14 @@ onUnmounted(() => {
 }
 
 .dropdown-content a {
-  color: black;
+  color: var(--dark-color);
   padding: 12px 16px;
   text-decoration: none;
   display: block;
 }
 
 .dropdown-content a:hover {
-  background-color: #ddd;
+  background: #ddd;
 }
 
 .dropdown:hover .dropdown-content {
@@ -251,18 +298,37 @@ onUnmounted(() => {
 
 .pagination-buttons {
   display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.pagination-buttons button {
-  padding: 8px 12px;
-  margin: 0 4px;
+.pagination-button {
+  padding: 8px 14px;
   border: 1px solid #ccc;
-  background: #f1f1f1;
+  background: var(--dark-tint);
+  color: var(--background-color);
+  font-weight: 500;
   cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.3s ease;
 }
 
-.pagination-info {
-  font-size: 14px;
-  color: #666;
+.pagination-button:hover {
+  background: var(--dark-tint);
+  color: var(--dark-color);
+  border-color: var(--dark-tint);
+}
+
+.pagination-button:disabled {
+  background: #ddd;
+  color: #aaa;
+  cursor: not-allowed;
+  border-color: #ddd;
+}
+
+.pagination-page-info {
+  margin: 0 10px;
+  color: #555;
+  font-weight: 500;
 }
 </style>
