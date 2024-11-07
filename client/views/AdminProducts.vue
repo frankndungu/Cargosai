@@ -128,6 +128,7 @@ const fetchProducts = async () => {
 };
 
 // Delete a product by ID
+// Delete a product by ID
 const deleteProduct = async (productId, index) => {
   try {
     const response = await fetch(
@@ -150,7 +151,10 @@ const deleteProduct = async (productId, index) => {
     // Show success message
     toast.success("Product deleted successfully!");
 
-    // Commit mutation to remove product from store
+    // Remove product from the local products array (no reload needed)
+    products.value.splice(index, 1);
+
+    // Commit mutation to remove product from Vuex store (if needed for other parts of the app)
     store.commit("REMOVE_PRODUCT", productId);
 
     // Close the dropdown after deletion
