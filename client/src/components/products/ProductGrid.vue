@@ -22,7 +22,7 @@
         @click="previousPage"
         :disabled="currentPage === 1"
       >
-        Previous
+        &laquo; Previous
       </button>
       <span>Page {{ currentPage }} of {{ totalPages }}</span>
       <button
@@ -30,7 +30,7 @@
         @click="nextPage"
         :disabled="currentPage === totalPages"
       >
-        Next
+        Next &raquo;
       </button>
     </div>
   </section>
@@ -48,7 +48,7 @@ const store = useStore();
 // Computed properties from Vuex store
 const currentPage = computed(() => store.getters.currentPage);
 const totalPages = computed(() => store.getters.totalPages);
-const totalProducts = computed(() => store.getters.totalProducts); // New getter for total products
+const totalProducts = computed(() => store.getters.totalProducts); // Getter for total products
 
 // State variable for products
 const products = ref([]);

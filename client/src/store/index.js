@@ -1,4 +1,3 @@
-// store/index.js
 import { createStore } from "vuex";
 import createPersistedState from "vuex-persistedstate";
 import router from "../../router/index"; // Import router
@@ -8,6 +7,7 @@ export default createStore({
     cart: [],
     currentPage: 1,
     totalPages: 0,
+    totalProducts: 0, // Added state for total products
     isModalOpen: false, // State to control modal visibility
     review: {
       name: "",
@@ -35,6 +35,7 @@ export default createStore({
     },
     currentPage: (state) => state.currentPage,
     totalPages: (state) => state.totalPages,
+    totalProducts: (state) => state.totalProducts, // Getter for total products
     isModalOpen: (state) => state.isModalOpen, // Getter for modal state
     reviewData: (state) => state.review, // Getter for review data
     isAuthenticated: (state) => !!state.user,
@@ -81,24 +82,22 @@ export default createStore({
       }
     },
     SET_MODAL_OPEN(state, isOpen) {
-      // Mutation to set modal state
       state.isModalOpen = isOpen;
     },
     SET_REVIEW_RATING(state, rating) {
-      // Mutation to set review rating
       state.review.rating = rating;
     },
     RESET_REVIEW(state) {
-      // Mutation to reset review data
       state.review = { name: "", rating: 0, title: "", content: "" };
     },
+    SET_CURRENT_PAGE(state, page) {
+      state.currentPage = page; // Mutation to update current page
+    },
     SET_TOTAL_PAGES(state, totalPages) {
-      // Mutation to set total pages
-      state.totalPages = totalPages;
+      state.totalPages = totalPages; // Mutation to update total pages
     },
     SET_TOTAL_PRODUCTS(state, totalProducts) {
-      // Mutation to set total products
-      state.totalProducts = totalProducts;
+      state.totalProducts = totalProducts; // Mutation to update total products
     },
   },
   actions: {
@@ -115,26 +114,25 @@ export default createStore({
       commit("DECREASE_ITEM_QUANTITY", id);
     },
     openModal({ commit }) {
-      // Action to open modal
       commit("SET_MODAL_OPEN", true);
     },
     closeModal({ commit }) {
-      // Action to close modal
       commit("SET_MODAL_OPEN", false);
     },
     updateReviewRating({ commit }, rating) {
-      // Action to update review rating
       commit("SET_REVIEW_RATING", rating);
     },
     resetReview({ commit }) {
-      // Action to reset review
       commit("RESET_REVIEW");
     },
+    setCurrentPage({ commit }, page) {
+      commit("SET_CURRENT_PAGE", page); // Action to update current page
+    },
     setTotalPages({ commit }, totalPages) {
-      commit("SET_TOTAL_PAGES", totalPages);
+      commit("SET_TOTAL_PAGES", totalPages); // Action to update total pages
     },
     setTotalProducts({ commit }, totalProducts) {
-      commit("SET_TOTAL_PRODUCTS", totalProducts);
+      commit("SET_TOTAL_PRODUCTS", totalProducts); // Action to update total products
     },
     async fetchUser({ commit }) {
       try {
@@ -181,6 +179,7 @@ export default createStore({
         cart: state.cart,
         currentPage: state.currentPage,
         totalPages: state.totalPages,
+        totalProducts: state.totalProducts, // Persist total products
         isModalOpen: state.isModalOpen,
         user: state.user, // Persist user state
         review: state.review, // Persist review state

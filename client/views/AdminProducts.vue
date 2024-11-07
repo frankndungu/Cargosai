@@ -70,7 +70,7 @@
           @click="previousPage"
           :disabled="currentPage === 1"
         >
-          &laquo; Previous
+          Previous
         </button>
         <span class="pagination-page-info"
           >Page {{ currentPage }} of {{ totalPages }}</span
@@ -80,7 +80,7 @@
           @click="nextPage"
           :disabled="currentPage === totalPages"
         >
-          Next &raquo;
+          Next
         </button>
       </div>
     </div>
@@ -314,9 +314,13 @@ onMounted(() => {
 }
 
 .pagination-button:hover {
-  background: var(--dark-tint);
-  color: var(--dark-color);
-  border-color: var(--dark-tint);
+  background-color: var(--dark-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0);
+}
+
+.pagination-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(15, 15, 15, 0.6);
 }
 
 .pagination-button:disabled {
