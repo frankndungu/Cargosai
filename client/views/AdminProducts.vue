@@ -52,7 +52,7 @@
               </button>
               <div class="dropdown-content">
                 <a href="#">Edit</a>
-                <a href="#" @click.prevent="deleteProduct(product.id)"
+                <a href="#" @click.prevent="deleteProduct(product.id, index)"
                   >Delete</a
                 >
               </div>
@@ -90,7 +90,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, onBeforeUnmount, computed } from "vue";
 import { useStore } from "vuex";
 import axios from "axios";
 import { useToast } from "vue-toast-notification"; // Import Vue Toast
@@ -128,7 +128,7 @@ const fetchProducts = async () => {
 };
 
 // Delete a product by ID
-const deleteProduct = async (productId) => {
+const deleteProduct = async (productId, index) => {
   try {
     const response = await fetch(
       `${import.meta.env.VITE_API_URL}/products/${productId}`,
@@ -147,11 +147,14 @@ const deleteProduct = async (productId) => {
       throw new Error(data.message || "Failed to delete the product");
     }
 
-    // Optionally, show a success message or handle state update
+    // Show success message
     toast.success("Product deleted successfully!");
-    // Remove product from state or trigger another update
-    // Example:
-    // commit('REMOVE_PRODUCT', productId);
+
+    // Commit mutation to remove product from store
+    store.commit("REMOVE_PRODUCT", productId);
+
+    // Close the dropdown after deletion
+    activeDropdowns.value[index] = false;
   } catch (error) {
     toast.error(error.message || "An error occurred");
   }
@@ -187,9 +190,24 @@ const toggleDropdown = (index) => {
   activeDropdowns.value[index] = !activeDropdowns.value[index];
 };
 
-// Initialize fetch on mount
+// Close dropdown if clicked outside
+const closeDropdownOnClickOutside = (event) => {
+  if (!event.target.closest(".actions-dropdown")) {
+    Object.keys(activeDropdowns.value).forEach((key) => {
+      activeDropdowns.value[key] = false;
+    });
+  }
+};
+
+// Attach outside click listener
 onMounted(() => {
+  document.addEventListener("click", closeDropdownOnClickOutside);
   fetchProducts();
+});
+
+// Clean up listener on unmount
+onBeforeUnmount(() => {
+  document.removeEventListener("click", closeDropdownOnClickOutside);
 });
 </script>
 
@@ -354,24 +372,15 @@ onMounted(() => {
 
 .pagination-button:hover {
   background-color: var(--dark-color);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0);
-}
-
-.pagination-button:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(15, 15, 15, 0.6);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .pagination-button:disabled {
   background: #ddd;
-  color: #aaa;
   cursor: not-allowed;
-  border-color: #ddd;
 }
 
 .pagination-page-info {
-  margin: 0 10px;
-  color: #555;
-  font-weight: 500;
+  font-size: 14px;
 }
 </style>
