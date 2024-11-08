@@ -128,7 +128,6 @@ const fetchProducts = async () => {
 };
 
 // Delete a product by ID
-// Delete a product by ID
 const deleteProduct = async (productId, index) => {
   try {
     const response = await fetch(
