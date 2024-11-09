@@ -283,6 +283,16 @@ textarea {
   cursor: pointer;
 }
 
+.upload-btn:hover {
+  background-color: var(--dark-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0);
+}
+
+.upload-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(15, 15, 15, 0.6);
+}
+
 .file-input {
   position: absolute;
   top: 0;
@@ -312,12 +322,22 @@ textarea {
 }
 
 button {
-  margin-top: 20px;
+  margin: 20px 0;
   padding: 10px 15px;
   background: var(--dark-tint);
   color: var(--background-color);
   border: none;
   border-radius: 4px;
   cursor: pointer;
+}
+
+button:hover {
+  background-color: var(--dark-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0);
+}
+
+button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(15, 15, 15, 0.6);
 }
 </style>
