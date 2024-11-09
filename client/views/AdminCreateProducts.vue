@@ -134,7 +134,11 @@ const product = ref({
 const fileInput = ref(null);
 
 const handleFileUpload = (event) => {
-  product.value.images = Array.from(event.target.files);
+  // Spread the current images and add the newly selected files
+  product.value.images = [
+    ...product.value.images,
+    ...Array.from(event.target.files),
+  ];
 };
 
 const triggerFileInput = () => {
