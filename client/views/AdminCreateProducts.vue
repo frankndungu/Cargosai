@@ -29,7 +29,7 @@
         <input
           id="vendor"
           v-model="product.vendor"
-          placeholder="vendor store"
+          placeholder="Vendor store"
         />
       </div>
 
@@ -39,7 +39,7 @@
         <input
           id="vendorEmail"
           v-model="product.vendorEmail"
-          placeholder="vendor email"
+          placeholder="Vendor email"
         />
       </div>
 
@@ -97,6 +97,16 @@
         ref="fileInput"
         class="file-input"
       />
+    </div>
+
+    <!-- Preview Selected Files -->
+    <div v-if="product.images.length" class="file-preview">
+      <h3>Selected Files:</h3>
+      <ul>
+        <li v-for="(file, index) in product.images" :key="index">
+          {{ file.name }}
+        </li>
+      </ul>
     </div>
 
     <!-- Add Product Button -->
@@ -207,6 +217,24 @@ textarea {
   height: 100%;
   opacity: 0;
   cursor: pointer;
+}
+
+.file-preview {
+  margin-top: 20px;
+}
+
+.file-preview h3 {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.file-preview ul {
+  list-style: none;
+  padding: 0;
+}
+
+.file-preview li {
+  margin-top: 5px;
 }
 
 button {
