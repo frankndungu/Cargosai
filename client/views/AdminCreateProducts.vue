@@ -9,18 +9,31 @@
       v-model="product.name"
       placeholder="Type product name"
     />
+    <span v-if="errors.name" class="error-msg">{{ errors.name }}</span>
 
     <div class="form-grid">
       <!-- Stock -->
       <div>
         <label for="stock">Stock</label>
-        <input id="stock" v-model="product.stock" placeholder="10 units" />
+        <input
+          id="stock"
+          v-model="product.stock"
+          placeholder="10 units"
+          type="number"
+        />
+        <span v-if="errors.stock" class="error-msg">{{ errors.stock }}</span>
       </div>
 
       <!-- Price -->
       <div>
         <label for="price">Price</label>
-        <input id="price" v-model="product.price" placeholder="$100" />
+        <input
+          id="price"
+          v-model="product.price"
+          placeholder="$100"
+          type="number"
+        />
+        <span v-if="errors.price" class="error-msg">{{ errors.price }}</span>
       </div>
 
       <!-- Vendor -->
@@ -41,6 +54,9 @@
           v-model="product.vendorEmail"
           placeholder="Vendor email"
         />
+        <span v-if="errors.vendorEmail" class="error-msg">{{
+          errors.vendorEmail
+        }}</span>
       </div>
 
       <!-- Vendor Location -->
@@ -83,13 +99,15 @@
       v-model="product.description"
       placeholder="Write your product description here ..."
     ></textarea>
+    <span v-if="errors.description" class="error-msg">{{
+      errors.description
+    }}</span>
 
     <!-- Product Images -->
     <label for="productImages">Product Images</label>
     <div class="upload-area">
       <p>Click to upload or drag and drop<br />Max. File Size: 30MB</p>
       <button type="button" class="upload-btn">Choose Files</button>
-      <!-- Trigger file selection directly -->
       <input
         id="productImages"
         type="file"
@@ -118,6 +136,7 @@
 <script setup>
 import { ref } from "vue";
 
+// Product data
 const product = ref({
   name: "",
   stock: "",
@@ -132,8 +151,16 @@ const product = ref({
   images: [],
 });
 
+// Validation errors
+const errors = ref({
+  name: "",
+  stock: "",
+  price: "",
+  vendorEmail: "",
+  description: "",
+});
+
 const handleFileUpload = (event) => {
-  // Spread the current images and add the newly selected files
   product.value.images = [
     ...product.value.images,
     ...Array.from(event.target.files),
@@ -141,8 +168,56 @@ const handleFileUpload = (event) => {
 };
 
 const addProduct = () => {
-  // Logic to handle adding the product
-  console.log(product.value);
+  // Reset errors
+  errors.value = {
+    name: "",
+    stock: "",
+    price: "",
+    vendorEmail: "",
+    description: "",
+  };
+
+  let valid = true;
+
+  // Validate product name
+  if (!product.value.name) {
+    errors.value.name = "Product name is required.";
+    valid = false;
+  }
+
+  // Validate stock (must be a number and required)
+  if (!product.value.stock || isNaN(product.value.stock)) {
+    errors.value.stock = "Stock must be a valid number.";
+    valid = false;
+  }
+
+  // Validate price (must be a positive number)
+  if (!product.value.price || product.value.price <= 0) {
+    errors.value.price = "Price must be a positive number.";
+    valid = false;
+  }
+
+  // Validate vendor email
+  const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  if (
+    !product.value.vendorEmail ||
+    !emailPattern.test(product.value.vendorEmail)
+  ) {
+    errors.value.vendorEmail = "Please enter a valid email address.";
+    valid = false;
+  }
+
+  // Validate description
+  if (!product.value.description) {
+    errors.value.description = "Description is required.";
+    valid = false;
+  }
+
+  // If form is valid, proceed with adding the product
+  if (valid) {
+    console.log("Product added:", product.value);
+    // Add product logic here (e.g., make an API call)
+  }
 };
 </script>
 
