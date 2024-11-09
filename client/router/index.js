@@ -43,6 +43,11 @@ const adminRoutes = [
     meta: { title: "Products" },
   },
   {
+    path: "products/create",
+    name: "AdminProductsCreate",
+    component: () => import("../views/AdminCreateProducts.vue"),
+  },
+  {
     path: "customers",
     name: "AdminCustomers",
     component: AdminCustomers,

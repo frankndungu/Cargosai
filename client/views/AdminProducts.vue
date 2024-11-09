@@ -9,7 +9,9 @@
         @input="searchProducts"
       />
       <div class="right-actions">
-        <button class="add-product">Add product</button>
+        <button class="add-product" @click="goToCreateProductPage">
+          Add product
+        </button>
         <div class="dropdown">
           <button class="actions-button">
             Actions
@@ -90,6 +92,7 @@
 </template>
 
 <script setup>
+import { useRouter } from "vue-router";
 import { ref, onMounted, onBeforeUnmount, computed } from "vue";
 import { useStore } from "vuex";
 import axios from "axios";
@@ -104,6 +107,8 @@ const totalProducts = computed(() => store.getters.totalProducts);
 
 const products = ref([]);
 const searchQuery = ref("");
+
+const router = useRouter(); // Initialize router
 
 // Fetch products from API
 const fetchProducts = async () => {
@@ -125,6 +130,11 @@ const fetchProducts = async () => {
   } catch (error) {
     console.error("Error fetching products:", error);
   }
+};
+
+// Add a product
+const goToCreateProductPage = () => {
+  router.push("/admin/products/create"); // Navigate to the specified route
 };
 
 // Delete a product by ID
