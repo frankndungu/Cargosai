@@ -16,6 +16,19 @@ export default createStore({
       content: "",
     },
     user: null, // Store the logged-in user data
+    product: {
+      name: "",
+      stock: "",
+      price: "",
+      vendor: "",
+      vendorEmail: "",
+      vendorLocation: "",
+      material: "",
+      dimensions: "",
+      weight: "",
+      description: "",
+      images: [], // Array to hold uploaded images
+    }, // Added product state initialization
   },
   getters: {
     cartItems: (state) => state.cart,
@@ -50,6 +63,7 @@ export default createStore({
     },
     userId: (state) => (state.user ? state.user.id : null), // Getter for user ID
     userRole: (state) => (state.user ? state.user.role : null), // Getter for user role
+    product: (state) => state.product, // Getter for product data
   },
   mutations: {
     ADD_TO_CART(state, product) {
@@ -104,6 +118,17 @@ export default createStore({
       state.cart = state.cart.filter((product) => product.id !== productId);
       // Decrease total products by 1 after deletion
       state.totalProducts -= 1;
+    },
+    SET_PRODUCT(state, product) {
+      state.product = product; // Mutation to set product data
+    },
+    ADD_IMAGE(state, image) {
+      // Mutation to add an uploaded image to the product
+      state.product.images.push(image);
+    },
+    REMOVE_IMAGE(state, imageIndex) {
+      // Mutation to remove an uploaded image from the product
+      state.product.images.splice(imageIndex, 1);
     },
   },
   actions: {
@@ -200,6 +225,19 @@ export default createStore({
         console.error("Error deleting product:", error);
       }
     },
+    async uploadImage({ commit }, image) {
+      // Simulate image upload and then commit to the store
+      try {
+        // Simulate image upload logic here (e.g., API call)
+        commit("ADD_IMAGE", image); // Add the image to the product
+      } catch (error) {
+        console.error("Error uploading image:", error);
+      }
+    },
+    async removeImage({ commit }, imageIndex) {
+      // Simulate image removal logic here
+      commit("REMOVE_IMAGE", imageIndex); // Remove the image from the product
+    },
   },
   plugins: [
     createPersistedState({
@@ -212,6 +250,7 @@ export default createStore({
         isModalOpen: state.isModalOpen,
         user: state.user, // Persist user state
         review: state.review, // Persist review state
+        product: state.product, // Persist product state, including images
       }),
     }),
   ],

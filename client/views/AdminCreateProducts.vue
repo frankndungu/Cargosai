@@ -134,21 +134,30 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, watchEffect } from "vue";
+import { useStore } from "vuex";
 
-// Product data
+// Access Vuex store
+const store = useStore();
+
+// Initialize product data from Vuex store if available
 const product = ref({
-  name: "",
-  stock: "",
-  price: "",
-  vendor: "",
-  vendorEmail: "",
-  vendorLocation: "",
-  material: "",
-  dimensions: "",
-  weight: "",
-  description: "",
-  images: [],
+  name: store.state.product.name || "",
+  stock: store.state.product.stock || "",
+  price: store.state.product.price || "",
+  vendor: store.state.product.vendor || "",
+  vendorEmail: store.state.product.vendorEmail || "",
+  vendorLocation: store.state.product.vendorLocation || "",
+  material: store.state.product.material || "",
+  dimensions: store.state.product.dimensions || "",
+  weight: store.state.product.weight || "",
+  description: store.state.product.description || "",
+  images: store.state.product.images || [], // Ensure we get the images from Vuex
+});
+
+// Watch product data and persist changes to Vuex store
+watchEffect(() => {
+  store.commit("SET_PRODUCT", product.value);
 });
 
 // Validation errors
@@ -161,10 +170,9 @@ const errors = ref({
 });
 
 const handleFileUpload = (event) => {
-  product.value.images = [
-    ...product.value.images,
-    ...Array.from(event.target.files),
-  ];
+  const files = Array.from(event.target.files);
+  // Add files to the product's images array
+  product.value.images = [...product.value.images, ...files];
 };
 
 const addProduct = () => {
