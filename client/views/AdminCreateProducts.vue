@@ -86,9 +86,10 @@
 
     <!-- Product Images -->
     <label for="productImages">Product Images</label>
-    <div class="upload-area" @click="triggerFileInput">
+    <div class="upload-area">
       <p>Click to upload or drag and drop<br />Max. File Size: 30MB</p>
       <button type="button" class="upload-btn">Choose Files</button>
+      <!-- Trigger file selection directly -->
       <input
         id="productImages"
         type="file"
@@ -131,18 +132,12 @@ const product = ref({
   images: [],
 });
 
-const fileInput = ref(null);
-
 const handleFileUpload = (event) => {
   // Spread the current images and add the newly selected files
   product.value.images = [
     ...product.value.images,
     ...Array.from(event.target.files),
   ];
-};
-
-const triggerFileInput = () => {
-  fileInput.value.click();
 };
 
 const addProduct = () => {
