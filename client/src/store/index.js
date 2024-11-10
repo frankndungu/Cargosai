@@ -7,15 +7,15 @@ export default createStore({
     cart: [],
     currentPage: 1,
     totalPages: 0,
-    totalProducts: 0, // Added state for total products
-    isModalOpen: false, // State to control modal visibility
+    totalProducts: 0,
+    isModalOpen: false,
     review: {
       name: "",
       rating: 0,
       title: "",
       content: "",
     },
-    user: null, // Store the logged-in user data
+    user: null,
     product: {
       name: "",
       stock: "",
@@ -27,8 +27,8 @@ export default createStore({
       dimensions: "",
       weight: "",
       description: "",
-      images: [], // Array to hold uploaded images
-    }, // Added product state initialization
+      images: [], // Store base64 strings for uploaded images
+    },
   },
   getters: {
     cartItems: (state) => state.cart,
@@ -48,22 +48,21 @@ export default createStore({
     },
     currentPage: (state) => state.currentPage,
     totalPages: (state) => state.totalPages,
-    totalProducts: (state) => state.totalProducts, // Getter for total products
-    isModalOpen: (state) => state.isModalOpen, // Getter for modal state
-    reviewData: (state) => state.review, // Getter for review data
+    totalProducts: (state) => state.totalProducts,
+    isModalOpen: (state) => state.isModalOpen,
+    reviewData: (state) => state.review,
     isAuthenticated: (state) => !!state.user,
     userInitials: (state) => {
       if (state.user && state.user.name) {
-        // Split the name into parts and take the first letter of each part
         const nameParts = state.user.name.split(" ");
         const initials = nameParts.map((part) => part.charAt(0)).join("");
         return initials.toUpperCase();
       }
       return "";
     },
-    userId: (state) => (state.user ? state.user.id : null), // Getter for user ID
-    userRole: (state) => (state.user ? state.user.role : null), // Getter for user role
-    product: (state) => state.product, // Getter for product data
+    userId: (state) => (state.user ? state.user.id : null),
+    userRole: (state) => (state.user ? state.user.role : null),
+    product: (state) => state.product,
   },
   mutations: {
     ADD_TO_CART(state, product) {
@@ -105,43 +104,39 @@ export default createStore({
       state.review = { name: "", rating: 0, title: "", content: "" };
     },
     SET_CURRENT_PAGE(state, page) {
-      state.currentPage = page; // Mutation to update current page
+      state.currentPage = page;
     },
     SET_TOTAL_PAGES(state, totalPages) {
-      state.totalPages = totalPages; // Mutation to update total pages
+      state.totalPages = totalPages;
     },
     SET_TOTAL_PRODUCTS(state, totalProducts) {
-      state.totalProducts = totalProducts; // Mutation to update total products
+      state.totalProducts = totalProducts;
     },
     REMOVE_PRODUCT(state, productId) {
-      // Mutation to remove a product from cart or store
       state.cart = state.cart.filter((product) => product.id !== productId);
-      // Decrease total products by 1 after deletion
       state.totalProducts -= 1;
     },
     SET_PRODUCT(state, product) {
-      state.product = product; // Mutation to set product data
+      state.product = product;
     },
-    ADD_IMAGE(state, image) {
-      // Mutation to add an uploaded image to the product
-      state.product.images.push(image);
+    ADD_IMAGE(state, imageBase64) {
+      state.product.images.push(imageBase64); // Store the base64 image
     },
     REMOVE_IMAGE(state, imageIndex) {
-      // Mutation to remove an uploaded image from the product
       state.product.images.splice(imageIndex, 1);
     },
   },
   actions: {
-    addToCart({ commit }, product) {
+    async addToCart({ commit }, product) {
       commit("ADD_TO_CART", product);
     },
-    removeFromCart({ commit }, id) {
+    async removeFromCart({ commit }, id) {
       commit("REMOVE_FROM_CART", id);
     },
-    increaseItemQuantity({ commit }, id) {
+    async increaseItemQuantity({ commit }, id) {
       commit("INCREASE_ITEM_QUANTITY", id);
     },
-    decreaseItemQuantity({ commit }, id) {
+    async decreaseItemQuantity({ commit }, id) {
       commit("DECREASE_ITEM_QUANTITY", id);
     },
     openModal({ commit }) {
@@ -157,13 +152,13 @@ export default createStore({
       commit("RESET_REVIEW");
     },
     setCurrentPage({ commit }, page) {
-      commit("SET_CURRENT_PAGE", page); // Action to update current page
+      commit("SET_CURRENT_PAGE", page);
     },
     setTotalPages({ commit }, totalPages) {
-      commit("SET_TOTAL_PAGES", totalPages); // Action to update total pages
+      commit("SET_TOTAL_PAGES", totalPages);
     },
     setTotalProducts({ commit }, totalProducts) {
-      commit("SET_TOTAL_PRODUCTS", totalProducts); // Action to update total products
+      commit("SET_TOTAL_PRODUCTS", totalProducts);
     },
     async fetchUser({ commit }) {
       try {
@@ -175,9 +170,7 @@ export default createStore({
           },
         });
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch user data.");
-        }
+        if (!response.ok) throw new Error("Failed to fetch user data.");
 
         const user = await response.json();
         commit("SET_USER", user);
@@ -215,28 +208,25 @@ export default createStore({
           }
         );
 
-        if (!response.ok) {
-          throw new Error("Failed to delete the product");
-        }
+        if (!response.ok) throw new Error("Failed to delete the product");
 
-        // After deleting, remove the product from the store state and update the total products
         commit("REMOVE_PRODUCT", productId);
       } catch (error) {
         console.error("Error deleting product:", error);
       }
     },
-    async uploadImage({ commit }, image) {
-      // Simulate image upload and then commit to the store
-      try {
-        // Simulate image upload logic here (e.g., API call)
-        commit("ADD_IMAGE", image); // Add the image to the product
-      } catch (error) {
-        console.error("Error uploading image:", error);
-      }
+    async uploadImage({ commit }, file) {
+      // Convert the file to a base64 string
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        commit("ADD_IMAGE", reader.result); // Add base64 image to state
+      };
+      reader.onerror = (error) =>
+        console.error("Error converting file:", error);
     },
     async removeImage({ commit }, imageIndex) {
-      // Simulate image removal logic here
-      commit("REMOVE_IMAGE", imageIndex); // Remove the image from the product
+      commit("REMOVE_IMAGE", imageIndex);
     },
   },
   plugins: [
@@ -246,11 +236,11 @@ export default createStore({
         cart: state.cart,
         currentPage: state.currentPage,
         totalPages: state.totalPages,
-        totalProducts: state.totalProducts, // Persist total products
+        totalProducts: state.totalProducts,
         isModalOpen: state.isModalOpen,
-        user: state.user, // Persist user state
-        review: state.review, // Persist review state
-        product: state.product, // Persist product state, including images
+        user: state.user,
+        review: state.review,
+        product: state.product, // Persist product including images as base64
       }),
     }),
   ],
