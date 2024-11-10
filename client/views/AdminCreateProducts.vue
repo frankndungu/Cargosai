@@ -103,33 +103,57 @@
       errors.description
     }}</span>
 
-    <!-- Product Images -->
-    <label for="productImages">Product Images</label>
+    <!-- Main Product Image -->
+    <label for="mainImage">Main Image</label>
+    <div class="upload-area" @click="triggerMainImageInput">
+      <p>Click to upload the main image<br />Max. File Size: 30MB</p>
+      <button type="button" class="upload-btn">Choose Main Image</button>
+      <input
+        id="mainImage"
+        type="file"
+        @change="handleMainImageUpload"
+        ref="mainImageInput"
+        class="file-input"
+        hidden
+      />
+    </div>
+    <div v-if="product.mainImage" class="file-preview">
+      <ul>
+        <li class="file-item">
+          <img
+            :src="product.mainImage"
+            alt="Main Image Preview"
+            class="preview-img"
+          />
+          <button @click="removeMainImage">Remove</button>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Product Thumbnails -->
+    <label for="productThumbnails">Product Thumbnails</label>
     <div class="upload-area" @click="triggerFileInput">
       <p>Click to upload or drag and drop<br />Max. File Size: 30MB</p>
-      <button type="button" class="upload-btn">Choose Files</button>
+      <button type="button" class="upload-btn">Choose Thumbnails</button>
       <input
-        id="productImages"
+        id="productThumbnails"
         type="file"
         multiple
-        @change="handleFileUpload"
+        @change="handleThumbnailUpload"
         ref="fileInput"
         class="file-input"
         hidden
       />
     </div>
-
-    <!-- Preview Selected Files -->
     <div v-if="product.images.length" class="file-preview">
-      <h3>Selected Files:</h3>
       <ul>
         <li
           v-for="(image, index) in product.images"
           :key="index"
           class="file-item"
         >
-          <img :src="image" alt="Selected Image Preview" class="preview-img" />
-          <button @click="removeImage(index)">Remove</button>
+          <img :src="image" alt="Thumbnail Preview" class="preview-img" />
+          <button @click="removeThumbnail(index)">Remove</button>
         </li>
       </ul>
     </div>
@@ -156,6 +180,7 @@ const product = ref({
   dimensions: store.state.product.dimensions || "",
   weight: store.state.product.weight || "",
   description: store.state.product.description || "",
+  mainImage: store.state.product.mainImage || null,
   images: store.state.product.images || [],
 });
 
@@ -171,22 +196,45 @@ const errors = ref({
   description: "",
 });
 
+const triggerMainImageInput = () => {
+  const mainImageInput = document.getElementById("mainImage");
+  if (mainImageInput) {
+    mainImageInput.click();
+  }
+};
+
+const handleMainImageUpload = (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      product.value.mainImage = reader.result;
+      store.commit("SET_MAIN_IMAGE", reader.result);
+    };
+    reader.readAsDataURL(file);
+  }
+};
+
+const removeMainImage = () => {
+  product.value.mainImage = null;
+  store.commit("REMOVE_MAIN_IMAGE");
+};
+
 const triggerFileInput = () => {
-  // Ensure file input gets triggered on click
-  const fileInput = document.getElementById("productImages");
+  const fileInput = document.getElementById("productThumbnails");
   if (fileInput) {
     fileInput.click();
   }
 };
 
-const handleFileUpload = (event) => {
+const handleThumbnailUpload = (event) => {
   const files = Array.from(event.target.files);
   files.forEach((file) => {
     store.dispatch("uploadImage", file);
   });
 };
 
-const removeImage = (index) => {
+const removeThumbnail = (index) => {
   store.dispatch("removeImage", index);
 };
 
