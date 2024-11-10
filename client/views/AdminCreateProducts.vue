@@ -115,6 +115,7 @@
         @change="handleFileUpload"
         ref="fileInput"
         class="file-input"
+        hidden
       />
     </div>
 
@@ -171,7 +172,11 @@ const errors = ref({
 });
 
 const triggerFileInput = () => {
-  document.getElementById("productImages").click();
+  // Ensure file input gets triggered on click
+  const fileInput = document.getElementById("productImages");
+  if (fileInput) {
+    fileInput.click();
+  }
 };
 
 const handleFileUpload = (event) => {
