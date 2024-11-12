@@ -3,7 +3,7 @@
     <!-- Product Image Section -->
     <div class="product-overview-container" data-aos="fade-left">
       <div class="product-overview-image">
-        <img :src="product.image_url" alt="Product Image" />
+        <img :src="product.main_image" alt="Product Image" />
       </div>
 
       <!-- Product Details Section -->

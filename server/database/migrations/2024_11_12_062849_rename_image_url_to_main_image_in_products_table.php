@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('role')->default('user'); // Add role column with default value 'user'
+        Schema::table('products', function (Blueprint $table) {
+            $table->renameColumn('image_url', 'main_image');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('role'); // Remove role column if rolling back migration
+        Schema::table('products', function (Blueprint $table) {
+            $table->renameColumn('main_image', 'image_url');
         });
     }
 };
