@@ -1,6 +1,6 @@
 <template>
   <div class="product-card">
-    <img :src="product.main_image" alt="Product Image" class="product-image" />
+    <img :src="imageUrl" alt="Product Image" class="product-image" />
     <div class="product-info">
       <span class="discount-tag">{{ product.vendor_name }}</span>
       <!-- Product Name Link -->
@@ -25,6 +25,7 @@
 </template>
 
 <script setup>
+import { computed } from "vue";
 import { useStore } from "vuex";
 import { useToast } from "vue-toast-notification";
 
@@ -47,4 +48,8 @@ const addToCart = (product) => {
     pauseOnHover: true,
   });
 };
+
+const imageUrl = computed(
+  () => `${import.meta.env.VITE_STORAGE_BASE_URL}${props.product.main_image}`
+);
 </script>

@@ -3,7 +3,10 @@
     <!-- Product Image Section -->
     <div class="product-overview-container" data-aos="fade-left">
       <div class="product-overview-image">
-        <img :src="product.main_image" alt="Product Image" />
+        <img
+          :src="`${storageBaseURL}${product.main_image}`"
+          alt="Product Image"
+        />
       </div>
 
       <!-- Product Details Section -->
@@ -49,12 +52,12 @@
       data-aos="fade-up"
     >
       <img
-        v-for="(thumbnail, index) in product.thumbnails"
-        :src="thumbnail.src"
-        :alt="thumbnail.alt"
+        v-for="(thumbnail, index) in formattedThumbnails"
+        :src="thumbnail"
+        :alt="`Thumbnail ${index + 1}`"
         :key="index"
         class="product-thumbnail"
-        @click="setCurrentImage(thumbnail.src)"
+        @click="setCurrentImage(thumbnail)"
       />
     </div>
     <div class="product-info">
@@ -66,7 +69,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
 import AOS from "aos";
@@ -77,7 +80,9 @@ import ProductInformation from "../products/ProductInformation.vue";
 import Vendor from "../products/Vendor.vue";
 import ProductReviews from "../products/ProductReviews.vue";
 
+// API URL and Storage URL from the environment
 const API_URL = import.meta.env.VITE_API_URL;
+const storageBaseURL = import.meta.env.VITE_STORAGE_BASE_URL;
 
 const route = useRoute();
 const store = useStore();
@@ -123,6 +128,15 @@ const fetchAverageRating = async (productId) => {
     console.error("Failed to fetch average rating:", error);
   }
 };
+
+// Format thumbnails by prepending the storage base URL
+const formattedThumbnails = computed(() => {
+  return (
+    product.value?.thumbnails.map(
+      (thumbnail) => `${storageBaseURL}${thumbnail}`
+    ) || []
+  );
+});
 
 // Update the product image when a thumbnail is clicked
 const setCurrentImage = (image) => {
