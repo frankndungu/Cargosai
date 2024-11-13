@@ -2,7 +2,7 @@
   <div class="admin-create-product">
     <h2>Add a new product</h2>
 
-    <!-- Product Name -->
+    <!-- Product Form Fields -->
     <label for="productName">Product Name</label>
     <input
       id="productName"
@@ -12,7 +12,6 @@
     <span v-if="errors.name" class="error-msg">{{ errors.name }}</span>
 
     <div class="form-grid">
-      <!-- Stock -->
       <div>
         <label for="stock">Stock</label>
         <input
@@ -23,8 +22,6 @@
         />
         <span v-if="errors.stock" class="error-msg">{{ errors.stock }}</span>
       </div>
-
-      <!-- Price -->
       <div>
         <label for="price">Price</label>
         <input
@@ -35,8 +32,6 @@
         />
         <span v-if="errors.price" class="error-msg">{{ errors.price }}</span>
       </div>
-
-      <!-- Vendor -->
       <div>
         <label for="vendor">Vendor</label>
         <input
@@ -45,8 +40,6 @@
           placeholder="Vendor store"
         />
       </div>
-
-      <!-- Vendor Email -->
       <div>
         <label for="vendorEmail">Vendor Email</label>
         <input
@@ -58,8 +51,6 @@
           errors.vendorEmail
         }}</span>
       </div>
-
-      <!-- Vendor Location -->
       <div>
         <label for="vendorLocation">Vendor Location</label>
         <input
@@ -68,14 +59,10 @@
           placeholder="Nairobi, Kenya"
         />
       </div>
-
-      <!-- Material -->
       <div>
         <label for="material">Material</label>
         <input id="material" v-model="product.material" placeholder="Brass" />
       </div>
-
-      <!-- Dimensions -->
       <div>
         <label for="dimensions">Dimensions</label>
         <input
@@ -84,8 +71,6 @@
           placeholder="3cm x 4cm"
         />
       </div>
-
-      <!-- Weight -->
       <div>
         <label for="weight">Weight</label>
         <input id="weight" v-model="product.weight" placeholder="1.25kg" />
@@ -97,13 +82,13 @@
     <textarea
       id="description"
       v-model="product.description"
-      placeholder="Write your product description here ..."
+      placeholder="Product description"
     ></textarea>
     <span v-if="errors.description" class="error-msg">{{
       errors.description
     }}</span>
 
-    <!-- Main Product Image -->
+    <!-- Main Image Upload -->
     <label for="mainImage">Main Image</label>
     <div class="upload-area" @click="triggerMainImageInput">
       <p>Click to upload the main image<br />Max. File Size: 30MB</p>
@@ -118,19 +103,15 @@
       />
     </div>
     <div v-if="product.mainImage" class="file-preview">
-      <ul>
-        <li class="file-item">
-          <img
-            :src="product.mainImage"
-            alt="Main Image Preview"
-            class="preview-img"
-          />
-          <button @click="removeMainImage">Remove</button>
-        </li>
-      </ul>
+      <img
+        :src="product.mainImage"
+        alt="Main Image Preview"
+        class="preview-img"
+      />
+      <button @click="removeMainImage">Remove</button>
     </div>
 
-    <!-- Product Thumbnails -->
+    <!-- Thumbnails Upload -->
     <label for="productThumbnails">Product Thumbnails</label>
     <div class="upload-area" @click="triggerFileInput">
       <p>Click to upload or drag and drop<br />Max. File Size: 30MB</p>
@@ -164,122 +145,113 @@
 </template>
 
 <script setup>
-import { ref, watchEffect } from "vue";
+import { ref } from "vue";
 import { useStore } from "vuex";
+import axios from "axios";
 
 const store = useStore();
-
 const product = ref({
-  name: store.state.product.name || "",
-  stock: store.state.product.stock || "",
-  price: store.state.product.price || "",
-  vendor: store.state.product.vendor || "",
-  vendorEmail: store.state.product.vendorEmail || "",
-  vendorLocation: store.state.product.vendorLocation || "",
-  material: store.state.product.material || "",
-  dimensions: store.state.product.dimensions || "",
-  weight: store.state.product.weight || "",
-  description: store.state.product.description || "",
-  mainImage: store.state.product.mainImage || null,
-  images: store.state.product.images || [],
-});
-
-watchEffect(() => {
-  store.commit("SET_PRODUCT", product.value);
-});
-
-const errors = ref({
   name: "",
   stock: "",
   price: "",
+  vendor: "",
   vendorEmail: "",
+  vendorLocation: "",
+  material: "",
+  dimensions: "",
+  weight: "",
   description: "",
+  mainImage: null,
+  images: [],
 });
+const errors = ref({});
 
 const triggerMainImageInput = () => {
   const mainImageInput = document.getElementById("mainImage");
-  if (mainImageInput) {
-    mainImageInput.click();
-  }
+  if (mainImageInput) mainImageInput.click();
 };
 
 const handleMainImageUpload = (event) => {
   const file = event.target.files[0];
   if (file) {
     const reader = new FileReader();
-    reader.onload = () => {
-      product.value.mainImage = reader.result;
-      store.commit("SET_MAIN_IMAGE", reader.result);
-    };
+    reader.onload = () => (product.value.mainImage = reader.result);
     reader.readAsDataURL(file);
   }
 };
 
 const removeMainImage = () => {
   product.value.mainImage = null;
-  store.commit("REMOVE_MAIN_IMAGE");
 };
 
 const triggerFileInput = () => {
   const fileInput = document.getElementById("productThumbnails");
-  if (fileInput) {
-    fileInput.click();
-  }
+  if (fileInput) fileInput.click();
 };
 
 const handleThumbnailUpload = (event) => {
   const files = Array.from(event.target.files);
   files.forEach((file) => {
-    store.dispatch("uploadImage", file);
+    const reader = new FileReader();
+    reader.onload = () => product.value.images.push(reader.result);
+    reader.readAsDataURL(file);
   });
 };
 
 const removeThumbnail = (index) => {
-  store.dispatch("removeImage", index);
+  product.value.images.splice(index, 1);
 };
 
-const addProduct = () => {
-  errors.value = {
-    name: "",
-    stock: "",
-    price: "",
-    vendorEmail: "",
-    description: "",
-  };
-
+const addProduct = async () => {
+  errors.value = {};
   let valid = true;
 
-  if (!product.value.name) {
-    errors.value.name = "Product name is required.";
-    valid = false;
-  }
-
-  if (!product.value.stock || isNaN(product.value.stock)) {
-    errors.value.stock = "Stock must be a valid number.";
-    valid = false;
-  }
-
-  if (!product.value.price || product.value.price <= 0) {
-    errors.value.price = "Price must be a positive number.";
-    valid = false;
-  }
-
-  const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  if (
-    !product.value.vendorEmail ||
-    !emailPattern.test(product.value.vendorEmail)
-  ) {
-    errors.value.vendorEmail = "Please enter a valid email address.";
-    valid = false;
-  }
-
-  if (!product.value.description) {
+  // Validation checks
+  if (!product.value.name) errors.value.name = "Product name is required.";
+  if (!product.value.stock) errors.value.stock = "Stock is required.";
+  if (!product.value.price) errors.value.price = "Price is required.";
+  if (!product.value.vendorEmail)
+    errors.value.vendorEmail = "Vendor email is required.";
+  if (!product.value.description)
     errors.value.description = "Description is required.";
-    valid = false;
-  }
+  if (!valid) return;
 
-  if (valid) {
-    console.log("Product added:", product.value);
+  // Prepare form data
+  const formData = new FormData();
+  formData.append("name", product.value.name);
+  formData.append("stock", product.value.stock);
+  formData.append("price", product.value.price);
+  formData.append("vendor", product.value.vendor);
+  formData.append("vendor_email", product.value.vendorEmail);
+  formData.append("vendor_location", product.value.vendorLocation);
+  formData.append("material", product.value.material);
+  formData.append("dimensions", product.value.dimensions);
+  formData.append("weight", product.value.weight);
+  formData.append("description", product.value.description);
+
+  if (product.value.mainImage) {
+    formData.append("main_image", product.value.mainImage);
+  }
+  product.value.images.forEach((image, index) =>
+    formData.append(`thumbnails[${index}]`, image)
+  );
+
+  // Send data to backend
+  try {
+    const response = await axios.post(
+      "http://localhost:8000/api/products",
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${store.state.user.token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    console.log("Product added:", response.data);
+  } catch (error) {
+    console.error("Error adding product:", error);
   }
 };
 </script>

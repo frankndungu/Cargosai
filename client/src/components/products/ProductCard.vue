@@ -4,7 +4,10 @@
       <img :src="imageUrl" :alt="product.name" class="product-image" />
     </div>
     <div class="product-info">
-      <span class="vendor-name">{{ product.vendor_name }}</span>
+      <span class="vendor-name">
+        <i class="fa-solid fa-tag vendor-icon"></i>
+        {{ product.vendor_name }}
+      </span>
       <router-link
         :to="{ name: 'ProductPage', params: { slug: product.slug } }"
         class="product-name-link"
@@ -102,13 +105,19 @@ const imageUrl = computed(
 
 /* Vendor Badge */
 .vendor-name {
-  background: var(--accent-color);
+  background: var(--dark-color);
   color: var(--background-color);
-  padding: 0.35rem 0.5rem;
+  padding: 0.2rem 0.5rem;
   border-radius: 4px;
   font-size: 0.875rem;
   margin-bottom: 0.5rem;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  width: 50%;
+}
+
+.vendor-icon {
+  margin-right: 0.5rem;
 }
 
 /* Product Name */
@@ -128,6 +137,7 @@ const imageUrl = computed(
 
 .product-name-link:hover .product-name {
   color: var(--accent-color);
+  text-decoration: underline;
 }
 
 /* Rating Section */

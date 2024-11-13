@@ -1,6 +1,6 @@
 import { createStore } from "vuex";
 import createPersistedState from "vuex-persistedstate";
-import router from "../../router/index"; // Import router
+import router from "../../router/index";
 
 export default createStore({
   state: {
@@ -119,8 +119,14 @@ export default createStore({
     SET_PRODUCT(state, product) {
       state.product = product;
     },
+    SET_MAIN_IMAGE(state, imageBase64) {
+      state.product.mainImage = imageBase64;
+    },
     ADD_IMAGE(state, imageBase64) {
       state.product.images.push(imageBase64); // Store the base64 image
+    },
+    REMOVE_MAIN_IMAGE(state) {
+      state.product.mainImage = null; // Clear the main image
     },
     REMOVE_IMAGE(state, imageIndex) {
       state.product.images.splice(imageIndex, 1);
