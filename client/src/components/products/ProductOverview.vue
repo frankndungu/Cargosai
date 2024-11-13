@@ -3,10 +3,9 @@
     <!-- Product Image Section -->
     <div class="product-overview-container" data-aos="fade-left">
       <div class="product-overview-image">
-        <img
-          :src="`${storageBaseURL}${product.main_image}`"
-          alt="Product Image"
-        />
+        <div class="image-wrapper">
+          <img :src="currentImage" alt="Product Image" />
+        </div>
       </div>
 
       <!-- Product Details Section -->
@@ -51,15 +50,20 @@
       class="product-overview-thumbnails"
       data-aos="fade-up"
     >
-      <img
+      <div
         v-for="(thumbnail, index) in formattedThumbnails"
-        :src="thumbnail"
-        :alt="`Thumbnail ${index + 1}`"
         :key="index"
-        class="product-thumbnail"
-        @click="setCurrentImage(thumbnail)"
-      />
+        class="thumbnail-wrapper"
+      >
+        <img
+          :src="thumbnail"
+          :alt="`Thumbnail ${index + 1}`"
+          :class="['product-thumbnail', { active: currentImage === thumbnail }]"
+          @click="setCurrentImage(thumbnail)"
+        />
+      </div>
     </div>
+
     <div class="product-info">
       <ProductInformation />
       <Vendor />
@@ -80,78 +84,73 @@ import ProductInformation from "../products/ProductInformation.vue";
 import Vendor from "../products/Vendor.vue";
 import ProductReviews from "../products/ProductReviews.vue";
 
-// API URL and Storage URL from the environment
 const API_URL = import.meta.env.VITE_API_URL;
 const storageBaseURL = import.meta.env.VITE_STORAGE_BASE_URL;
 
 const route = useRoute();
 const store = useStore();
-const toast = useToast(); // Initialize toast
+const toast = useToast();
 const product = ref(null);
 const reviews = ref([]);
 const averageRating = ref(null);
+const currentImage = ref("");
 
-// Fetch product data based on the slug
 const fetchProduct = async () => {
   try {
     const response = await axios.get(
       `${API_URL}/products/slug/${route.params.slug}`
     );
     product.value = response.data;
-    await fetchReviews(product.value.id); // Fetch reviews after getting the product
-    await fetchAverageRating(product.value.id); // Fetch average rating
+    currentImage.value = `${storageBaseURL}${product.value.main_image}`;
+    await fetchReviews(product.value.id);
+    await fetchAverageRating(product.value.id);
   } catch (error) {
     console.error("Failed to fetch product:", error);
   }
 };
 
-// Fetch reviews based on product ID
 const fetchReviews = async (productId) => {
   try {
     const response = await axios.get(
       `${API_URL}/reviews/products/${productId}`
     );
-    reviews.value = response.data; // Assign fetched reviews to the reviews ref
+    reviews.value = response.data;
   } catch (error) {
     console.error("Failed to fetch reviews:", error);
   }
 };
 
-// Fetch average rating based on product ID
 const fetchAverageRating = async (productId) => {
   try {
     const response = await axios.get(
       `${API_URL}/reviews/products/${productId}/average`
     );
-    averageRating.value = response.data.average_rating; // Set average rating
+    averageRating.value = response.data.average_rating;
   } catch (error) {
     console.error("Failed to fetch average rating:", error);
   }
 };
 
-// Format thumbnails by prepending the storage base URL
 const formattedThumbnails = computed(() => {
-  return (
-    product.value?.thumbnails.map(
-      (thumbnail) => `${storageBaseURL}${thumbnail}`
-    ) || []
-  );
+  if (!product.value?.thumbnails) return [];
+  const thumbnails = [...product.value.thumbnails];
+  if (!thumbnails.includes(product.value.main_image)) {
+    thumbnails.unshift(product.value.main_image);
+  }
+  return thumbnails.map((thumbnail) => `${storageBaseURL}${thumbnail}`);
 });
 
-// Update the product image when a thumbnail is clicked
 const setCurrentImage = (image) => {
-  product.value.image_url = image;
+  currentImage.value = image;
 };
 
-// Add product to cart
 const addToCart = () => {
   if (product.value) {
     store.dispatch("addToCart", product.value);
-    toast.success(`${product.value.name} has been added to your cart!`); // Show toast notification
+    toast.success(`${product.value.name} has been added to your cart!`);
   }
 };
 
-// Scroll to ProductReviews component
 const scrollToReviews = () => {
   const reviewsSection = document.querySelector(
     ".product-info > .product-reviews-section"
@@ -161,15 +160,13 @@ const scrollToReviews = () => {
   }
 };
 
-// Initialize fetching of product and AOS
 onMounted(() => {
   fetchProduct();
-  AOS.init(); // Initialize AOS for scroll animations
+  AOS.init();
 });
 </script>
 
 <style>
-/* Product Overview */
 .product-overview-wrapper {
   display: flex;
   flex-direction: column;
@@ -178,29 +175,78 @@ onMounted(() => {
   margin: 0 auto;
   border-radius: 10px;
 }
+
 .product-overview-container {
   display: flex;
   flex-wrap: wrap;
   gap: 50px;
   align-items: flex-start;
 }
+
 .product-overview-image {
   flex: 1;
-  max-width: 300px;
-}
-.product-overview-image img {
-  width: 100%;
-  height: auto;
-  border-radius: 8px;
-  object-fit: cover;
-}
-.product-overview-details {
-  flex: 2;
+  min-width: 300px;
+  max-width: 500px;
 }
 
-/* Product Status Badge */
-.product-status {
-  margin-bottom: 10px;
+.image-wrapper {
+  position: relative;
+  width: 100%;
+  padding-bottom: 100%;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.image-wrapper img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.3s ease;
+}
+
+.product-overview-thumbnails {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.product-info {
+  margin-top: 20px;
+}
+
+.thumbnail-wrapper {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  overflow: hidden;
+  border-radius: 5px;
+}
+
+.product-thumbnail {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.product-thumbnail.active {
+  border: 2px solid var(--dark-color);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.product-thumbnail:hover {
+  transform: scale(1.05);
+}
+
+.product-overview-details {
+  flex: 2;
+  min-width: 300px;
 }
 
 .product-status-badge {
@@ -221,14 +267,12 @@ onMounted(() => {
   display: inline-block;
 }
 
-/* Product Title */
 .product-title-overview {
   font-size: var(--font-size-large);
   font-weight: var(--font-bold);
-  margin-bottom: 20px;
+  margin: 20px 0;
 }
 
-/* Price and Rating Section */
 .product-price-rating {
   display: flex;
   align-items: center;
@@ -261,16 +305,17 @@ onMounted(() => {
   font-weight: bold;
 }
 
-/* Add to Cart Button */
 .product-add-to-cart {
   background: var(--dark-tint);
   color: var(--background-color);
-  padding: 10px 20px;
+  padding: 15px 30px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 1rem;
+  transition: all 0.3s ease;
 }
+
 .product-add-to-cart:hover {
   background-color: var(--dark-color);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -282,61 +327,55 @@ onMounted(() => {
 }
 
 .product-vendor-info {
-  margin-top: 15px;
-  padding: 10px;
-  width: 45%;
+  margin-top: 20px;
+  padding: 15px;
   background: var(--secondary-color);
   border-radius: 5px;
   border: 1px solid #ddd;
+  max-width: 400px;
 }
 
-/* Thumbnails */
-.product-overview-thumbnails {
-  display: flex;
-  gap: 10px;
-  margin-left: -5px;
-  justify-content: flex-start;
-}
-.product-thumbnail {
-  width: 70px;
-  height: 70px;
-  object-fit: cover;
-  border: 1px solid var(--dark-color-border);
-  border-radius: 5px;
-  cursor: pointer;
-  transition: border-color 0.3s;
-  margin-bottom: 40px;
-}
-.product-thumbnail:hover {
-  border-color: var(--dark-color);
-}
-
-/* Responsive Styles */
 @media (max-width: 768px) {
   .product-overview-wrapper {
-    padding: 40px 20px;
+    padding: 20px;
   }
+
   .product-overview-container {
     flex-direction: column;
     align-items: center;
+    gap: 30px;
   }
-  .product-overview-image,
+
+  .product-overview-image {
+    width: 100%;
+    max-width: 400px;
+  }
+
   .product-overview-details {
-    max-width: 100%;
+    width: 100%;
+  }
+
+  .thumbnail-wrapper {
+    width: 60px;
+    height: 60px;
+  }
+
+  .product-price-rating {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .product-overview-thumbnails {
+    justify-content: center;
   }
   .product-add-to-cart {
     width: 100%;
   }
-  .product-overview-thumbnails {
-    margin-top: 20px;
-    justify-content: center;
-  }
+
   .product-vendor-info {
-    margin-top: 20px;
     width: 100%;
-  }
-  .product-title-overview {
-    font-size: var(--h2-font-size);
+    max-width: none;
   }
 }
 </style>
