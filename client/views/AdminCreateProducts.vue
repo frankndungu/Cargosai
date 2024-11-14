@@ -1,146 +1,168 @@
 <template>
   <div class="admin-create-product">
-    <h2>Add a new product</h2>
+    <h2>Add a New Product</h2>
 
-    <!-- Product Form Fields -->
-    <label for="productName">Product Name</label>
-    <input
-      id="productName"
-      v-model="product.name"
-      placeholder="Type product name"
-    />
-    <span v-if="errors.name" class="error-msg">{{ errors.name }}</span>
+    <form @submit.prevent="addProduct">
+      <!-- Product Form Fields -->
+      <div class="form-field">
+        <label for="productName">Product Name</label>
+        <input
+          id="productName"
+          v-model="product.name"
+          placeholder="Enter product name"
+        />
+        <span v-if="errors.name" class="error-msg">{{ errors.name }}</span>
+      </div>
 
-    <div class="form-grid">
-      <div>
+      <div class="form-field">
         <label for="stock">Stock</label>
         <input
           id="stock"
           v-model="product.stock"
-          placeholder="10 units"
+          placeholder="Available quantity"
           type="number"
         />
         <span v-if="errors.stock" class="error-msg">{{ errors.stock }}</span>
       </div>
-      <div>
+
+      <div class="form-field">
         <label for="price">Price</label>
         <input
           id="price"
           v-model="product.price"
-          placeholder="$100"
+          placeholder="0"
           type="number"
         />
         <span v-if="errors.price" class="error-msg">{{ errors.price }}</span>
       </div>
-      <div>
-        <label for="vendor">Vendor</label>
-        <input
-          id="vendor"
-          v-model="product.vendor"
-          placeholder="Vendor store"
-        />
+
+      <div class="form-field">
+        <label for="description">Description</label>
+        <textarea
+          id="description"
+          v-model="product.description"
+          placeholder="Product description"
+        ></textarea>
+        <span v-if="errors.description" class="error-msg">{{
+          errors.description
+        }}</span>
       </div>
-      <div>
+
+      <div class="form-field">
+        <label for="vendor">Vendor</label>
+        <input id="vendor" v-model="product.vendor" placeholder="Vendor name" />
+      </div>
+
+      <div class="form-field">
         <label for="vendorEmail">Vendor Email</label>
         <input
           id="vendorEmail"
           v-model="product.vendorEmail"
-          placeholder="Vendor email"
+          placeholder="vendor@example.com"
         />
         <span v-if="errors.vendorEmail" class="error-msg">{{
           errors.vendorEmail
         }}</span>
       </div>
-      <div>
+
+      <div class="form-field">
         <label for="vendorLocation">Vendor Location</label>
         <input
           id="vendorLocation"
           v-model="product.vendorLocation"
-          placeholder="Nairobi, Kenya"
+          placeholder="Location"
         />
       </div>
-      <div>
+
+      <div class="form-field">
         <label for="material">Material</label>
-        <input id="material" v-model="product.material" placeholder="Brass" />
+        <input
+          id="material"
+          v-model="product.material"
+          placeholder="Product material"
+        />
       </div>
-      <div>
+
+      <div class="form-field">
         <label for="dimensions">Dimensions</label>
         <input
           id="dimensions"
           v-model="product.dimensions"
-          placeholder="3cm x 4cm"
+          placeholder="Product dimensions"
         />
       </div>
-      <div>
+
+      <div class="form-field">
         <label for="weight">Weight</label>
-        <input id="weight" v-model="product.weight" placeholder="1.25kg" />
+        <input
+          id="weight"
+          v-model="product.weight"
+          placeholder="Weight in kg"
+        />
       </div>
-    </div>
 
-    <!-- Description -->
-    <label for="description">Description</label>
-    <textarea
-      id="description"
-      v-model="product.description"
-      placeholder="Product description"
-    ></textarea>
-    <span v-if="errors.description" class="error-msg">{{
-      errors.description
-    }}</span>
+      <!-- Main Image Upload -->
+      <div class="form-field">
+        <label for="mainImage">Main Image</label>
+        <div class="upload-area" @click="triggerMainImageInput">
+          <h4>Click to upload or drag and drop</h4>
+          <p>Max. File Size: 30MB</p>
+          <button type="button" class="upload-btn">Choose Main Image</button>
+          <input
+            id="mainImage"
+            type="file"
+            @change="handleMainImageUpload"
+            ref="mainImageInput"
+            class="file-input"
+            hidden
+          />
+        </div>
+        <div v-if="product.mainImage" class="file-preview">
+          <img
+            :src="product.mainImage"
+            alt="Main Image Preview"
+            class="preview-img"
+          />
+          <button @click="removeMainImage" class="remove-btn">Remove</button>
+        </div>
+      </div>
 
-    <!-- Main Image Upload -->
-    <label for="mainImage">Main Image</label>
-    <div class="upload-area" @click="triggerMainImageInput">
-      <p>Click to upload the main image<br />Max. File Size: 30MB</p>
-      <button type="button" class="upload-btn">Choose Main Image</button>
-      <input
-        id="mainImage"
-        type="file"
-        @change="handleMainImageUpload"
-        ref="mainImageInput"
-        class="file-input"
-        hidden
-      />
-    </div>
-    <div v-if="product.mainImage" class="file-preview">
-      <img
-        :src="product.mainImage"
-        alt="Main Image Preview"
-        class="preview-img"
-      />
-      <button @click="removeMainImage">Remove</button>
-    </div>
+      <!-- Thumbnails Upload -->
+      <div class="form-field">
+        <label for="productThumbnails">Product Thumbnails</label>
+        <div class="upload-area" @click="triggerFileInput">
+          <h4>Click to upload or drag and drop</h4>
+          <p>Max. File Size: 30MB</p>
+          <button type="button" class="upload-btn">Choose Thumbnails</button>
+          <input
+            id="productThumbnails"
+            type="file"
+            multiple
+            @change="handleThumbnailUpload"
+            ref="fileInput"
+            class="file-input"
+            hidden
+          />
+        </div>
+        <div v-if="product.images.length" class="file-preview">
+          <ul>
+            <li
+              v-for="(image, index) in product.images"
+              :key="index"
+              class="file-item"
+            >
+              <img :src="image" alt="Thumbnail Preview" class="preview-img" />
+              <button @click="removeThumbnail(index)" class="remove-btn">
+                Remove
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
 
-    <!-- Thumbnails Upload -->
-    <label for="productThumbnails">Product Thumbnails</label>
-    <div class="upload-area" @click="triggerFileInput">
-      <p>Click to upload or drag and drop<br />Max. File Size: 30MB</p>
-      <button type="button" class="upload-btn">Choose Thumbnails</button>
-      <input
-        id="productThumbnails"
-        type="file"
-        multiple
-        @change="handleThumbnailUpload"
-        ref="fileInput"
-        class="file-input"
-        hidden
-      />
-    </div>
-    <div v-if="product.images.length" class="file-preview">
-      <ul>
-        <li
-          v-for="(image, index) in product.images"
-          :key="index"
-          class="file-item"
-        >
-          <img :src="image" alt="Thumbnail Preview" class="preview-img" />
-          <button @click="removeThumbnail(index)">Remove</button>
-        </li>
-      </ul>
-    </div>
-
-    <!-- Add Product Button -->
-    <button @click="addProduct">Add product</button>
+      <!-- Add Product Button -->
+      <button type="submit">Add product</button>
+    </form>
   </div>
 </template>
 
@@ -267,40 +289,51 @@ h2 {
   margin-bottom: 20px;
 }
 
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-field {
+  margin-bottom: 20px;
+}
+
 label {
   display: block;
   font-weight: bold;
-  margin-top: 15px;
+  margin-bottom: 5px;
 }
 
 input,
 textarea {
   width: 100%;
-  padding: 8px;
-  margin-top: 5px;
+  padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
 
 textarea {
   min-height: 100px;
-}
-
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
+  resize: vertical;
 }
 
 .upload-area {
   margin-top: 10px;
-  padding: 20px;
+  padding: 10px;
   border: 2px dashed #ccc;
-  text-align: center;
-  color: #888;
   border-radius: 4px;
+  text-align: center;
   cursor: pointer;
-  position: relative;
+}
+
+.upload-area h4 {
+  font-weight: 500;
+  font-size: medium;
+}
+
+.upload-area p {
+  color: var(--stat-name);
+  font-size: small;
 }
 
 .upload-btn {
@@ -313,41 +346,33 @@ textarea {
   cursor: pointer;
 }
 
-.file-input {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  cursor: pointer;
-}
-
 .file-preview {
-  margin-top: 20px;
-}
-
-.file-preview ul {
-  list-style: none;
-  padding: 0;
-}
-
-.file-item {
   display: flex;
   align-items: center;
-  gap: 10px;
   margin-top: 10px;
 }
 
 .preview-img {
-  width: 75px;
-  height: auto;
+  max-width: 100px;
+  margin-right: 10px;
   border-radius: 4px;
 }
 
-button {
+.remove-btn {
+  background: var(--cancel-color);
+  color: var(--background-color);
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-left: 10px; /* Added margin to space the button from the image */
+}
+
+button[type="submit"] {
   margin: 20px 0;
   padding: 10px 15px;
+  max-width: 200px;
+  width: 100%;
   background: var(--dark-tint);
   color: var(--background-color);
   border: none;
@@ -355,12 +380,12 @@ button {
   cursor: pointer;
 }
 
-button:hover {
+button[type="submit"]:hover {
   background-color: var(--dark-color);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-button:focus {
+button[type="submit"]:focus {
   outline: none;
   box-shadow: 0 0 0 3px rgba(15, 15, 15, 0.6);
 }
