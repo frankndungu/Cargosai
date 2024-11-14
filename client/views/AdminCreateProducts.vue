@@ -167,7 +167,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { useStore } from "vuex";
 import axios from "axios";
 
@@ -197,13 +197,17 @@ const handleMainImageUpload = (event) => {
   const file = event.target.files[0];
   if (file) {
     const reader = new FileReader();
-    reader.onload = () => (product.value.mainImage = reader.result);
+    reader.onload = () => {
+      product.value.mainImage = reader.result;
+      saveProductData(); // Save data to localStorage or Vuex
+    };
     reader.readAsDataURL(file);
   }
 };
 
 const removeMainImage = () => {
   product.value.mainImage = null;
+  saveProductData(); // Save data to localStorage or Vuex
 };
 
 const triggerFileInput = () => {
@@ -213,16 +217,43 @@ const triggerFileInput = () => {
 
 const handleThumbnailUpload = (event) => {
   const files = Array.from(event.target.files);
-  files.forEach((file) => {
-    const reader = new FileReader();
-    reader.onload = () => product.value.images.push(reader.result);
-    reader.readAsDataURL(file);
-  });
+  if (files.length > 0) {
+    files.forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        product.value.images.push(reader.result); // Add image to thumbnails array
+        saveProductData(); // Save data to localStorage or Vuex
+      };
+      reader.readAsDataURL(file);
+    });
+  }
 };
 
 const removeThumbnail = (index) => {
   product.value.images.splice(index, 1);
+  saveProductData(); // Save data to localStorage or Vuex
 };
+
+const saveProductData = () => {
+  // Save the entire product object to localStorage or Vuex
+  localStorage.setItem("productData", JSON.stringify(product.value));
+};
+
+const loadProductData = () => {
+  const savedProductData = localStorage.getItem("productData");
+  if (savedProductData) {
+    product.value = JSON.parse(savedProductData);
+  }
+};
+
+// Automatically save the product data whenever any form field changes
+watch(
+  product,
+  () => {
+    saveProductData();
+  },
+  { deep: true }
+);
 
 const addProduct = async () => {
   errors.value = {};
@@ -272,10 +303,16 @@ const addProduct = async () => {
     );
 
     console.log("Product added:", response.data);
+    // Clear localStorage or Vuex after successful submission
+    localStorage.removeItem("productData");
   } catch (error) {
     console.error("Error adding product:", error);
   }
 };
+
+onMounted(() => {
+  loadProductData(); // Load product data from localStorage when the component mounts
+});
 </script>
 
 <style scoped>
