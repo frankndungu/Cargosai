@@ -203,6 +203,7 @@
 import { ref, reactive } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
+import { useToast } from "vue-toast-notification";
 
 const router = useRouter();
 const errors = ref({});
@@ -212,6 +213,7 @@ const mainImagePreview = ref(null);
 const thumbnailPreviews = ref([]);
 const mainImageFile = ref(null);
 const thumbnailFiles = ref([]);
+const toast = useToast();
 
 const product = reactive({
   name: "",
@@ -266,6 +268,16 @@ const removeThumbnail = (index) => {
 };
 
 const handleSubmit = async () => {
+  if (
+    !product.name ||
+    !product.stock ||
+    !product.price ||
+    !product.description
+  ) {
+    toast.warning("Please add something, or inputs should be filled");
+    return;
+  }
+
   try {
     isSubmitting.value = true;
     errors.value = {};
@@ -273,37 +285,33 @@ const handleSubmit = async () => {
 
     const formData = new FormData();
 
-    // Append all product data
+    // Append product data
     Object.keys(product).forEach((key) => {
       if (product[key] !== "") {
         formData.append(key, product[key]);
       }
     });
 
-    // Append main image
-    if (mainImageFile.value) {
-      formData.append("main_image", mainImageFile.value);
-    }
+    // Append images if they exist
+    if (mainImageFile.value) formData.append("main_image", mainImageFile.value);
+    thumbnailFiles.value.forEach((file) =>
+      formData.append("thumbnails[]", file)
+    );
 
-    // Append thumbnails
-    thumbnailFiles.value.forEach((file) => {
-      formData.append("thumbnails[]", file);
-    });
-
-    const token = `Bearer ${localStorage.getItem("token")}`;
-
+    // Send the POST request with the token directly in the headers
     const response = await axios.post(
-      "http://localhost:8000/api/products",
+      `${import.meta.env.VITE_API_URL}/products`,
       formData,
       {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: token,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }
     );
 
     if (response.status === 201) {
+      toast.success("Product has been added");
       router.push("/admin/products");
     }
   } catch (error) {
@@ -466,7 +474,7 @@ button[type="submit"] {
   margin: 20px 0;
   padding: 12px 24px;
   background: #1a1a1a;
-  color: white;
+  color: var(--background-color);
   border: none;
   border-radius: 4px;
   cursor: pointer;
