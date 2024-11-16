@@ -62,6 +62,7 @@ export default createStore({
     },
     userId: (state) => (state.user ? state.user.id : null),
     userRole: (state) => (state.user ? state.user.role : null),
+    isAdmin: (state) => state.user && state.user.role === "admin",
     product: (state) => state.product,
   },
   mutations: {
