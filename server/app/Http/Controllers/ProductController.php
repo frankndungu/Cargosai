@@ -243,22 +243,38 @@ class ProductController extends Controller
         return response()->json($product, 200);
     }
 
+    // Delete a product
     public function destroy($id)
     {
         // Ensure only admins can delete products
         if (Auth::user()->role !== 'admin') {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
-
+    
         // Find the product
         $product = Product::find($id);
         if (!$product) {
             return response()->json(['error' => 'Product not found'], 404);
         }
-
+    
+        // Delete the main image if it exists
+        if ($product->main_image && Storage::disk('public')->exists($product->main_image)) {
+            Storage::disk('public')->delete($product->main_image);
+        }
+    
+        // Delete each thumbnail if it exists
+        if ($product->thumbnails) {
+            foreach ($product->thumbnails as $thumbnail) {
+                if (Storage::disk('public')->exists($thumbnail)) {
+                    Storage::disk('public')->delete($thumbnail);
+                }
+            }
+        }
+    
         // Delete the product
         $product->delete();
-
-        return response()->json(['message' => 'Product deleted successfully'], 200);
+    
+        return response()->json(['message' => 'Product and associated images deleted successfully'], 200);
     }
+    
 }
