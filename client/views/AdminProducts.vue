@@ -53,7 +53,9 @@
                 <i class="fas fa-ellipsis-h"></i>
               </button>
               <div class="dropdown-content">
-                <a href="#">Edit</a>
+                <a href="#" @click.prevent="goToEditProductPage(product.id)"
+                  >Edit</a
+                >
                 <a href="#" @click.prevent="deleteProduct(product.id, index)"
                   >Delete</a
                 >
@@ -135,6 +137,11 @@ const fetchProducts = async () => {
 // Add a product
 const goToCreateProductPage = () => {
   router.push("/admin/products/create"); // Navigate to the specified route
+};
+
+// edit a product by ID
+const goToEditProductPage = (productId) => {
+  router.push(`/admin/products/${productId}/edit`);
 };
 
 // Delete a product by ID

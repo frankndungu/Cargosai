@@ -48,6 +48,12 @@ const adminRoutes = [
     component: () => import("../views/AdminCreateProducts.vue"),
   },
   {
+    path: "products/:id/edit",
+    name: "AdminProductsEdit",
+    component: () => import("../views/AdminUpdateProducts.vue"),
+    props: true,
+  },
+  {
     path: "customers",
     name: "AdminCustomers",
     component: AdminCustomers,
