@@ -152,7 +152,13 @@ const getOrderStatusClass = (status) => {
 }
 
 .view-btn:hover {
-  background: var(--dark-tint);
+  background: var(--dark-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.view-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(15, 15, 15, 0.6);
 }
 
 /* Payment status color classes */

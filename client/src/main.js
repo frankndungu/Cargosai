@@ -14,6 +14,20 @@ const csrfToken = document
   .getAttribute("content");
 axios.defaults.headers.common["X-CSRF-TOKEN"] = csrfToken;
 
+// Add title handler to router
+router.beforeEach((to, from, next) => {
+  // Default title
+  const defaultTitle = "Maasai Market Online";
+
+  // Get the page title from the route meta
+  const pageTitle = to.meta.title;
+
+  // Set the page title
+  document.title = pageTitle ? `${pageTitle} | ${defaultTitle}` : defaultTitle;
+
+  next();
+});
+
 const app = createApp(App);
 
 // Fetch user data on app load if token exists

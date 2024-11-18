@@ -1,5 +1,6 @@
-import store from "@/store";
 import { createRouter, createWebHistory } from "vue-router";
+import store from "@/store";
+import { createMetaManager } from "vue-meta";
 
 // Import views and layouts
 import Home from "../views/Home.vue";
@@ -28,7 +29,7 @@ import AdminProducts from "../views/AdminProducts.vue";
 import AdminCustomers from "../views/AdminCustomers.vue";
 import AdminOrders from "../views/AdminOrders.vue";
 
-// Define admin routes
+// Define admin routes as children of AdminLayout
 const adminRoutes = [
   {
     path: "dashboard",
@@ -72,70 +73,157 @@ const userRoutes = [
   {
     path: "/dashboard",
     component: UserDashboard,
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, title: "Dashboard" },
   },
   {
     path: "/dashboard/profile",
     component: UserProfile,
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, title: "Profile" },
   },
   {
     path: "/dashboard/orders",
     component: UserOrders,
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, title: "Orders History" },
   },
   {
     path: "/dashboard/orders/:id",
     component: OrderDetails,
     name: "OrderDetails",
     props: true,
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, title: "Order Details" },
   },
   {
     path: "/dashboard/wishlist",
     component: UserWishlist,
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, title: "My Wishlist" },
   },
 ];
 
 // Main routes configuration
 const routes = [
-  { path: "/", component: Home },
-  { path: "/about", component: About },
-  { path: "/blog", component: Blog },
-  { path: "/blog/:slug", component: BlogPost, name: "BlogPost", props: true },
-  { path: "/contact", component: Contact },
-  { path: "/login", component: Login },
-  { path: "/register", component: Register },
-  { path: "/admin/login", component: AdminLogin },
-  { path: "/recovery", component: Recovery },
-  { path: "/cart", component: Cart },
-  { path: "/shop", component: Shop },
+  {
+    path: "/",
+    component: Home,
+    meta: { title: "Shop Authentic African Crafts" },
+    description:
+      "Explore and shop authentic African crafts and home decor online.",
+    keywords:
+      "African crafts, handmade jewelry, African home decor, authentic African art",
+  },
+  {
+    path: "/about",
+    component: About,
+    meta: { title: "Our Story & Heritage" },
+    description:
+      "Learn about our story and heritage behind our African crafts.",
+    keywords: "African heritage, African story, handmade crafts",
+  },
+  {
+    path: "/blog",
+    component: Blog,
+    meta: { title: "African Art & Culture Blog" },
+    description: "Read about African art, culture, and crafts on our blog.",
+    keywords: "African art, African culture, African blog",
+  },
+  {
+    path: "/blog/:slug",
+    component: BlogPost,
+    name: "BlogPost",
+    props: true,
+    meta: { title: "Blog" },
+    description: "Read this article on African art and culture.",
+    keywords: "African art, African culture, African crafts",
+  },
+  {
+    path: "/contact",
+    component: Contact,
+    meta: { title: "Get in Touch" },
+    description:
+      "Contact us for inquiries or more information about our products.",
+  },
+  {
+    path: "/login",
+    component: Login,
+    meta: { title: "Welcome Back | Login" },
+    description: "Login to your account to access your personal dashboard",
+  },
+  {
+    path: "/register",
+    component: Register,
+    meta: { title: "Join Our Community" },
+    description:
+      "Create an account and join our community of African craft lovers",
+  },
+  {
+    path: "/admin/login",
+    component: AdminLogin,
+    meta: { title: "Admin Portal | Login" },
+    description: "Admin login portal to manage products and orders.",
+  },
+  {
+    path: "/recovery",
+    component: Recovery,
+    meta: { title: "Reset Your Password" },
+    description: "Reset your password to regain access to your account.",
+  },
+  {
+    path: "/cart",
+    component: Cart,
+    meta: { title: "Your Shopping Cart" },
+    description: "Review the items in your shopping cart before checking out.",
+  },
+  {
+    path: "/shop",
+    component: Shop,
+    meta: { title: "Shop African Crafts" },
+    description: "Explore our curated selection of handmade African crafts.",
+  },
   {
     path: "/shop/product/:slug",
     component: ProductPage,
     name: "ProductPage",
     props: true,
+    meta: { title: "Product Details" },
+    description: "Learn more about this handcrafted African product.",
+    keywords:
+      "African crafts, African products, handmade, shop, earrings, rings, bracelets, necklaces, chokers",
   },
-  { path: "/terms-of-service", component: TermsOfService },
-  { path: "/frequently-asked-questions", component: FrequentlyAskedQuestions },
-
-  // Admin dashboard routes
   {
-    path: "/admin",
-    component: AdminLayout,
-    meta: { requiresAuth: true, requiresAdmin: true },
-    children: adminRoutes,
+    path: "/terms-of-service",
+    component: TermsOfService,
+    meta: { title: "Terms of Service" },
+    description: "Review our website's terms of service.",
+  },
+  {
+    path: "/frequently-asked-questions",
+    component: FrequentlyAskedQuestions,
+    meta: { title: "FAQ & Help Center" },
+    description: "Find answers to your frequently asked questions.",
   },
 
   // User dashboard routes
   ...userRoutes,
 
-  // Error handling routes
-  { path: "/404", component: NotFound, meta: { title: "Page Not Found" } },
-  { path: "/:catchAll(.*)", redirect: "/404" },
+  // Admin routes
+  {
+    path: "/admin",
+    component: AdminLayout,
+    children: adminRoutes,
+    meta: { requiresAdmin: true },
+  },
+
+  // Fallback route for 404 Not Found
+  {
+    path: "/:catchAll(.*)",
+    component: NotFound,
+    meta: {
+      title: "Page Not Found",
+      description: "The page you are looking for could not be found.",
+    },
+  },
 ];
 
+// Router configuration
 const router = createRouter({
   history: createWebHistory(),
   routes,
