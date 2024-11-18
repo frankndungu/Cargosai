@@ -7,21 +7,25 @@
           <th>Order ID</th>
           <th>User ID</th>
           <th>Total Price</th>
+          <th>Payment Status</th>
           <th>Status</th>
           <th>Created At</th>
           <th>Actions</th>
-          <!-- Added Actions header -->
         </tr>
       </thead>
       <tbody>
         <tr v-for="order in orders" :key="order.id">
           <td>{{ order.formatted_id }}</td>
           <td>{{ order.user_id }}</td>
-          <td>{{ order.total_price }}</td>
-          <td>{{ order.status }}</td>
+          <td>${{ order.total_price }}</td>
+          <td :class="getPaymentStatusClass(order.payment_status)">
+            {{ order.payment_status }}
+          </td>
+          <td :class="getOrderStatusClass(order.status)">
+            {{ order.status }}
+          </td>
           <td>{{ new Date(order.created_at).toLocaleString() }}</td>
           <td>
-            <!-- Action button to view order details -->
             <button @click="viewOrderDetails(order.id)" class="view-btn">
               View Details
             </button>
@@ -46,7 +50,7 @@ const fetchOrders = async () => {
     const response = await fetch(`${import.meta.env.VITE_API_URL}/orders`, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`, // Assuming you're using token-based auth
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     });
 
@@ -68,9 +72,37 @@ onMounted(() => {
 
 // View order details function
 const viewOrderDetails = (orderId) => {
-  // You can route to a detailed order page or show a modal
-  // Example: Navigate to a detail page using Vue Router
-  router.push(`/admin/orders/${orderId}`); // Assuming you have this route set up
+  router.push(`/admin/orders/${orderId}`);
+};
+
+// Function to get class for payment status
+const getPaymentStatusClass = (paymentStatus) => {
+  switch (paymentStatus) {
+    case "Pending":
+      return "payment-pending";
+    case "Paid":
+      return "payment-paid";
+    case "Failed":
+      return "payment-failed";
+    default:
+      return "";
+  }
+};
+
+// Function to get class for order status
+const getOrderStatusClass = (status) => {
+  switch (status) {
+    case "Pending":
+      return "status-pending";
+    case "Shipped":
+      return "status-shipped";
+    case "Delivered":
+      return "status-delivered";
+    case "Canceled":
+      return "status-canceled";
+    default:
+      return "";
+  }
 };
 </script>
 
@@ -121,6 +153,36 @@ const viewOrderDetails = (orderId) => {
 
 .view-btn:hover {
   background: var(--dark-tint);
+}
+
+/* Payment status color classes */
+.payment-pending {
+  color: orange;
+}
+
+.payment-paid {
+  color: green;
+}
+
+.payment-failed {
+  color: red;
+}
+
+/* Order status color classes */
+.status-pending {
+  color: orange;
+}
+
+.status-shipped {
+  color: blue;
+}
+
+.status-delivered {
+  color: green;
+}
+
+.status-canceled {
+  color: red;
 }
 
 @media (max-width: 768px) {

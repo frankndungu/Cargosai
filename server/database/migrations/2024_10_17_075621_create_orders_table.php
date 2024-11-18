@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); // User who placed the order
-            $table->string('status')->default('pending'); // Status of the order (e.g., pending, completed)
+            $table->string('status')->default('pending'); // Delivery Status of the order (e.g., pending, completed)
             $table->decimal('total_price', 10, 2); // Total price of the order
             $table->timestamps();
         });

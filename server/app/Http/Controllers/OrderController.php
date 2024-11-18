@@ -75,12 +75,14 @@ class OrderController extends Controller
                 'items.*.quantity' => 'required|integer|min:1',
                 'total_price' => 'required|numeric',
                 'status' => 'required|string|in:Pending,Canceled,Shipped,Delivered',
+                'payment_status' => 'required|string|in:Pending,Completed,Failed,Refund', // Validate payment status
             ]);
 
             $order = Order::create([
                 'user_id' => $user->id,
                 'total_price' => $request->total_price,
                 'status' => $request->status,
+                'payment_status' => $request->payment_status, // Add payment status from request
             ]);
 
             // Create each order item
@@ -108,33 +110,54 @@ class OrderController extends Controller
             ], 500);
         }
     }
-
+    
     // Update the status of a specific order
     public function updateStatus(Request $request, $id)
     {
-        $user = $request->user();
-        $order = Order::where('id', $id)->where('user_id', $user->id)->first();
-
+        $user = $request->user(); // Get the authenticated user
+        $order = Order::where('id', $id)->first(); // Admin can update any order, so no user_id check needed.
+    
         if (!$order) {
             return response()->json(['message' => 'Order not found'], 404);
         }
-
-        // Check if the order is already shipped, delivered, or canceled
-        if (in_array($order->status, ['Shipped', 'Delivered', 'Canceled'])) {
-            return response()->json(['message' => 'Cannot cancel or change status of this order.'], 400);
+    
+        // Prevent the user from canceling the order if its status is not 'Pending'
+        if ($user->role === 'user' && $order->status !== 'Pending') {
+            return response()->json(['message' => 'You can only cancel orders with "Pending" status.'], 400);
         }
-
-        // Only allow status update to 'Canceled' for the user
+    
+        // Validate status change for users and admins
+        if ($user->role !== 'admin' && in_array($order->status, ['Shipped', 'Delivered', 'Canceled'])) {
+            return response()->json(['message' => 'Cannot change status of this order.'], 400);
+        }
+    
+        // Validate the request body
         $request->validate([
-            'status' => 'required|string|in:Canceled', // Allow only 'Canceled' status for users
+            'status' => 'required|string|in:Pending,Canceled,Shipped,Delivered', // Only admin can update this to other statuses
+            'payment_status' => 'nullable|string|in:Pending,Completed,Failed,Refund', // Admin can update payment status
         ]);
-
+    
+        // Check if the user is attempting to cancel the order
+        if ($request->status === 'Canceled' && $order->status === 'Pending') {
+            // Update the order status to 'Canceled'
+            $order->status = 'Canceled';
+            $order->save();
+            return response()->json(['message' => 'Order has been canceled successfully', 'order' => $order], 200);
+        }
+    
+        // Update status and payment status for other status changes
         $order->status = $request->status;
+    
+        // If payment status is provided, update it
+        if ($request->has('payment_status')) {
+            $order->payment_status = $request->payment_status;
+        }
+    
         $order->save();
-
-        return response()->json(['message' => 'Order status updated successfully', 'order' => $order], 200);
+    
+        return response()->json(['message' => 'Order status and payment status updated successfully', 'order' => $order], 200);
     }
-
+    
     // Delete a specific order
     public function destroy($id, Request $request)
     {
