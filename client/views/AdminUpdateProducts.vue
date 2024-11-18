@@ -1,447 +1,381 @@
-<template>
-  <div class="admin-update-product">
-    <h2>Update Product</h2>
-    <form @submit.prevent="handleSubmit">
-      <div class="form-field">
-        <label for="productName">Product Name</label>
-        <input
-          id="productName"
-          v-model="product.name"
-          placeholder="Enter product name"
-        />
-        <span v-if="errors.name" class="error-msg">{{ errors.name }}</span>
-      </div>
-
-      <div class="form-field">
-        <label for="stock">Stock</label>
-        <input
-          id="stock"
-          v-model="product.stock"
-          placeholder="Available quantity"
-          type="number"
-        />
-        <span v-if="errors.stock" class="error-msg">{{ errors.stock }}</span>
-      </div>
-
-      <div class="form-field">
-        <label for="price">Price</label>
-        <input
-          id="price"
-          v-model="product.price"
-          placeholder="0"
-          type="number"
-          step="0.01"
-        />
-        <span v-if="errors.price" class="error-msg">{{ errors.price }}</span>
-      </div>
-
-      <div class="form-field">
-        <label for="description">Description</label>
-        <textarea
-          id="description"
-          v-model="product.description"
-          placeholder="Product description"
-        ></textarea>
-        <span v-if="errors.description" class="error-msg">{{
-          errors.description
-        }}</span>
-      </div>
-
-      <div class="form-field">
-        <label for="vendor">Vendor Name</label>
-        <input
-          id="vendor"
-          v-model="product.vendor_name"
-          placeholder="Vendor name"
-        />
-        <span v-if="errors.vendor_name" class="error-msg">{{
-          errors.vendor_name
-        }}</span>
-      </div>
-
-      <div class="form-field">
-        <label for="vendorEmail">Vendor Email</label>
-        <input
-          id="vendorEmail"
-          v-model="product.vendor_email"
-          placeholder="vendor@example.com"
-          type="email"
-        />
-        <span v-if="errors.vendor_email" class="error-msg">{{
-          errors.vendor_email
-        }}</span>
-      </div>
-
-      <div class="form-field">
-        <label for="vendorLocation">Vendor Location</label>
-        <input
-          id="vendorLocation"
-          v-model="product.vendor_location"
-          placeholder="Location"
-        />
-        <span v-if="errors.vendor_location" class="error-msg">{{
-          errors.vendor_location
-        }}</span>
-      </div>
-
-      <div class="form-field">
-        <label for="material">Material</label>
-        <input
-          id="material"
-          v-model="product.material"
-          placeholder="Product material"
-        />
-      </div>
-
-      <div class="form-field">
-        <label for="dimensions">Dimensions</label>
-        <input
-          id="dimensions"
-          v-model="product.dimensions"
-          placeholder="Product dimensions"
-        />
-      </div>
-
-      <div class="form-field">
-        <label for="weight">Weight</label>
-        <input
-          id="weight"
-          v-model="product.weight"
-          placeholder="Weight in kg"
-          type="number"
-          step="0.01"
-        />
-      </div>
-
-      <!-- Main Image Upload -->
-      <div class="form-field">
-        <label for="mainImage">Main Image</label>
-        <div class="upload-area" @click="triggerMainImageInput">
-          <h4>Click to upload or drag and drop</h4>
-          <p>Max. File Size: 30MB</p>
-          <button type="button" class="upload-btn">Choose Main Image</button>
-          <input
-            id="mainImage"
-            type="file"
-            @change="handleMainImageUpload"
-            ref="mainImageInput"
-            class="file-input"
-            accept="image/jpeg,image/png,image/gif,image/webp,image/avif"
-            hidden
-          />
-        </div>
-        <div v-if="mainImagePreview" class="file-preview">
-          <img
-            :src="mainImagePreview"
-            alt="Main Image Preview"
-            class="preview-img-main"
-          />
-          <button @click="removeMainImage" class="remove-btn-main">
-            Remove
-          </button>
-        </div>
-        <span v-if="errors.main_image" class="error-msg">{{
-          errors.main_image
-        }}</span>
-      </div>
-
-      <!-- Thumbnails Upload -->
-      <div class="form-field">
-        <label for="productThumbnails">Product Thumbnails</label>
-        <div class="upload-area" @click="triggerFileInput">
-          <h4>Click to upload or drag and drop</h4>
-          <p>Max. File Size: 30MB</p>
-          <button type="button" class="upload-btn">Choose Thumbnails</button>
-          <input
-            id="productThumbnails"
-            type="file"
-            multiple
-            @change="handleThumbnailUpload"
-            ref="fileInput"
-            accept="image/jpeg,image/png,image/gif,image/webp,image/avif"
-            class="file-input"
-            hidden
-          />
-        </div>
-        <div v-if="thumbnailPreviews.length" class="file-preview">
-          <ul class="thumbnail-list">
-            <li
-              v-for="(preview, index) in thumbnailPreviews"
-              :key="index"
-              class="file-item"
-            >
-              <img
-                :src="preview"
-                alt="Thumbnail Preview"
-                class="preview-img-thumbnail"
-              />
-              <button @click="removeThumbnail(index)" class="remove-btn">
-                Remove
-              </button>
-            </li>
-          </ul>
-        </div>
-        <span v-if="errors.thumbnails" class="error-msg">{{
-          errors.thumbnails
-        }}</span>
-      </div>
-
-      <div v-if="submitError" class="error-msg global-error">
-        {{ submitError }}
-      </div>
-      <button type="submit" :disabled="isSubmitting">
-        {{ isSubmitting ? "Updating product..." : "Update product" }}
-      </button>
-    </form>
-  </div>
-</template>
-
 <script setup>
-import { ref, reactive, onMounted } from "vue";
+import { ref, watch } from "vue";
 import axios from "axios";
-import { useRouter, useRoute } from "vue-router";
-import { useToast } from "vue-toast-notification";
 
-const router = useRouter();
-const route = useRoute();
-const toast = useToast();
-const product = reactive({
+const props = defineProps({
+  id: {
+    // Changed from productId to id
+    type: [String, Number],
+    required: true,
+    validator: (value) => value !== undefined && value !== null && value !== "",
+  },
+});
+
+const emit = defineEmits(["product-updated"]);
+
+const product = ref(null);
+const formData = ref({
   name: "",
-  stock: "",
-  price: "",
+  price: 0,
+  description: "",
+  stock: 0,
+  dimensions: "",
+  weight: null,
+  material: "",
   vendor_name: "",
   vendor_email: "",
   vendor_location: "",
-  material: "",
-  dimensions: "",
-  weight: "",
-  description: "",
 });
-const errors = ref({});
-const submitError = ref("");
-const isSubmitting = ref(false);
-const mainImagePreview = ref(null);
-const thumbnailPreviews = ref([]);
-const mainImageFile = ref(null);
-const thumbnailFiles = ref([]);
 
-// Fetch existing product data
-onMounted(async () => {
-  const productId = route.params.id;
+const error = ref("");
+const successMessage = ref("");
+const isLoading = ref(false);
+const isSubmitting = ref(false);
+
+// Fetch product data
+const fetchProduct = async () => {
+  // Check if id is valid before making the request
+  if (!props.id) {
+    error.value = "Invalid product ID";
+    return;
+  }
+
+  error.value = "";
+  isLoading.value = true;
+
   try {
     const response = await axios.get(
-      `${import.meta.env.VITE_API_URL}/products/${productId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
+      `${import.meta.env.VITE_API_URL}/products/${props.id}`
     );
-    // Populate the form with fetched product data
-    Object.assign(product, response.data);
-    mainImagePreview.value = response.data.main_image_url;
-    thumbnailPreviews.value = response.data.thumbnails;
-  } catch (error) {
-    console.error("Error loading product:", error);
-  }
-});
-
-const handleSubmit = async () => {
-  try {
-    isSubmitting.value = true;
-    const productId = route.params.id;
-    const formData = new FormData();
-
-    Object.keys(product).forEach((key) => {
-      if (product[key] !== "") {
-        formData.append(key, product[key]);
-      }
-    });
-
-    if (mainImageFile.value) formData.append("main_image", mainImageFile.value);
-    thumbnailFiles.value.forEach((file) =>
-      formData.append("thumbnails[]", file)
-    );
-
-    const response = await axios.put(
-      `${import.meta.env.VITE_API_URL}/products/${productId}`,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
-    );
-
-    if (response.status === 200) {
-      toast.success("Product has been updated");
-      router.push("/admin/products");
+    product.value = response.data;
+    // Initialize form data with product values
+    formData.value = { ...response.data };
+  } catch (err) {
+    if (err.response?.status === 404) {
+      error.value = "Product not found";
+    } else if (err.response?.status === 500) {
+      error.value = "Server error: Please check if product ID is valid";
+    } else {
+      error.value = "Failed to load product data";
     }
-  } catch (error) {
-    console.error("Error updating product:", error);
-    submitError.value = error.response?.data?.message || "Update failed.";
+    console.error("Error fetching product:", err);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+// Watch for changes in id
+watch(
+  () => props.id,
+  (newId, oldId) => {
+    if (newId && newId !== oldId) {
+      fetchProduct();
+    }
+  },
+  { immediate: true }
+);
+
+// Reset form to initial product data
+const resetForm = () => {
+  if (product.value) {
+    formData.value = { ...product.value };
+  }
+  successMessage.value = "";
+  error.value = "";
+};
+
+const updateProduct = async () => {
+  if (!props.id) {
+    error.value = "Invalid product ID";
+    return;
+  }
+
+  error.value = "";
+  successMessage.value = "";
+  isSubmitting.value = true;
+
+  try {
+    const response = await axios.put(
+      `${import.meta.env.VITE_API_URL}/products/${props.id}`,
+      formData.value,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Add Authorization header
+        },
+      }
+    );
+    successMessage.value = "Product updated successfully";
+    product.value = response.data;
+    // Emit event to notify parent component
+    emit("product-updated", response.data);
+  } catch (err) {
+    if (err.response?.status === 403) {
+      error.value = "Unauthorized: Only admins can update products";
+    } else if (err.response?.status === 404) {
+      error.value = "Product not found";
+    } else if (err.response?.status === 500) {
+      error.value = "Server error: Please check if product ID is valid";
+    } else if (err.response?.data?.errors) {
+      error.value = Object.values(err.response.data.errors).join(", ");
+    } else {
+      error.value = "Failed to update product";
+    }
+    console.error("Error updating product:", err);
   } finally {
     isSubmitting.value = false;
   }
 };
 </script>
 
-<style scoped>
-.admin-update-product {
-  padding: 0 50px;
+<template>
+  <div class="product-update-form">
+    <h2>Update Product</h2>
+
+    <!-- Loading State -->
+    <div v-if="isLoading" class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading product details...</p>
+    </div>
+
+    <!-- Error Alert -->
+    <div v-if="error" class="error-alert">
+      {{ error }}
+      <button @click="fetchProduct" class="retry-button">Retry</button>
+    </div>
+
+    <!-- Success Message -->
+    <div v-if="successMessage" class="success-alert">
+      {{ successMessage }}
+    </div>
+
+    <!-- Form only shows when product is loaded -->
+    <form v-if="product" @submit.prevent="updateProduct" class="form">
+      <div class="form-group">
+        <label for="name">Product Name:</label>
+        <input
+          id="name"
+          v-model="formData.name"
+          type="text"
+          maxlength="255"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="price">Price:</label>
+        <input
+          id="price"
+          v-model.number="formData.price"
+          type="number"
+          step="0.01"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description:</label>
+        <textarea
+          id="description"
+          v-model="formData.description"
+          rows="4"
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="stock">Stock:</label>
+        <input
+          id="stock"
+          v-model.number="formData.stock"
+          type="number"
+          min="0"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="dimensions">Dimensions:</label>
+        <input id="dimensions" v-model="formData.dimensions" type="text" />
+      </div>
+
+      <div class="form-group">
+        <label for="weight">Weight:</label>
+        <input
+          id="weight"
+          v-model.number="formData.weight"
+          type="number"
+          step="0.01"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="material">Material:</label>
+        <input id="material" v-model="formData.material" type="text" />
+      </div>
+
+      <div class="form-group">
+        <label for="vendor_name">Vendor Name:</label>
+        <input
+          id="vendor_name"
+          v-model="formData.vendor_name"
+          type="text"
+          maxlength="255"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="vendor_email">Vendor Email:</label>
+        <input
+          id="vendor_email"
+          v-model="formData.vendor_email"
+          type="email"
+          maxlength="255"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="vendor_location">Vendor Location:</label>
+        <input
+          id="vendor_location"
+          v-model="formData.vendor_location"
+          type="text"
+          maxlength="255"
+          required
+        />
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="cancel-button" @click="resetForm">
+          Reset
+        </button>
+        <button type="submit" :disabled="isSubmitting">
+          {{ isSubmitting ? "Updating..." : "Update Product" }}
+        </button>
+      </div>
+    </form>
+  </div>
+</template>
+
+<style>
+.product-update-form {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
-h2 {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 20px;
+.loading-state {
+  text-align: center;
+  padding: 40px;
 }
 
-form {
+.spinner {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 20px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.form {
   display: flex;
   flex-direction: column;
+  gap: 16px;
 }
 
-.form-field {
-  margin-bottom: 20px;
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
 }
 
 label {
-  display: block;
   font-weight: bold;
-  margin-bottom: 5px;
+  color: #333;
 }
 
 input,
 textarea {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
   border-radius: 4px;
+  font-size: 14px;
 }
 
-textarea {
-  min-height: 100px;
-  resize: vertical;
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
 
-.error-msg {
-  color: #dc2626;
-  font-size: 0.875rem;
-  margin-top: 0.25rem;
-}
-
-.global-error {
-  margin-bottom: 1rem;
-  padding: 0.75rem;
-  background-color: #fee2e2;
-  border: 1px solid #dc2626;
-  border-radius: 4px;
-}
-
-.upload-area {
-  margin-top: 10px;
-  padding: 20px;
-  border: 2px dashed #ccc;
-  border-radius: 4px;
-  text-align: center;
-  cursor: pointer;
-  transition: border-color 0.3s ease;
-}
-
-.upload-area:hover {
-  border-color: #666;
-}
-
-.upload-btn {
-  margin-top: 10px;
-  padding: 8px 15px;
-  background: #1a1a1a;
+button {
+  padding: 10px 20px;
+  background-color: #007bff;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.2s;
 }
 
-.file-preview {
-  margin-top: 10px;
+.cancel-button {
+  background-color: #6c757d;
 }
 
-.thumbnail-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 1rem;
-  list-style: none;
-  padding: 0;
+.cancel-button:hover {
+  background-color: #5a6268;
 }
 
-.file-item {
-  position: relative;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 0.5rem;
+.retry-button {
+  margin-left: 12px;
+  padding: 4px 12px;
+  font-size: 14px;
 }
 
-.preview-img-main {
-  width: 200px;
-  height: auto;
-  position: relative;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 0.5rem;
+button:hover:not(:disabled) {
+  background-color: #0056b3;
 }
 
-.preview-img-thumbnail {
-  width: 150px;
-  height: auto;
-  border-radius: 4px;
-}
-
-.remove-btn-main {
-  position: relative;
-  top: 0.25rem;
-  right: 0.25rem;
-  background: #dc2626;
-  color: white;
-  border: none;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.75rem;
-}
-
-.remove-btn {
-  position: absolute;
-  top: 0.25rem;
-  right: 0.25rem;
-  background: #dc2626;
-  color: white;
-  border: none;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.75rem;
-}
-
-button[type="submit"] {
-  margin: 20px 0;
-  padding: 12px 24px;
-  background: #1a1a1a;
-  color: var(--background-color);
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.3s ease;
-}
-
-button[type="submit"]:hover {
-  background-color: #333;
-}
-
-button[type="submit"]:disabled {
-  background-color: #666;
+button:disabled {
+  background-color: #ccc;
   cursor: not-allowed;
+}
+
+.error-alert {
+  padding: 12px;
+  background-color: #fee;
+  color: #c00;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.success-alert {
+  padding: 12px;
+  background-color: #efe;
+  color: #0a0;
+  border-radius: 4px;
+  margin-bottom: 16px;
 }
 </style>

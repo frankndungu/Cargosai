@@ -29,5 +29,15 @@ const sales = ref([
     amount: "+$299.00",
     email: "isabella.nguyen@email.com",
   },
+  {
+    name: "Isabella Nguyen",
+    amount: "+$299.00",
+    email: "isabella.nguyen@email.com",
+  },
+  {
+    name: "Isabella Nguyen",
+    amount: "+$299.00",
+    email: "isabella.nguyen@email.com",
+  },
 ]);
 </script>
