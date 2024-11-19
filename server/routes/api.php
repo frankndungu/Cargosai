@@ -29,10 +29,10 @@ Route::middleware([RateLimitMiddleware::class, StartSession::class])->group(func
     Route::middleware(['auth:sanctum'])->prefix('admin')->group(function () {
         Route::post('/create', [AdminController::class, 'createAdminUser']); // Create admin user
         Route::get('/admins', [AdminController::class, 'listAdmins']); // Get all admins
+        Route::delete('/users/{id}', [AdminController::class, 'deleteUser']); // Admin Delete user
         Route::get('/users', [UserController::class, 'index']); // Get all users
         Route::get('/users/{id}', [UserController::class, 'show']); // Get individual user by ID
         Route::put('/users/{id}', [UserController::class, 'update']); // Update user
-        Route::delete('/users/{id}', [UserController::class, 'destroy']); // Delete user
     });
 
     // Product Routes
