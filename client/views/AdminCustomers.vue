@@ -22,7 +22,7 @@
           <td>{{ user.email }}</td>
           <td>{{ user.role }}</td>
           <td>
-            <button @click="editUser(user.id)">Edit</button>
+            <button @click="editUser(user.id)">View</button>
             <button @click="deleteUser(user.id)">Delete</button>
           </td>
         </tr>
@@ -141,7 +141,7 @@ h2 {
 }
 
 .error {
-  color: red;
+  color: var(--error-message);
   text-align: center;
 }
 
@@ -166,13 +166,20 @@ button {
   padding: 5px 10px;
   margin-right: 10px;
   border: none;
-  background-color: #007bff;
-  color: white;
+  border-radius: 3px;
+  background: var(--dark-tint);
+  color: var(--background-color);
   cursor: pointer;
 }
 
 button:hover {
-  background-color: #0056b3;
+  background: var(--dark-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0);
+}
+
+button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(15, 15, 15, 0.6);
 }
 
 .success-message,
@@ -198,8 +205,8 @@ button:hover {
 .pagination button {
   padding: 5px 10px;
   margin: 0 5px;
-  background-color: #007bff;
-  color: white;
+  background: var(--dark-tint);
+  color: var(--background-color);
   cursor: pointer;
 }
 
