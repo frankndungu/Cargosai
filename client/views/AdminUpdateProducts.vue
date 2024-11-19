@@ -1,132 +1,3 @@
-<script setup>
-import { ref, watch } from "vue";
-import axios from "axios";
-
-const props = defineProps({
-  id: {
-    // Changed from productId to id
-    type: [String, Number],
-    required: true,
-    validator: (value) => value !== undefined && value !== null && value !== "",
-  },
-});
-
-const emit = defineEmits(["product-updated"]);
-
-const product = ref(null);
-const formData = ref({
-  name: "",
-  price: 0,
-  description: "",
-  stock: 0,
-  dimensions: "",
-  weight: null,
-  material: "",
-  vendor_name: "",
-  vendor_email: "",
-  vendor_location: "",
-});
-
-const error = ref("");
-const successMessage = ref("");
-const isLoading = ref(false);
-const isSubmitting = ref(false);
-
-// Fetch product data
-const fetchProduct = async () => {
-  // Check if id is valid before making the request
-  if (!props.id) {
-    error.value = "Invalid product ID";
-    return;
-  }
-
-  error.value = "";
-  isLoading.value = true;
-
-  try {
-    const response = await axios.get(
-      `${import.meta.env.VITE_API_URL}/products/${props.id}`
-    );
-    product.value = response.data;
-    // Initialize form data with product values
-    formData.value = { ...response.data };
-  } catch (err) {
-    if (err.response?.status === 404) {
-      error.value = "Product not found";
-    } else if (err.response?.status === 500) {
-      error.value = "Server error: Please check if product ID is valid";
-    } else {
-      error.value = "Failed to load product data";
-    }
-    console.error("Error fetching product:", err);
-  } finally {
-    isLoading.value = false;
-  }
-};
-
-// Watch for changes in id
-watch(
-  () => props.id,
-  (newId, oldId) => {
-    if (newId && newId !== oldId) {
-      fetchProduct();
-    }
-  },
-  { immediate: true }
-);
-
-// Reset form to initial product data
-const resetForm = () => {
-  if (product.value) {
-    formData.value = { ...product.value };
-  }
-  successMessage.value = "";
-  error.value = "";
-};
-
-const updateProduct = async () => {
-  if (!props.id) {
-    error.value = "Invalid product ID";
-    return;
-  }
-
-  error.value = "";
-  successMessage.value = "";
-  isSubmitting.value = true;
-
-  try {
-    const response = await axios.put(
-      `${import.meta.env.VITE_API_URL}/products/${props.id}`,
-      formData.value,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`, // Add Authorization header
-        },
-      }
-    );
-    successMessage.value = "Product updated successfully";
-    product.value = response.data;
-    // Emit event to notify parent component
-    emit("product-updated", response.data);
-  } catch (err) {
-    if (err.response?.status === 403) {
-      error.value = "Unauthorized: Only admins can update products";
-    } else if (err.response?.status === 404) {
-      error.value = "Product not found";
-    } else if (err.response?.status === 500) {
-      error.value = "Server error: Please check if product ID is valid";
-    } else if (err.response?.data?.errors) {
-      error.value = Object.values(err.response.data.errors).join(", ");
-    } else {
-      error.value = "Failed to update product";
-    }
-    console.error("Error updating product:", err);
-  } finally {
-    isSubmitting.value = false;
-  }
-};
-</script>
-
 <template>
   <div class="product-update-form">
     <h2>Update Product</h2>
@@ -257,11 +128,138 @@ const updateProduct = async () => {
   </div>
 </template>
 
+<script setup>
+import { ref, watch } from "vue";
+import axios from "axios";
+
+const props = defineProps({
+  id: {
+    // Changed from productId to id
+    type: [String, Number],
+    required: true,
+    validator: (value) => value !== undefined && value !== null && value !== "",
+  },
+});
+
+const emit = defineEmits(["product-updated"]);
+
+const product = ref(null);
+const formData = ref({
+  name: "",
+  price: 0,
+  description: "",
+  stock: 0,
+  dimensions: "",
+  weight: null,
+  material: "",
+  vendor_name: "",
+  vendor_email: "",
+  vendor_location: "",
+});
+
+const error = ref("");
+const successMessage = ref("");
+const isLoading = ref(false);
+const isSubmitting = ref(false);
+
+// Fetch product data
+const fetchProduct = async () => {
+  // Check if id is valid before making the request
+  if (!props.id) {
+    error.value = "Invalid product ID";
+    return;
+  }
+
+  error.value = "";
+  isLoading.value = true;
+
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_URL}/products/${props.id}`
+    );
+    product.value = response.data;
+    // Initialize form data with product values
+    formData.value = { ...response.data };
+  } catch (err) {
+    if (err.response?.status === 404) {
+      error.value = "Product not found";
+    } else if (err.response?.status === 500) {
+      error.value = "Server error: Please check if product ID is valid";
+    } else {
+      error.value = "Failed to load product data";
+    }
+    console.error("Error fetching product:", err);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+// Watch for changes in id
+watch(
+  () => props.id,
+  (newId, oldId) => {
+    if (newId && newId !== oldId) {
+      fetchProduct();
+    }
+  },
+  { immediate: true }
+);
+
+// Reset form to initial product data
+const resetForm = () => {
+  if (product.value) {
+    formData.value = { ...product.value };
+  }
+  successMessage.value = "";
+  error.value = "";
+};
+
+const updateProduct = async () => {
+  if (!props.id) {
+    error.value = "Invalid product ID";
+    return;
+  }
+
+  error.value = "";
+  successMessage.value = "";
+  isSubmitting.value = true;
+
+  try {
+    const response = await axios.put(
+      `${import.meta.env.VITE_API_URL}/products/${props.id}`,
+      formData.value,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Add Authorization header
+        },
+      }
+    );
+    successMessage.value = "Product updated successfully";
+    product.value = response.data;
+    // Emit event to notify parent component
+    emit("product-updated", response.data);
+  } catch (err) {
+    if (err.response?.status === 403) {
+      error.value = "Unauthorized: Only admins can update products";
+    } else if (err.response?.status === 404) {
+      error.value = "Product not found";
+    } else if (err.response?.status === 500) {
+      error.value = "Server error: Please check if product ID is valid";
+    } else if (err.response?.data?.errors) {
+      error.value = Object.values(err.response.data.errors).join(", ");
+    } else {
+      error.value = "Failed to update product";
+    }
+    console.error("Error updating product:", err);
+  } finally {
+    isSubmitting.value = false;
+  }
+};
+</script>
+
 <style>
 .product-update-form {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
+  padding: 0 50px;
 }
 
 .loading-state {

@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
 import store from "@/store";
-import { createMetaManager } from "vue-meta";
 
 // Import views and layouts
 import Home from "../views/Home.vue";
@@ -65,6 +64,12 @@ const adminRoutes = [
     name: "AdminOrders",
     component: AdminOrders,
     meta: { title: "Orders" },
+  },
+  {
+    path: "orders/:id",
+    name: "AdminOrdersDetails",
+    component: () => import("../views/AdminOrderDetails.vue"),
+    props: true,
   },
 ];
 

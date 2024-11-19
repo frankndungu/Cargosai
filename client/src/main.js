@@ -15,7 +15,7 @@ const csrfToken = document
 axios.defaults.headers.common["X-CSRF-TOKEN"] = csrfToken;
 
 // Add title handler to router
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _, next) => {
   // Default title
   const defaultTitle = "Maasai Market Online";
 
