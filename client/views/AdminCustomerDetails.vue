@@ -1,6 +1,14 @@
 <template>
   <div class="admin-details-wrapper">
-    <div class="admin-details-container" v-if="customerData">
+    <!-- Loading state -->
+    <div v-if="loading" class="loading-spinner">
+      Loading customer details...
+    </div>
+
+    <!-- Error state -->
+    <div v-if="error" class="error-message">{{ error }}</div>
+
+    <div class="admin-details-container" v-if="customerData && !loading">
       <div class="admin-details-header">
         <h1>Customer Profile</h1>
         <div class="customer-id">ID: {{ customerData?.id }}</div>
@@ -108,6 +116,8 @@ const API_URL = import.meta.env.VITE_API_URL;
 const customerData = ref(null);
 const shippingData = ref(null);
 const billingData = ref(null);
+const loading = ref(false); // Track loading state
+const error = ref(null); // Track error message
 
 // Get the userId from route params
 const route = useRoute();
@@ -123,6 +133,9 @@ const formatDate = (dateString) => {
 };
 
 const fetchCustomerDetails = async () => {
+  loading.value = true; // Set loading to true before making requests
+  error.value = null; // Reset error before fetching data
+
   try {
     const token = localStorage.getItem("token");
 
@@ -147,8 +160,11 @@ const fetchCustomerDetails = async () => {
     customerData.value = customerRes.data;
     shippingData.value = shippingRes.data;
     billingData.value = billingRes.data;
-  } catch (error) {
-    console.error("Error fetching customer details:", error);
+  } catch (err) {
+    error.value = "Error fetching customer details. Please try again later."; // Set error message
+    console.error("Error fetching customer details:", err);
+  } finally {
+    loading.value = false; // Set loading to false once the requests are complete
   }
 };
 
@@ -260,6 +276,18 @@ onMounted(() => {
   font-size: 0.875rem;
   font-weight: 500;
   width: 30%;
+}
+
+.loading-spinner {
+  font-size: 1rem;
+  color: var(--primary-color);
+  text-align: center;
+}
+
+.error-message {
+  color: var(--error-message);
+  font-size: 1rem;
+  text-align: center;
 }
 
 @media (max-width: 768px) {

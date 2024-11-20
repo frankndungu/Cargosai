@@ -279,10 +279,16 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   padding: 8px 16px;
-  background: #f1f1f1;
+  background: transparent;
+  color: var(--dark-color);
   border: 1px solid #ccc;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.actions-button:hover {
+  background-color: transparent;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .actions-button .fa-chevron-down {
@@ -297,21 +303,22 @@ onBeforeUnmount(() => {
 .dropdown-content {
   display: none;
   position: absolute;
-  background-color: #f1f1f1;
+  background: var(--dark-tint);
   min-width: 120px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
 }
 
 .dropdown-content a {
-  color: var(--dark-color);
+  color: var(--background-color);
   padding: 12px 16px;
   text-decoration: none;
   display: block;
 }
 
 .dropdown-content a:hover {
-  background: #ddd;
+  background-color: var(--dark-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .dropdown:hover .dropdown-content {
