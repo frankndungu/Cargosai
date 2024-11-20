@@ -22,7 +22,7 @@
           <td>{{ user.email }}</td>
           <td>{{ user.role }}</td>
           <td>
-            <button @click="editUser(user.id)">View</button>
+            <button @click="viewUser(user.id)">View</button>
             <button @click="deleteUser(user.id)">Delete</button>
           </td>
         </tr>
@@ -46,6 +46,7 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import axios from "axios";
+import { useRouter } from "vue-router";
 
 // Local state
 const users = ref([]);
@@ -54,6 +55,7 @@ const error = ref(null);
 const successMessage = ref("");
 const currentPage = ref(1);
 const usersPerPage = 10; // Display 10 users per page
+const router = useRouter(); // Add router instance
 
 // Methods
 const fetchUsers = async () => {
@@ -72,9 +74,8 @@ const fetchUsers = async () => {
   }
 };
 
-const editUser = (id) => {
-  // Navigate to edit user page
-  console.log(`Editing user with ID: ${id}`);
+const viewUser = (id) => {
+  router.push(`/admin/customers/${id}`); // Update navigation route
 };
 
 const deleteUser = async (id) => {

@@ -60,7 +60,7 @@ const adminRoutes = [
     meta: { title: "Customers" },
   },
   {
-    path: "customers:/id",
+    path: "customers/:id",
     name: "AdminCustomerDetails",
     component: () => import("../views/AdminCustomerDetails.vue"),
     props: true,
