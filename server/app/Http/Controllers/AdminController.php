@@ -59,12 +59,23 @@ class AdminController extends Controller
     }
 
     // Method to list all users
-    public function listUsers()
+    public function showUser($id)
     {
-        $users = User::all();
-        return response()->json($users);
+        $user = User::find($id);
+    
+        // Allow admins to fetch any user
+        if (auth()->user()->role === 'admin') {
+            return response()->json($user);
+        }
+    
+        // If it's the logged-in user, allow
+        if (auth()->user()->id === $id) {
+            return response()->json($user);
+        }
+    
+        return response()->json(['message' => 'Unauthorized'], 403);
     }
-
+    
     // Method to list all admin users
     public function listAdmins()
     {

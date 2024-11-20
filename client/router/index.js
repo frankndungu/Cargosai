@@ -15,6 +15,7 @@ import ProductPage from "../views/ProductPage.vue";
 import Recovery from "../views/Recovery.vue";
 import NotFound from "../views/NotFound.vue";
 import Cart from "../views/Cart.vue";
+import Checkout from "../views/Checkout.vue";
 import TermsOfService from "../views/TermsOfService.vue";
 import FrequentlyAskedQuestions from "../views/FrequentlyAskedQuestions.vue";
 import UserDashboard from "../views/UserDashboard.vue";

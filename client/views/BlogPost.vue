@@ -325,7 +325,7 @@ onMounted(() => {
   margin: 2em 0;
   padding: 1em 2em;
   border-left: 4px solid var(--accent-color);
-  background-color: var(--background-secondary);
+  background: var(--secondary-color);
   border-radius: 0 var(--border-radius) var(--border-radius) 0;
   font-style: italic;
   color: var(--text-secondary);
