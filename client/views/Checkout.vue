@@ -26,12 +26,12 @@
 
       <form @submit.prevent="submitOrder" class="modern-checkout-form">
         <div class="form-grid">
+          <!-- Personal Details -->
           <div class="form-column personal-info">
             <div class="section-header">
               <h2>Personal Details</h2>
               <span>Keep your information safe and secure</span>
             </div>
-
             <div class="input-group">
               <div class="name-row">
                 <div class="input-wrapper">
@@ -44,7 +44,6 @@
                   />
                 </div>
               </div>
-
               <div class="input-wrapper">
                 <label>Email Address</label>
                 <input
@@ -54,7 +53,6 @@
                   required
                 />
               </div>
-
               <div class="input-wrapper">
                 <label>Phone Number</label>
                 <input
@@ -66,12 +64,12 @@
             </div>
           </div>
 
+          <!-- Payment Details -->
           <div class="form-column payment-info">
             <div class="section-header">
               <h2>Payment Details</h2>
               <span>We protect your payment information</span>
             </div>
-
             <div class="input-group">
               <div class="input-wrapper">
                 <label>Card Holder Name</label>
@@ -82,7 +80,6 @@
                   required
                 />
               </div>
-
               <div class="input-wrapper card-number">
                 <label>Card Number</label>
                 <div class="card-input-container">
@@ -98,7 +95,6 @@
                   </div>
                 </div>
               </div>
-
               <div class="card-details-row">
                 <div class="input-wrapper">
                   <label>Expiry (MM/YY)</label>
@@ -125,10 +121,10 @@
           </div>
         </div>
 
+        <!-- Order Summary -->
         <div class="order-summary-section">
           <div class="summary-container">
             <h3 class="summary-title">Order Summary</h3>
-
             <div class="summary-content">
               <div class="summary-breakdown">
                 <div class="summary-row">
@@ -136,15 +132,14 @@
                   <span>${{ subtotal.toFixed(2) }}</span>
                 </div>
                 <div class="summary-row">
-                  <span>Tax (10%)</span>
-                  <span>${{ tax.toFixed(2) }}</span>
+                  <span>Shipping</span>
+                  <span>${{ shipping.toFixed(2) }}</span>
                 </div>
                 <div class="summary-row total">
                   <strong>Total</strong>
                   <strong>${{ total.toFixed(2) }}</strong>
                 </div>
               </div>
-
               <button type="submit" class="submit-button" :disabled="isLoading">
                 Pay Now
                 <span class="button-icon">→</span>
@@ -153,6 +148,52 @@
           </div>
         </div>
       </form>
+
+      <!-- Shipping Address Section -->
+      <div class="shipping-address-section">
+        <div class="section-header">
+          <h2>Shipping Address</h2>
+          <span>Ensure your delivery information is correct</span>
+        </div>
+        <div class="input-group">
+          <div class="input-wrapper">
+            <label>Address</label>
+            <input
+              v-model="formData.address"
+              type="text"
+              placeholder="123 Main St"
+              required
+            />
+          </div>
+          <div class="input-wrapper">
+            <label>City</label>
+            <input
+              v-model="formData.city"
+              type="text"
+              placeholder="New York"
+              required
+            />
+          </div>
+          <div class="input-wrapper">
+            <label>Postal Code</label>
+            <input
+              v-model="formData.postalCode"
+              type="text"
+              placeholder="10001"
+              required
+            />
+          </div>
+          <div class="input-wrapper">
+            <label>Country</label>
+            <input
+              v-model="formData.country"
+              type="text"
+              placeholder="United States"
+              required
+            />
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -177,8 +218,8 @@ const errorMessage = ref("");
 
 // Order Summary Calculations with default values
 const subtotal = ref(100.0);
-const tax = computed(() => subtotal.value * 0.1);
-const total = computed(() => subtotal.value + tax.value);
+const shipping = computed(() => subtotal.value * 0.1);
+const total = computed(() => subtotal.value + shipping.value);
 
 // Order Submission Method
 const submitOrder = async () => {
@@ -343,6 +384,12 @@ const resetForm = () => {
   margin-bottom: 2rem;
 }
 
+.shipping-address-section {
+  border-top: 1px solid #ccc;
+  margin-top: 5px;
+  padding: 2rem;
+}
+
 .section-header {
   margin-bottom: 1.5rem;
   text-align: left;
@@ -427,7 +474,6 @@ const resetForm = () => {
 }
 
 .summary-content {
-  background-color: #f8fafc;
   border-radius: 12px;
   padding: 1.5rem;
   width: 400px;
@@ -442,7 +488,7 @@ const resetForm = () => {
 .summary-row {
   display: flex;
   justify-content: space-between;
-  color: #64748b;
+  color: var(--dark-color);
   font-size: 0.95rem;
 }
 
@@ -456,7 +502,7 @@ const resetForm = () => {
 
 .submit-button {
   background-color: var(--dark-tint);
-  color: white;
+  color: var(--background-color);
   border: none;
   padding: 1rem 2rem;
   border-radius: 8px;
