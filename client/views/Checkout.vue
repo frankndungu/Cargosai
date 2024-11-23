@@ -1,3 +1,679 @@
+<!-- Checkout.vue -->
 <template>
-  <div>Pay your order here</div>
+  <div class="checkout-container">
+    <!-- Loading Overlay -->
+    <div v-if="isLoading" class="loading-overlay">
+      <div class="loading-spinner"></div>
+      <p>Processing your order...</p>
+    </div>
+
+    <!-- Error Modal -->
+    <div v-if="errorMessage" class="error-modal">
+      <div class="error-content">
+        <div class="error-icon">⚠️</div>
+        <h3>Checkout Error</h3>
+        <p>{{ errorMessage }}</p>
+        <button @click="clearError" class="error-close">Got It</button>
+      </div>
+    </div>
+
+    <!-- Checkout Form -->
+    <div class="checkout-wrapper">
+      <div class="checkout-header">
+        <h1>Complete Your Purchase</h1>
+        <p>Secure and fast checkout process</p>
+      </div>
+
+      <form @submit.prevent="submitOrder" class="modern-checkout-form">
+        <div class="form-grid">
+          <div class="form-column personal-info">
+            <div class="section-header">
+              <h2>Personal Details</h2>
+              <span>Keep your information safe and secure</span>
+            </div>
+
+            <div class="input-group">
+              <div class="name-row">
+                <div class="input-wrapper">
+                  <label>Name</label>
+                  <input
+                    v-model="formData.name"
+                    type="text"
+                    placeholder="John Doe"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="input-wrapper">
+                <label>Email Address</label>
+                <input
+                  v-model="formData.email"
+                  type="email"
+                  placeholder="john.doe@example.com"
+                  required
+                />
+              </div>
+
+              <div class="input-wrapper">
+                <label>Phone Number</label>
+                <input
+                  v-model="formData.phone"
+                  type="tel"
+                  placeholder="+1 (123) 456-7890"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="form-column payment-info">
+            <div class="section-header">
+              <h2>Payment Details</h2>
+              <span>We protect your payment information</span>
+            </div>
+
+            <div class="input-group">
+              <div class="input-wrapper">
+                <label>Card Holder Name</label>
+                <input
+                  v-model="formData.cardName"
+                  type="text"
+                  placeholder="John Doe"
+                  required
+                />
+              </div>
+
+              <div class="input-wrapper card-number">
+                <label>Card Number</label>
+                <div class="card-input-container">
+                  <input
+                    v-model="formData.cardNumber"
+                    type="text"
+                    placeholder="1234 5678 9012 3456"
+                    required
+                    pattern="\d{16}"
+                  />
+                  <div class="card-icons">
+                    <span>💳</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card-details-row">
+                <div class="input-wrapper">
+                  <label>Expiry (MM/YY)</label>
+                  <input
+                    v-model="formData.expiry"
+                    type="text"
+                    placeholder="12/25"
+                    required
+                    pattern="\d{2}/\d{2}"
+                  />
+                </div>
+                <div class="input-wrapper">
+                  <label>CVV</label>
+                  <input
+                    v-model="formData.cvv"
+                    type="text"
+                    placeholder="123"
+                    required
+                    pattern="\d{3}"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="order-summary-section">
+          <div class="summary-container">
+            <h3 class="summary-title">Order Summary</h3>
+
+            <div class="summary-content">
+              <div class="summary-breakdown">
+                <div class="summary-row">
+                  <span>Subtotal</span>
+                  <span>${{ subtotal.toFixed(2) }}</span>
+                </div>
+                <div class="summary-row">
+                  <span>Tax (10%)</span>
+                  <span>${{ tax.toFixed(2) }}</span>
+                </div>
+                <div class="summary-row total">
+                  <strong>Total</strong>
+                  <strong>${{ total.toFixed(2) }}</strong>
+                </div>
+              </div>
+
+              <button type="submit" class="submit-button" :disabled="isLoading">
+                Pay Now
+                <span class="button-icon">→</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
 </template>
+
+<script setup>
+import { ref, computed } from "vue";
+
+// Use reactive to ensure all properties are initialized
+const formData = ref({
+  name: "",
+  email: "",
+  phone: "",
+  cardName: "",
+  cardNumber: "",
+  expiry: "",
+  cvv: "",
+});
+
+// Loading and Error States
+const isLoading = ref(false);
+const errorMessage = ref("");
+
+// Order Summary Calculations with default values
+const subtotal = ref(100.0);
+const tax = computed(() => subtotal.value * 0.1);
+const total = computed(() => subtotal.value + tax.value);
+
+// Order Submission Method
+const submitOrder = async () => {
+  // Reset previous errors
+  errorMessage.value = "";
+
+  // Comprehensive Validation
+  if (!validateForm()) {
+    return;
+  }
+
+  // Set Loading State
+  isLoading.value = true;
+
+  try {
+    // Simulate API Call with proper error handling
+    const response = await simulateOrderSubmission();
+
+    // Handle Successful Order
+    if (response.success) {
+      // Redirect or show success message
+      alert("Order Placed Successfully!");
+      // Optionally reset form
+      resetForm();
+    } else {
+      throw new Error(response.message || "Order submission failed");
+    }
+  } catch (error) {
+    // Robust Error Handling
+    errorMessage.value = error.message || "An unexpected error occurred";
+    console.error("Order Submission Error:", error);
+  } finally {
+    // Always reset loading state
+    isLoading.value = false;
+  }
+};
+
+// Comprehensive Form Validation
+const validateForm = () => {
+  // Destructure with default empty strings to prevent undefined errors
+  const {
+    name = "",
+    email = "",
+    cardName = "",
+    cardNumber = "",
+    expiry = "",
+    cvv = "",
+  } = formData.value;
+
+  // Validation checks
+  const validations = [
+    {
+      condition: name.trim().length < 2,
+      message: "Name must be at least 2 characters long",
+    },
+    {
+      condition: !/\S+@\S+\.\S+/.test(email),
+      message: "Please enter a valid email address",
+    },
+    {
+      condition: !/^\d{16}$/.test(cardNumber.replace(/\s/g, "")),
+      message: "Card number must be 16 digits",
+    },
+    {
+      condition: !/^\d{2}\/\d{2}$/.test(expiry),
+      message: "Invalid expiry date. Use MM/YY format",
+    },
+    {
+      condition: !/^\d{3}$/.test(cvv),
+      message: "CVV must be 3 digits",
+    },
+  ];
+
+  // Check for validation errors
+  for (const validation of validations) {
+    if (validation.condition) {
+      errorMessage.value = validation.message;
+      return false;
+    }
+  }
+
+  return true;
+};
+
+// Simulated Order Submission with better error handling
+const simulateOrderSubmission = () => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      // Simulate potential failure scenarios
+      const randomSuccess = Math.random() > 0.2;
+
+      if (randomSuccess) {
+        resolve({ success: true });
+      } else {
+        resolve({
+          success: false,
+          message: "Payment processing failed. Please try again.",
+        });
+      }
+    }, 2000); // Simulate network delay
+  });
+};
+
+// Error Clearing Method
+const clearError = () => {
+  errorMessage.value = "";
+};
+
+// Form Reset Method
+const resetForm = () => {
+  formData.value = {
+    name: "",
+    email: "",
+    phone: "",
+    cardName: "",
+    cardNumber: "",
+    expiry: "",
+    cvv: "",
+  };
+};
+</script>
+
+<style>
+.checkout-container {
+  background-color: var(--background-color);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 50px;
+}
+
+.checkout-wrapper {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+  /* width: 100%;
+  max-width: 1200px; */
+  overflow: hidden;
+}
+
+.checkout-header {
+  background-color: var(--dark-color);
+  color: var(--background-color);
+  padding: 2rem;
+  text-align: center;
+}
+
+.checkout-header h1 {
+  font-size: 1.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.modern-checkout-form {
+  padding: 2rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.section-header {
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.section-header h2 {
+  color: var(--text-color);
+  font-size: 1.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.section-header span {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.input-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-wrapper label {
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.input-wrapper input {
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  transition: border-color 0.3s ease;
+  width: 100%;
+}
+
+.input-wrapper input:focus {
+  outline: none;
+  border-color: var(--dark-color);
+  box-shadow: 0 0 0 3px rgba(29, 30, 31, 0.1);
+}
+
+.card-details-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.card-input-container {
+  position: relative;
+}
+
+.card-icons {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.order-summary-section {
+  margin-top: 0rem;
+  padding-top: 0rem;
+  margin-left: 2rem;
+}
+
+.summary-container {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.summary-title {
+  font-size: 1.25rem;
+  color: var(--text-color);
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.summary-content {
+  background-color: #f8fafc;
+  border-radius: 12px;
+  padding: 1.5rem;
+  width: 400px;
+}
+
+.summary-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  color: #64748b;
+  font-size: 0.95rem;
+}
+
+.total {
+  font-weight: bold;
+  color: var(--text-color);
+  border-top: 1px solid var(--border-color);
+  margin-top: 0.5rem;
+  padding-top: 1rem;
+}
+
+.submit-button {
+  background-color: var(--dark-tint);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
+  margin-top: 1.5rem;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.submit-button:hover {
+  background-color: var(--dark-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.submit-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(15, 15, 15, 0.6);
+}
+
+.submit-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.button-icon {
+  font-size: 1.25rem;
+}
+
+/* Loading and Error Styles */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  color: white;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+.error-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.error-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  text-align: center;
+  max-width: 400px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+}
+
+.error-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.error-close {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.error-close:hover {
+  background-color: var(--dark-color);
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .checkout-container {
+    padding: 1rem;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .checkout-wrapper {
+    border-radius: 12px;
+  }
+
+  .modern-checkout-form {
+    padding: 1.5rem;
+  }
+
+  .name-row,
+  .card-details-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .order-summary-section {
+    margin: 0;
+  }
+
+  .summary-container {
+    max-width: 100%;
+  }
+
+  .summary-content {
+    width: auto;
+  }
+}
+
+/* Additional Hover and Focus States */
+.input-wrapper input:hover {
+  border-color: rgb(24, 26, 27);
+}
+
+.error-close:focus,
+.submit-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(23, 23, 24, 0.3);
+}
+
+/* Disabled State Styles */
+input:disabled {
+  background-color: #f1f5f9;
+  cursor: not-allowed;
+}
+
+/* Error State Styles */
+.input-wrapper.error input {
+  border-color: #ef4444;
+  background-color: #fef2f2;
+}
+
+.input-wrapper.error label {
+  color: #ef4444;
+}
+
+/* Success State Styles */
+.input-wrapper.success input {
+  border-color: #22c55e;
+  background-color: #f0fdf4;
+}
+
+/* Loading Button State */
+.submit-button:disabled {
+  background-color: #94a3b8;
+  cursor: not-allowed;
+}
+
+/* Card Icons Container */
+.card-icons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Section Transitions */
+.section-header,
+.input-wrapper,
+.summary-content {
+  transition: all 0.3s ease;
+}
+
+/* Print Styles */
+@media print {
+  .checkout-container {
+    padding: 0;
+    background: white;
+  }
+
+  .submit-button,
+  .error-modal,
+  .loading-overlay {
+    display: none;
+  }
+
+  .checkout-wrapper {
+    box-shadow: none;
+  }
+}
+</style>

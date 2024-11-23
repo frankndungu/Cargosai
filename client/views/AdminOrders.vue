@@ -1,7 +1,12 @@
 <template>
   <div class="orders-container">
     <h1>Admin Orders</h1>
-    <table v-if="orders.length > 0" class="orders-table">
+
+    <!-- Loading Spinner -->
+    <div v-if="loading" class="loading-spinner">Loading orders...</div>
+
+    <!-- Orders Table -->
+    <table v-if="!loading && orders.length > 0" class="orders-table">
       <thead>
         <tr>
           <th>Order ID</th>
@@ -33,18 +38,20 @@
         </tr>
       </tbody>
     </table>
-    <p v-else>No orders found.</p>
+
+    <!-- No Orders Message -->
+    <p v-else-if="!loading && orders.length === 0">No orders found.</p>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router"; // We can use Vue Router to navigate to a detail page
+import { useRouter } from "vue-router";
 
 const orders = ref([]);
-const router = useRouter(); // Initialize the router
+const loading = ref(true); // Add loading state
+const router = useRouter();
 
-// Fetch orders from API
 const fetchOrders = async () => {
   try {
     const response = await fetch(`${import.meta.env.VITE_API_URL}/orders`, {
@@ -62,6 +69,8 @@ const fetchOrders = async () => {
     }
   } catch (error) {
     console.error("Error:", error);
+  } finally {
+    loading.value = false; // Set loading to false after data is fetched
   }
 };
 
@@ -70,18 +79,16 @@ onMounted(() => {
   fetchOrders();
 });
 
-// View order details function
 const viewOrderDetails = (orderId) => {
   router.push(`/admin/orders/${orderId}`);
 };
 
-// Function to get class for payment status
 const getPaymentStatusClass = (paymentStatus) => {
   switch (paymentStatus) {
     case "Pending":
       return "payment-pending";
     case "Paid":
-      return "payment-paid";
+      return "payment-confirmed";
     case "Failed":
       return "payment-failed";
     default:
@@ -89,7 +96,6 @@ const getPaymentStatusClass = (paymentStatus) => {
   }
 };
 
-// Function to get class for order status
 const getOrderStatusClass = (status) => {
   switch (status) {
     case "Pending":
@@ -109,6 +115,13 @@ const getOrderStatusClass = (status) => {
 <style scoped>
 .orders-container {
   padding: 0 50px;
+}
+
+.loading-spinner {
+  font-size: 1rem;
+  color: var(--primary-color);
+  text-align: center;
+  margin: 20px 0;
 }
 
 .orders-table {
@@ -166,7 +179,7 @@ const getOrderStatusClass = (status) => {
   color: orange;
 }
 
-.payment-paid {
+.payment-completed {
   color: green;
 }
 

@@ -233,6 +233,13 @@ const routes = [
       description: "The page you are looking for could not be found.",
     },
   },
+  // Checkout route for authenticated users
+  {
+    path: "/checkout",
+    component: Checkout,
+    meta: { requiresAuth: true, title: "Checkout" },
+    description: "Complete your purchase and enter payment details.",
+  },
 ];
 
 // Router configuration

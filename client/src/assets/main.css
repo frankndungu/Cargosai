@@ -1374,7 +1374,7 @@ input[type="email"] {
   flex-wrap: wrap;
   gap: 50px;
   padding: 30px;
-  background-color: var(--secondary-color);
+  background-color: var(--background-color);
   border-radius: 8px;
   max-width: 950px; /* Constrain width on larger screens */
   margin: 40px auto; /* Center container horizontally */
@@ -2635,6 +2635,10 @@ textarea.error {
 
 .admin-tab-button.active {
   background: var(--dark-color);
+  color: var(--background-color);
+}
+
+.admin-tab-button:hover {
   color: var(--background-color);
 }
 
