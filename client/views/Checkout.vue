@@ -183,12 +183,16 @@
           </div>
           <div class="input-wrapper">
             <label>Country</label>
-            <input
-              v-model="formData.country"
-              type="text"
-              placeholder="United States"
-              required
-            />
+            <select v-model="formData.country" required>
+              <option value="" disabled>Select your country</option>
+              <option
+                v-for="(country, index) in countries"
+                :key="index"
+                :value="country"
+              >
+                {{ country }}
+              </option>
+            </select>
           </div>
         </div>
 
@@ -261,7 +265,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import axios from "axios";
 
@@ -281,6 +285,8 @@ const formData = ref({
   country: "",
 });
 
+const countries = ref([]);
+
 const isLoading = ref(false);
 const errorMessage = ref("");
 const shippingOptions = ref([]);
@@ -293,6 +299,22 @@ const total = computed(() => {
     ? parseFloat(cartTotalPrice.value) +
         parseFloat(selectedShippingOption.value.price)
     : parseFloat(cartTotalPrice.value);
+});
+
+// Fetch and sort countries
+const fetchCountries = async () => {
+  try {
+    const response = await axios.get("https://restcountries.com/v3.1/all");
+    countries.value = response.data
+      .map((country) => country.name.common)
+      .sort();
+  } catch (error) {
+    errorMessage.value = "Failed to load countries. Please try again.";
+  }
+};
+
+onMounted(() => {
+  fetchCountries(); // Fetch countries when component is mounted
 });
 
 const calculateShipping = async () => {
@@ -573,6 +595,14 @@ const clearError = () => {
 }
 
 .input-wrapper input {
+  padding: 0.75rem;
+  border: 1px solid rgb(26, 25, 25);
+  border-radius: 8px;
+  transition: border-color 0.3s ease;
+  width: 100%;
+}
+
+.input-wrapper select {
   padding: 0.75rem;
   border: 1px solid rgb(26, 25, 25);
   border-radius: 8px;

@@ -49,10 +49,10 @@ class ShippingController extends Controller
     {
         // Base rates based on country; customize these as needed
         $baseRates = [
-            'US' => 15.00,
-            'CA' => 20.00,
-            'UK' => 25.00,
-            'AU' => 30.00,
+            'United States' => 15.00,
+            'Canada' => 20.00,
+            'United Kingdom' => 25.00,
+            'Australia' => 30.00,
         ];
 
         $baseRate = $baseRates[$country] ?? 40.00; // Default rate if country is not in list
