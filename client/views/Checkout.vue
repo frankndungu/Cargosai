@@ -33,16 +33,14 @@
               <span>Keep your information safe and secure</span>
             </div>
             <div class="input-group">
-              <div class="name-row">
-                <div class="input-wrapper">
-                  <label>Name</label>
-                  <input
-                    v-model="formData.name"
-                    type="text"
-                    placeholder="John Doe"
-                    required
-                  />
-                </div>
+              <div class="input-wrapper">
+                <label>Name</label>
+                <input
+                  v-model="formData.name"
+                  type="text"
+                  placeholder="John Doe"
+                  required
+                />
               </div>
               <div class="input-wrapper">
                 <label>Email Address</label>
@@ -82,18 +80,13 @@
               </div>
               <div class="input-wrapper card-number">
                 <label>Card Number</label>
-                <div class="card-input-container">
-                  <input
-                    v-model="formData.cardNumber"
-                    type="text"
-                    placeholder="1234 5678 9012 3456"
-                    required
-                    pattern="\d{16}"
-                  />
-                  <div class="card-icons">
-                    <span>💳</span>
-                  </div>
-                </div>
+                <input
+                  v-model="formData.cardNumber"
+                  type="text"
+                  placeholder="1234 5678 9012 3456"
+                  required
+                  pattern="\d{16}"
+                />
               </div>
               <div class="card-details-row">
                 <div class="input-wrapper">
@@ -133,7 +126,13 @@
                 </div>
                 <div class="summary-row">
                   <span>Shipping</span>
-                  <span>${{ shipping.toFixed(2) }}</span>
+                  <span
+                    >${{
+                      selectedShippingOption?.price
+                        ? selectedShippingOption.price.toFixed(2)
+                        : "0.00"
+                    }}</span
+                  >
                 </div>
                 <div class="summary-row total">
                   <strong>Total</strong>
@@ -142,7 +141,6 @@
               </div>
               <button type="submit" class="submit-button" :disabled="isLoading">
                 Pay Now
-                <span class="button-icon">→</span>
               </button>
             </div>
           </div>
@@ -193,6 +191,31 @@
             />
           </div>
         </div>
+
+        <!-- Calculate Shipping Button -->
+        <div class="calculate-shipping-section">
+          <button @click="calculateShipping" class="calculate-shipping-btn">
+            Calculate Shipping
+          </button>
+        </div>
+
+        <!-- Display Shipping Options -->
+        <div v-if="shippingOptions.length" class="shipping-options">
+          <h3>Shipping Options</h3>
+          <ul>
+            <li v-for="(option, index) in shippingOptions" :key="index">
+              <label>
+                <input
+                  type="radio"
+                  :value="option"
+                  v-model="selectedShippingOption"
+                />
+                {{ option.service }} - ${{ option.price }}
+                {{ option.estimatedDelivery }}
+              </label>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
@@ -201,11 +224,10 @@
 <script setup>
 import { ref, computed } from "vue";
 import { useStore } from "vuex";
+import axios from "axios";
 
-// Get store access to cart and other data
 const store = useStore();
 
-// Use reactive to ensure all properties are initialized
 const formData = ref({
   name: "",
   email: "",
@@ -214,137 +236,64 @@ const formData = ref({
   cardNumber: "",
   expiry: "",
   cvv: "",
+  address: "",
+  city: "",
+  postalCode: "",
+  country: "",
 });
 
-// Loading and Error States
 const isLoading = ref(false);
 const errorMessage = ref("");
+const shippingOptions = ref([]);
+const selectedShippingOption = ref(null);
 
-// Order Summary Calculations with default values
 const cartTotalPrice = computed(() => store.getters.cartTotalPrice);
-const shipping = computed(() => cartTotalPrice.value * 0.1); // Assume 10% shipping fee
-const total = computed(
-  () => parseFloat(cartTotalPrice.value) + parseFloat(shipping.value)
-);
 
-// Order Submission Method
-const submitOrder = async () => {
-  // Reset previous errors
-  errorMessage.value = "";
+const total = computed(() => {
+  return selectedShippingOption.value
+    ? parseFloat(cartTotalPrice.value) +
+        parseFloat(selectedShippingOption.value.price)
+    : parseFloat(cartTotalPrice.value);
+});
 
-  // Comprehensive Validation
-  if (!validateForm()) {
-    return;
+const calculateShipping = async () => {
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_URL}/shipping-rates`,
+      {
+        country: formData.value.country,
+        postal_code: formData.value.postalCode,
+        weight: 1,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    shippingOptions.value = response.data.shipping_rates; // Assuming this response contains a list of options
+    selectedShippingOption.value = shippingOptions.value[0]; // Default to the first shipping option
+  } catch (error) {
+    errorMessage.value = "Failed to calculate shipping. Please try again.";
   }
+};
 
-  // Set Loading State
+const submitOrder = async () => {
+  errorMessage.value = "";
   isLoading.value = true;
 
   try {
-    // Simulate API Call with proper error handling
-    const response = await simulateOrderSubmission();
-
-    // Handle Successful Order
-    if (response.success) {
-      // Redirect or show success message
-      alert("Order Placed Successfully!");
-      // Optionally reset form
-      resetForm();
-    } else {
-      throw new Error(response.message || "Order submission failed");
-    }
+    // Place order logic...
+    alert("Order Placed Successfully!");
   } catch (error) {
-    // Robust Error Handling
     errorMessage.value = error.message || "An unexpected error occurred";
-    console.error("Order Submission Error:", error);
   } finally {
-    // Always reset loading state
     isLoading.value = false;
   }
 };
 
-// Comprehensive Form Validation
-const validateForm = () => {
-  // Destructure with default empty strings to prevent undefined errors
-  const {
-    name = "",
-    email = "",
-    cardName = "",
-    cardNumber = "",
-    expiry = "",
-    cvv = "",
-  } = formData.value;
-
-  // Validation checks
-  const validations = [
-    {
-      condition: name.trim().length < 2,
-      message: "Name must be at least 2 characters long",
-    },
-    {
-      condition: !/\S+@\S+\.\S+/.test(email),
-      message: "Please enter a valid email address",
-    },
-    {
-      condition: !/^\d{16}$/.test(cardNumber.replace(/\s/g, "")),
-      message: "Card number must be 16 digits",
-    },
-    {
-      condition: !/^\d{2}\/\d{2}$/.test(expiry),
-      message: "Invalid expiry date. Use MM/YY format",
-    },
-    {
-      condition: !/^\d{3}$/.test(cvv),
-      message: "CVV must be 3 digits",
-    },
-  ];
-
-  // Check for validation errors
-  for (const validation of validations) {
-    if (validation.condition) {
-      errorMessage.value = validation.message;
-      return false;
-    }
-  }
-
-  return true;
-};
-
-// Simulated Order Submission with better error handling
-const simulateOrderSubmission = () => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      // Simulate potential failure scenarios
-      const randomSuccess = Math.random() > 0.2;
-
-      if (randomSuccess) {
-        resolve({ success: true });
-      } else {
-        resolve({
-          success: false,
-          message: "Payment processing failed. Please try again.",
-        });
-      }
-    }, 2000); // Simulate network delay
-  });
-};
-
-// Error Clearing Method
 const clearError = () => {
   errorMessage.value = "";
-};
-
-// Form Reset Method
-const resetForm = () => {
-  formData.value = {
-    name: "",
-    email: "",
-    phone: "",
-    cardName: "",
-    cardNumber: "",
-    expiry: "",
-    cvv: "",
-  };
 };
 </script>
 
@@ -394,6 +343,60 @@ const resetForm = () => {
   border-top: 1px solid #ccc;
   margin-top: 5px;
   padding: 2rem;
+  width: 100%;
+}
+
+.calculate-shipping-section {
+  margin-top: 1rem;
+}
+
+.calculate-shipping-btn {
+  background-color: var(--dark-tint);
+  color: var(--background-color);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.calculate-shipping-btn:hover {
+  background-color: var(--dark-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0);
+}
+
+.calculate-shipping-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(15, 15, 15, 0.6);
+}
+
+.shipping-options {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.shipping-options ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.shipping-options li {
+  margin-bottom: 1rem;
+}
+
+.shipping-options input[type="radio"] {
+  margin-right: 0.5rem;
+}
+
+.shipping-options label {
+  font-size: 1rem;
+}
+
+.summary-row.total strong {
+  color: var(--primary-color);
 }
 
 .section-header {
@@ -655,6 +658,10 @@ const resetForm = () => {
 
   .summary-content {
     width: auto;
+  }
+
+  .shipping-address-section {
+    width: 100%;
   }
 }
 
