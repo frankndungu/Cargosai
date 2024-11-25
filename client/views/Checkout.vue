@@ -129,7 +129,7 @@
               <div class="summary-breakdown">
                 <div class="summary-row">
                   <span>Subtotal</span>
-                  <span>${{ subtotal.toFixed(2) }}</span>
+                  <span>${{ cartTotalPrice }}</span>
                 </div>
                 <div class="summary-row">
                   <span>Shipping</span>
@@ -200,6 +200,10 @@
 
 <script setup>
 import { ref, computed } from "vue";
+import { useStore } from "vuex";
+
+// Get store access to cart and other data
+const store = useStore();
 
 // Use reactive to ensure all properties are initialized
 const formData = ref({
@@ -217,9 +221,11 @@ const isLoading = ref(false);
 const errorMessage = ref("");
 
 // Order Summary Calculations with default values
-const subtotal = ref(100.0);
-const shipping = computed(() => subtotal.value * 0.1);
-const total = computed(() => subtotal.value + shipping.value);
+const cartTotalPrice = computed(() => store.getters.cartTotalPrice);
+const shipping = computed(() => cartTotalPrice.value * 0.1); // Assume 10% shipping fee
+const total = computed(
+  () => parseFloat(cartTotalPrice.value) + parseFloat(shipping.value)
+);
 
 // Order Submission Method
 const submitOrder = async () => {
@@ -656,7 +662,9 @@ const resetForm = () => {
 .input-wrapper input:hover {
   border-color: rgb(24, 26, 27);
 }
-
+.error-close {
+  background: var(--dark-tint);
+}
 .error-close:focus,
 .submit-button:focus {
   outline: none;
