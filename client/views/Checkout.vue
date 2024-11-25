@@ -201,20 +201,59 @@
 
         <!-- Display Shipping Options -->
         <div v-if="shippingOptions.length" class="shipping-options">
-          <h3>Shipping Options</h3>
-          <ul>
-            <li v-for="(option, index) in shippingOptions" :key="index">
-              <label>
-                <input
-                  type="radio"
-                  :value="option"
-                  v-model="selectedShippingOption"
-                />
-                {{ option.service }} - ${{ option.price }}
-                {{ option.estimatedDelivery }}
-              </label>
-            </li>
-          </ul>
+          <h3 class="shipping-title">Shipping Options</h3>
+          <div class="shipping-options-grid">
+            <div
+              v-for="(option, index) in shippingOptions"
+              :key="index"
+              class="shipping-option-card"
+              :class="{ selected: selectedShippingOption === option }"
+              @click="selectedShippingOption = option"
+            >
+              <div class="shipping-option-content">
+                <div class="shipping-header">
+                  <div class="shipping-icon">
+                    <!-- Show different icon based on shipping service type -->
+                    <span
+                      v-if="option.service.toLowerCase().includes('express')"
+                      >🚀</span
+                    >
+                    <span
+                      v-else-if="
+                        option.service.toLowerCase().includes('standard')
+                      "
+                      >🚚</span
+                    >
+                    <span v-else>📦</span>
+                  </div>
+                  <div class="shipping-price">
+                    ${{ option.price.toFixed(2) }}
+                  </div>
+                </div>
+
+                <div class="shipping-details">
+                  <div class="shipping-service">{{ option.service }}</div>
+                  <div class="shipping-delivery">
+                    {{ option.estimatedDelivery }}
+                  </div>
+                </div>
+
+                <div class="shipping-selection">
+                  <input
+                    type="radio"
+                    :id="'shipping-' + index"
+                    :value="option"
+                    v-model="selectedShippingOption"
+                    class="shipping-radio"
+                  />
+                  <label :for="'shipping-' + index" class="shipping-label">
+                    <span class="radio-custom"></span>
+                    Select this option
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -310,9 +349,6 @@ const clearError = () => {
 .checkout-wrapper {
   background: white;
   border-radius: 16px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
-  /* width: 100%;
-  max-width: 1200px; */
   overflow: hidden;
 }
 
@@ -347,7 +383,7 @@ const clearError = () => {
 }
 
 .calculate-shipping-section {
-  margin-top: 1rem;
+  margin-top: 2rem;
 }
 
 .calculate-shipping-btn {
@@ -372,27 +408,130 @@ const clearError = () => {
 }
 
 .shipping-options {
-  margin-top: 1rem;
-  padding: 1rem;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border-radius: 12px;
 }
 
-.shipping-options ul {
-  list-style-type: none;
-  padding: 0;
+.shipping-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: var(--text-color);
 }
 
-.shipping-options li {
+.shipping-options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.shipping-option-card {
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.shipping-option-card:hover {
+  border-color: var(--dark-tint);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.shipping-option-card.selected {
+  border-color: var(--dark-color);
+}
+
+.shipping-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 1rem;
 }
 
-.shipping-options input[type="radio"] {
-  margin-right: 0.5rem;
+.shipping-icon {
+  font-size: 1.5rem;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 50%;
 }
 
-.shipping-options label {
-  font-size: 1rem;
+.shipping-price {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--dark-color);
+}
+
+.shipping-details {
+  margin-bottom: 1rem;
+}
+
+.shipping-service {
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+  color: var(--text-color);
+}
+
+.shipping-delivery {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.shipping-selection {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.shipping-radio {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.shipping-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: var(--dark-color);
+}
+
+.radio-custom {
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid #d1d5db;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.shipping-radio:checked + .shipping-label .radio-custom {
+  border-color: var(--dark-color);
+  background: var(--dark-color);
+}
+
+.shipping-radio:checked + .shipping-label .radio-custom::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 0.5rem;
+  height: 0.5rem;
+  background: white;
+  border-radius: 50%;
 }
 
 .summary-row.total strong {
@@ -660,8 +799,16 @@ const clearError = () => {
     width: auto;
   }
 
-  .shipping-address-section {
-    width: 100%;
+  .shipping-options {
+    padding: 1rem;
+  }
+
+  .shipping-options-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .shipping-option-card {
+    padding: 1rem;
   }
 }
 
