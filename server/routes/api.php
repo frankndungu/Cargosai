@@ -10,6 +10,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderDetailsController;
 use App\Http\Controllers\ShippingAddressController;
 use App\Http\Controllers\BillingAddressController;
+use App\Http\Controllers\ShippingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\RateLimitMiddleware;
@@ -101,5 +102,8 @@ Route::middleware([RateLimitMiddleware::class, StartSession::class])->group(func
             Route::put('{order}/status', [OrderController::class, 'updateStatus']);
             Route::delete('{order}', [OrderController::class, 'destroy']);
         });
+
+        // Shipping Routes
+        Route::post('/shipping-rates', [ShippingController::class, 'calculateRates']);
     });
 });

@@ -1,5 +1,5 @@
 <template>
-  <footer v-if="userRole !== 'admin'" class="footer">
+  <footer v-if="shouldShowFooter" class="footer">
     <div class="footer__content">
       <div class="footer__left">
         <div class="footer__logo">
@@ -54,7 +54,13 @@
 <script setup>
 import { computed } from "vue";
 import { useStore } from "vuex";
+import { useRoute } from "vue-router";
 
 const store = useStore();
+const route = useRoute();
+
 const userRole = computed(() => store.getters.userRole);
+const shouldShowFooter = computed(
+  () => route.path !== "/checkout" && userRole.value !== "admin"
+);
 </script>

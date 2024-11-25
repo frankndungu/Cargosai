@@ -426,7 +426,7 @@ const resetForm = () => {
 
 .input-wrapper input {
   padding: 0.75rem;
-  border: 1px solid var(--border-color);
+  border: 1px solid rgb(26, 25, 25);
   border-radius: 8px;
   transition: border-color 0.3s ease;
   width: 100%;

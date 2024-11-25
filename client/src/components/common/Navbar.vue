@@ -12,7 +12,7 @@
 
       <!-- Toggle Menu for guests and users only -->
       <div
-        v-if="!isAdmin && !isDashboard"
+        v-if="!isAdmin && !isDashboard && !isCheckout"
         class="navbar__toggle"
         @click="toggleMenu"
       >
@@ -25,7 +25,7 @@
       <ul
         class="navbar__links"
         :class="{ 'navbar__links--open': isMenuOpen }"
-        v-if="!isAdmin && !isDashboard"
+        v-if="!isAdmin && !isDashboard && !isCheckout"
       >
         <li><router-link to="/about" @click="closeMenu">About</router-link></li>
         <li>
@@ -68,7 +68,7 @@
 
         <!-- Cart link only for non-admins -->
         <router-link
-          v-if="!isAdmin"
+          v-if="!isAdmin && !isCheckout"
           to="/cart"
           @click="closeMenu"
           class="navbar__cart"
@@ -95,6 +95,7 @@ const store = useStore();
 const route = useRoute();
 const isMenuOpen = ref(false);
 const isDashboard = computed(() => route.path.startsWith("/dashboard"));
+const isCheckout = computed(() => route.path === "/checkout");
 const isAuthenticated = computed(() => store.getters.isAuthenticated);
 const isAdmin = computed(() => store.getters.userRole === "admin");
 const cartItemCount = computed(() => store.getters.cartItemCount);
