@@ -61,6 +61,7 @@ Route::middleware([RateLimitMiddleware::class, StartSession::class])->group(func
 
     // Cart Routes
     Route::get('/cart', [CartController::class, 'getCart']);
+    Route::get('/cart/users/{id}', [CartController::class, 'getUserCart']);
     Route::post('/cart/add', [CartController::class, 'addItem']);
     Route::put('/cart/update/{itemId}', [CartController::class, 'updateItem']);
     Route::delete('/cart/remove/{itemId}', [CartController::class, 'removeItem']);

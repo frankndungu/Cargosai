@@ -5,7 +5,7 @@ import "vue-toast-notification/dist/theme-bootstrap.css";
 import { createApp } from "vue";
 import router from "../router";
 import App from "./App.vue";
-import store from "./store";
+import store from "@/store/modules";
 import axios from "axios";
 
 // Set the CSRF token for Axios

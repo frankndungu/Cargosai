@@ -98,14 +98,41 @@ class CartController extends Controller
     // Helper function to get the cart
     protected function getUserCart(Request $request)
     {
-        // Check if the user is authenticated
         if ($request->user()) {
             // For authenticated users
-            return Cart::firstOrCreate(['user_id' => $request->user()->id]);
+            $userId = $request->user()->id;
+            $cart = Cart::firstOrCreate(['user_id' => $userId]);
+    
+            // Check if there’s a guest cart and merge it
+            $sessionId = session()->getId();
+            $guestCart = Cart::where('session_id', $sessionId)->first();
+    
+            if ($guestCart) {
+                // Merge guest cart items into the user's cart
+                foreach ($guestCart->cartItems as $item) {
+                    $existingItem = $cart->cartItems()->where('product_id', $item->product_id)->first();
+    
+                    if ($existingItem) {
+                        // Update quantity if item already exists
+                        $existingItem->quantity += $item->quantity;
+                        $existingItem->save();
+                    } else {
+                        // Otherwise, add item to user cart
+                        $item->cart_id = $cart->id;
+                        $item->save();
+                    }
+                }
+    
+                // Delete guest cart after merging
+                $guestCart->delete();
+            }
+    
+            return $cart;
         } else {
             // For guest users, use session ID
             $sessionId = session()->getId();
             return Cart::firstOrCreate(['session_id' => $sessionId]);
         }
     }
+    
 }
