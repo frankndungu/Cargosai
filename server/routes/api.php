@@ -59,13 +59,6 @@ Route::middleware([RateLimitMiddleware::class, StartSession::class])->group(func
         Route::delete('/{reviewId}', [ReviewController::class, 'destroy']);
     });
 
-    // Cart Routes
-    Route::get('/cart', [CartController::class, 'getCart']);
-    Route::get('/cart/users/{id}', [CartController::class, 'getUserCart']);
-    Route::post('/cart/add', [CartController::class, 'addItem']);
-    Route::put('/cart/update/{itemId}', [CartController::class, 'updateItem']);
-    Route::delete('/cart/remove/{itemId}', [CartController::class, 'removeItem']);
-
     // User Routes
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/user', function (Request $request) {
@@ -78,6 +71,12 @@ Route::middleware([RateLimitMiddleware::class, StartSession::class])->group(func
         Route::put('/users/{id}/phonenumber', [UserController::class, 'updatePhoneNumber']); // Update phone number
         Route::delete('/users/{id}/phonenumber', [UserController::class, 'deletePhoneNumber']); // Delete phone number
 
+        // Cart Routes
+        Route::get('/cart', [CartController::class, 'index']);
+        Route::post('/cart', [CartController::class, 'store']);
+        Route::put('/cart-items/{id}', [CartController::class, 'update']);
+        Route::delete('/cart-items/{id}', [CartController::class, 'destroy']);
+        
         // Shipping Address Routes
         Route::prefix('shipping-address')->group(function () {
             Route::get('/user/{userId}', [ShippingAddressController::class, 'index']);
