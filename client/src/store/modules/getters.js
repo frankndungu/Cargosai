@@ -1,10 +1,13 @@
 export default {
   cartItems: (state) => state.cart,
-  cartItemCount: (state) =>
-    state.cart.reduce(
-      (count, item) => count + (parseInt(item.quantity) || 0),
-      0
-    ),
+  cartItemCount(state) {
+    // Guard clause: ensure state.cart is an array before using reduce
+    if (!Array.isArray(state.cart)) {
+      return 0; // Return 0 if cart is not an array
+    }
+
+    return state.cart.reduce((total, item) => total + item.quantity, 0);
+  },
   cartTotalPrice: (state) => {
     const total = state.cart.reduce(
       (total, item) =>

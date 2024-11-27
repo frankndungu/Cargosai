@@ -1,5 +1,10 @@
 export default {
   ADD_TO_CART(state, product) {
+    // Ensure cart is an array before calling find
+    if (!Array.isArray(state.cart)) {
+      state.cart = []; // Reset to an array if cart is not an array
+    }
+
     const item = state.cart.find((cartItem) => cartItem.id === product.id);
     if (item) {
       item.quantity += 1;
