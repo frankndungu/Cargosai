@@ -3,7 +3,6 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
-use App\Http\Controllers\CartController;
 use App\Http\Controllers\AdminController; 
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrderController;
@@ -70,12 +69,6 @@ Route::middleware([RateLimitMiddleware::class, StartSession::class])->group(func
         Route::post('/users/{id}/phonenumber', [UserController::class, 'createPhoneNumber']); // Create phone number
         Route::put('/users/{id}/phonenumber', [UserController::class, 'updatePhoneNumber']); // Update phone number
         Route::delete('/users/{id}/phonenumber', [UserController::class, 'deletePhoneNumber']); // Delete phone number
-
-        // Cart Routes
-        Route::get('/cart', [CartController::class, 'index']);
-        Route::post('/cart', [CartController::class, 'store']);
-        Route::put('/cart-items/{id}', [CartController::class, 'update']);
-        Route::delete('/cart-items/{id}', [CartController::class, 'destroy']);
         
         // Shipping Address Routes
         Route::prefix('shipping-address')->group(function () {
