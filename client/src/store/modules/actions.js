@@ -1,18 +1,6 @@
 import router from "../../../router/index.js";
 
 export default {
-  async addToCart({ commit }, product) {
-    commit("ADD_TO_CART", product);
-  },
-  async removeFromCart({ commit }, id) {
-    commit("REMOVE_FROM_CART", id);
-  },
-  async increaseItemQuantity({ commit }, id) {
-    commit("INCREASE_ITEM_QUANTITY", id);
-  },
-  async decreaseItemQuantity({ commit }, id) {
-    commit("DECREASE_ITEM_QUANTITY", id);
-  },
   openModal({ commit }) {
     commit("SET_MODAL_OPEN", true);
   },

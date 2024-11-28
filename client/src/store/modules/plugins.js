@@ -4,7 +4,6 @@ export default [
   createPersistedState({
     storage: window.localStorage,
     reducer: (state) => ({
-      cart: state.cart,
       currentPage: state.currentPage,
       totalPages: state.totalPages,
       totalProducts: state.totalProducts,

@@ -1,21 +1,4 @@
 export default {
-  cartItems: (state) => state.cart,
-  cartItemCount(state) {
-    // Guard clause: ensure state.cart is an array before using reduce
-    if (!Array.isArray(state.cart)) {
-      return 0; // Return 0 if cart is not an array
-    }
-
-    return state.cart.reduce((total, item) => total + item.quantity, 0);
-  },
-  cartTotalPrice: (state) => {
-    const total = state.cart.reduce(
-      (total, item) =>
-        total + (parseFloat(item.price) || 0) * (parseInt(item.quantity) || 0),
-      0
-    );
-    return total.toFixed(2);
-  },
   currentPage: (state) => state.currentPage,
   totalPages: (state) => state.totalPages,
   totalProducts: (state) => state.totalProducts,

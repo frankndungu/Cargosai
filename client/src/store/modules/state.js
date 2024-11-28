@@ -1,5 +1,4 @@
 export default {
-  cart: [],
   currentPage: 1,
   totalPages: 0,
   totalProducts: 0,

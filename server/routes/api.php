@@ -13,10 +13,9 @@ use App\Http\Controllers\ShippingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\RateLimitMiddleware;
-use Illuminate\Session\Middleware\StartSession;
 
 // Apply rate limiting and session middleware to all routes in this file
-Route::middleware([RateLimitMiddleware::class, StartSession::class])->group(function () {
+Route::middleware([RateLimitMiddleware::class])->group(function () {
 
     // Auth Routes
     Route::post('/register', [AuthController::class, 'register']);
