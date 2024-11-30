@@ -1,4 +1,3 @@
-<!-- Cart.vue -->
 <template>
   <div class="cart-wrapper">
     <div class="cart-container">
@@ -50,7 +49,7 @@
               <span>${{ subtotal.toFixed(2) }}</span>
             </div>
             <div class="summary-row">
-              <span>Shipping 🚚</span>
+              <span>Shipping</span>
               <span>Calculated at Checkout</span>
             </div>
             <div class="summary-row total">
@@ -61,9 +60,9 @@
 
           <button class="checkout-btn">Proceed to Checkout</button>
 
-          <!-- <div class="promo-banner">
-            <p>🎉 Free shipping on orders over $50!</p>
-          </div> -->
+          <div class="promo-banner">
+            <p>🌿 Shopping small, impacting big—thank you!</p>
+          </div>
         </div>
       </div>
     </div>
@@ -125,14 +124,6 @@ const removeItem = (itemToRemove) => {
   padding: 0;
 }
 
-.empty-cart-title {
-  font-size: 1.98rem;
-}
-
-.empty-cart-description {
-  font-size: 1.45rem;
-  margin-top: 20px;
-}
 .cart-wrapper {
   padding: 40px 50px;
 }
@@ -281,7 +272,6 @@ const removeItem = (itemToRemove) => {
   display: flex;
   justify-content: space-between;
   padding: 10px 0;
-  border-bottom: 1px solid #e0e0e0;
 }
 
 .summary-row.total {
@@ -310,6 +300,46 @@ const removeItem = (itemToRemove) => {
   text-align: center;
   padding: 10px;
   border-radius: 8px;
+  font-size: small;
+  position: relative;
+  overflow: hidden;
+  animation: shimmer 3s infinite linear;
+  background: linear-gradient(to right, #f1c40f 0%, #f0db4f 50%, #f1c40f 100%);
+  background-size: 200% 100%;
+}
+
+.promo-banner::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  animation: shine 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -100% 0;
+  }
+  100% {
+    background-position: 100% 0;
+  }
+}
+
+@keyframes shine {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
 }
 
 .empty-cart {
@@ -320,9 +350,13 @@ const removeItem = (itemToRemove) => {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
 }
 
-.empty-cart-image {
-  width: 100px;
-  margin-bottom: 20px;
+.empty-cart-title {
+  font-size: 1.98rem;
+}
+
+.empty-cart-description {
+  font-size: 1.45rem;
+  margin-top: 20px;
 }
 
 .continue-shopping-btn {
@@ -332,5 +366,105 @@ const removeItem = (itemToRemove) => {
   border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 1024px) {
+  .cart-wrapper {
+    padding: 20px;
+  }
+
+  .cart-layout {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .cart-title {
+    font-size: 2rem;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .cart-item-card {
+    flex-direction: column;
+  }
+
+  .item-image-container {
+    width: 100%;
+  }
+
+  .item-image {
+    width: auto;
+    height: 300px;
+  }
+
+  .item-details {
+    padding: 15px;
+  }
+
+  .item-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+
+  .item-actions {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .cart-title {
+    font-size: 1.5rem;
+  }
+
+  .empty-cart-title {
+    font-size: 1.5rem;
+  }
+
+  .empty-cart-description {
+    font-size: 1.2rem;
+  }
+  .promo-banner {
+    font-size: x-small;
+    padding: 8px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .cart-wrapper {
+    padding: 20px 10px;
+  }
+
+  .cart-container {
+    padding: 10px;
+  }
+
+  .item-image {
+    width: auto;
+    height: 250px;
+  }
+
+  .item-details {
+    padding: 10px;
+  }
+
+  .order-summary-card {
+    padding: 20px;
+  }
+
+  .summary-title {
+    font-size: 1.2rem;
+  }
+
+  .summary-row {
+    font-size: 0.9rem;
+  }
+
+  .promo-banner {
+    font-size: x-small;
+    padding: 8px;
+  }
 }
 </style>
