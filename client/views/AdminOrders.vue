@@ -3,7 +3,7 @@
     <h1>Admin Orders</h1>
 
     <!-- Loading Spinner -->
-    <div v-if="loading" class="loading-spinner">Loading orders...</div>
+    <div v-if="loading" class="loading-spinner"></div>
 
     <!-- Orders Table -->
     <table v-if="!loading && orders.length > 0" class="orders-table">

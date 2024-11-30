@@ -1,9 +1,7 @@
 <template>
   <div class="admin-details-wrapper">
     <!-- Loading state -->
-    <div v-if="loading" class="loading-spinner">
-      Loading customer details...
-    </div>
+    <div v-if="loading" class="loading-spinner"></div>
 
     <!-- Error state -->
     <div v-if="error" class="error-message">{{ error }}</div>
