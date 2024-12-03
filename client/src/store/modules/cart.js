@@ -180,5 +180,13 @@ export default {
     isLoggedIn(state) {
       return state.isLoggedIn;
     },
+
+    cartItemCount(state) {
+      const userCart = state.currentUserId
+        ? state.carts[state.currentUserId] || []
+        : state.guestCart;
+
+      return userCart.reduce((total, item) => total + item.quantity, 0);
+    },
   },
 };

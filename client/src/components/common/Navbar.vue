@@ -12,7 +12,7 @@
 
       <!-- Toggle Menu for guests and users only -->
       <div
-        v-if="!isAdmin && !isDashboard && !isCheckout"
+        v-if="!isAdmin && !isDashboard && !isCheckout && !isCart"
         class="navbar__toggle"
         @click="toggleMenu"
       >
@@ -25,14 +25,14 @@
       <ul
         class="navbar__links"
         :class="{ 'navbar__links--open': isMenuOpen }"
-        v-if="!isAdmin && !isDashboard && !isCheckout"
+        v-if="!isAdmin && !isDashboard && !isCheckout && !isCart"
       >
         <li><router-link to="/about" @click="closeMenu">About</router-link></li>
         <li>
           <router-link to="/contact" @click="closeMenu">Contact</router-link>
         </li>
         <li>
-          <router-link to="/shop" @click="closeMenu">Pre-Order</router-link>
+          <router-link to="/shop" @click="closeMenu">Shop</router-link>
         </li>
       </ul>
 
@@ -51,7 +51,7 @@
           </template>
           <template v-else>
             <!-- User Avatar -->
-            <router-link to="/dashboard" @click="closeMenu">
+            <router-link v-if="!isCart" to="/dashboard" @click="closeMenu">
               <img
                 :src="userAvatarUrl"
                 alt="User Avatar"
@@ -68,7 +68,7 @@
 
         <!-- Cart link only for non-admins -->
         <router-link
-          v-if="!isAdmin && !isCheckout"
+          v-if="!isAdmin && !isCheckout && !isCart"
           to="/cart"
           @click="closeMenu"
           class="navbar__cart"
@@ -96,6 +96,7 @@ const route = useRoute();
 const isMenuOpen = ref(false);
 const isDashboard = computed(() => route.path.startsWith("/dashboard"));
 const isCheckout = computed(() => route.path === "/checkout");
+const isCart = computed(() => route.path === "/cart");
 const isAuthenticated = computed(() => store.getters.isAuthenticated);
 const isAdmin = computed(() => store.getters.userRole === "admin");
 const cartItemCount = computed(() => store.getters.cartItemCount);
