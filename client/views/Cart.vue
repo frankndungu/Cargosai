@@ -20,11 +20,19 @@
                 :alt="item.name"
                 class="item-image"
                 loading="lazy"
+                @click="goToProductPage(item.slug)"
               />
             </div>
             <div class="item-details">
               <div class="item-header">
-                <h3 class="item-name">{{ item.name }}</h3>
+                <h3
+                  class="item-name"
+                  @click="goToProductPage(item.slug)"
+                  @mouseover="hoverEffect"
+                  @mouseleave="removeHoverEffect"
+                >
+                  {{ item.name }}
+                </h3>
                 <span class="item-price">${{ item.price.toFixed(2) }}</span>
               </div>
               <p class="item-description">{{ item.description }}</p>
@@ -141,6 +149,19 @@ const continueShopping = () => {
   router.push("/shop");
 };
 
+const goToProductPage = (slug) => {
+  router.push(`/shop/product/${slug}`);
+};
+
+const hoverEffect = () => {
+  event.target.style.textDecoration = "underline"; // Add underline on hover
+  event.target.style.cursor = "pointer"; // Change cursor to indicate it's clickable
+};
+
+const removeHoverEffect = (event) => {
+  event.target.style.textDecoration = ""; // Remove underline when mouse leaves
+};
+
 const getImageUrl = (imagePath) => {
   return `${storageBaseUrl}/${imagePath}`;
 };
@@ -199,6 +220,7 @@ const getImageUrl = (imagePath) => {
   height: 250px;
   object-fit: cover;
   border-radius: 10px;
+  cursor: pointer;
 }
 
 .item-badge {
