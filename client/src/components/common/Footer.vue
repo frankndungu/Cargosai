@@ -61,6 +61,9 @@ const route = useRoute();
 
 const userRole = computed(() => store.getters.userRole);
 const shouldShowFooter = computed(
-  () => route.path !== "/checkout" && userRole.value !== "admin"
+  () =>
+    route.path !== "/checkout" &&
+    route.path !== "/cart" &&
+    userRole.value !== "admin"
 );
 </script>

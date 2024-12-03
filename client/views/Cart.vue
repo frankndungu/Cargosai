@@ -1,7 +1,7 @@
 <template>
   <div class="cart-wrapper">
     <div class="cart-container">
-      <h1 class="cart-title">Your Shopping Cart</h1>
+      <h1 class="cart-title">Your Cart</h1>
 
       <div v-if="cartItems.length === 0" class="empty-cart">
         <h3 class="empty-cart-title">Something is missing</h3>
@@ -162,10 +162,11 @@ const getImageUrl = (imagePath) => {
 }
 
 .cart-title {
-  text-align: center;
+  text-align: left;
   margin-bottom: 30px;
   color: var(--dark-color);
-  font-size: 2.5rem;
+  font-weight: bold;
+  font-size: 1.35rem;
 }
 
 .cart-layout {
@@ -432,6 +433,7 @@ const getImageUrl = (imagePath) => {
   .cart-title {
     margin-top: 20px;
     font-size: 1.5rem;
+    text-align: center;
   }
 }
 
@@ -502,6 +504,7 @@ const getImageUrl = (imagePath) => {
 
   .summary-title {
     font-size: 1.2rem;
+    text-align: center;
   }
 
   .summary-row {
