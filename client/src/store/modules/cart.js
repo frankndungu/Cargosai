@@ -1,7 +1,7 @@
 export default {
   state: {
-    carts: {}, // Store carts by user ID
-    guestCart: [], // Dedicated guest cart array
+    carts: JSON.parse(localStorage.getItem("userCarts") || "{}"),
+    guestCart: JSON.parse(localStorage.getItem("guestCart") || "[]"),
     currentUserId: null,
     isLoggedIn: false,
   },
@@ -11,8 +11,12 @@ export default {
       state.currentUserId = userId;
     },
 
+    SAVE_CARTS(state) {
+      localStorage.setItem("userCarts", JSON.stringify(state.carts));
+      localStorage.setItem("guestCart", JSON.stringify(state.guestCart));
+    },
+
     ADD_TO_CART(state, product) {
-      // For logged-in users
       if (state.currentUserId) {
         if (!state.carts[state.currentUserId]) {
           state.carts[state.currentUserId] = [];
@@ -26,9 +30,7 @@ export default {
         } else {
           userCart.push({ ...product, quantity: product.quantity || 1 });
         }
-      }
-      // For guest users
-      else {
+      } else {
         const existingItem = state.guestCart.find(
           (item) => item.id === product.id
         );
@@ -39,10 +41,11 @@ export default {
           state.guestCart.push({ ...product, quantity: product.quantity || 1 });
         }
       }
+
+      this.commit("SAVE_CARTS");
     },
 
     UPDATE_CART_ITEM(state, { productId, quantity }) {
-      // For logged-in users
       if (state.currentUserId) {
         const userCart = state.carts[state.currentUserId];
         const item = userCart.find((item) => item.id === productId);
@@ -55,9 +58,7 @@ export default {
             );
           }
         }
-      }
-      // For guest users
-      else {
+      } else {
         const item = state.guestCart.find((item) => item.id === productId);
 
         if (item) {
@@ -69,36 +70,35 @@ export default {
           }
         }
       }
+
+      this.commit("SAVE_CARTS");
     },
 
     REMOVE_FROM_CART(state, productId) {
-      // For logged-in users
       if (state.currentUserId) {
         state.carts[state.currentUserId] = state.carts[
           state.currentUserId
         ].filter((item) => item.id !== productId);
-      }
-      // For guest users
-      else {
+      } else {
         state.guestCart = state.guestCart.filter(
           (item) => item.id !== productId
         );
       }
+
+      this.commit("SAVE_CARTS");
     },
 
     CLEAR_CART(state) {
-      // For logged-in users
       if (state.currentUserId) {
-        state.carts[state.currentUserId] = [];
-      }
-      // For guest users
-      else {
+        delete state.carts[state.currentUserId];
+      } else {
         state.guestCart = [];
       }
+
+      this.commit("SAVE_CARTS");
     },
 
     SET_LOGGED_IN(state, { status, userId }) {
-      // When logging in, merge guest cart with user's cart
       if (status && state.guestCart.length > 0) {
         if (!state.carts[userId]) {
           state.carts[userId] = [];
@@ -116,12 +116,13 @@ export default {
           }
         });
 
-        // Clear guest cart after merging
         state.guestCart = [];
       }
 
       state.isLoggedIn = status;
       state.currentUserId = status ? userId : null;
+
+      this.commit("SAVE_CARTS");
     },
   },
 
@@ -132,6 +133,8 @@ export default {
 
     logout({ commit }) {
       commit("SET_LOGGED_IN", { status: false, userId: null });
+      localStorage.removeItem("userCarts");
+      localStorage.removeItem("guestCart");
       commit("CLEAR_CART");
     },
 

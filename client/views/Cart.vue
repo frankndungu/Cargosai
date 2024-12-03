@@ -15,8 +15,13 @@
         <div class="cart-items-section">
           <div v-for="item in cartItems" :key="item.id" class="cart-item-card">
             <div class="item-image-container">
-              <img :src="item.image" :alt="item.name" class="item-image" />
-              <div class="item-badge">{{ item.category }}</div>
+              <img
+                :src="getImageUrl(item.main_image)"
+                :alt="item.name"
+                class="item-image"
+                loading="lazy"
+              />
+              <!-- <div class="item-badge">{{ item.category }}</div> -->
             </div>
             <div class="item-details">
               <div class="item-header">
@@ -78,6 +83,8 @@ import { computed } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 
+const storageBaseUrl = import.meta.env.VITE_STORAGE_BASE_URL;
+
 const store = useStore();
 const router = useRouter();
 
@@ -115,6 +122,10 @@ const proceedToCheckout = () => {
 const continueShopping = () => {
   router.push("/shop");
 };
+
+const getImageUrl = (imagePath) => {
+  return `${storageBaseUrl}/${imagePath}`;
+};
 </script>
 
 <style scoped>
@@ -129,7 +140,6 @@ const continueShopping = () => {
 }
 
 .cart-container {
-  padding: 20px;
   background: var(--background-color);
 }
 
@@ -380,26 +390,39 @@ const continueShopping = () => {
   }
 
   .cart-title {
-    font-size: 2rem;
+    margin-top: 20px;
+    font-size: 1.5rem;
   }
 }
 
 @media screen and (max-width: 768px) {
   .cart-item-card {
     flex-direction: column;
+    position: relative;
   }
 
   .item-image-container {
     width: 100%;
+    height: 300px; /* Fixed height for consistency */
+    overflow: hidden; /* Prevent image from expanding */
   }
 
   .item-image {
-    width: auto;
-    height: 300px;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures image covers entire container */
+    object-position: center; /* Center the image */
+    transition: transform 0.3s ease; /* Smooth zoom effect */
+  }
+
+  .item-image:hover {
+    transform: scale(1.05); /* Slight zoom on hover for visual interest */
   }
 
   .item-details {
     padding: 15px;
+    position: relative;
+    z-index: 1;
   }
 
   .item-header {
@@ -414,22 +437,6 @@ const continueShopping = () => {
     gap: 10px;
     align-items: flex-start;
   }
-
-  .cart-title {
-    font-size: 1.5rem;
-  }
-
-  .empty-cart-title {
-    font-size: 1.5rem;
-  }
-
-  .empty-cart-description {
-    font-size: 1.2rem;
-  }
-  .promo-banner {
-    font-size: x-small;
-    padding: 8px;
-  }
 }
 
 @media screen and (max-width: 480px) {
@@ -441,9 +448,8 @@ const continueShopping = () => {
     padding: 10px;
   }
 
-  .item-image {
-    width: auto;
-    height: 250px;
+  .item-image-container {
+    height: 250px; /* Slightly smaller on very small screens */
   }
 
   .item-details {
