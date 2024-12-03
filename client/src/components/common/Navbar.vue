@@ -51,7 +51,11 @@
           </template>
           <template v-else>
             <!-- User Avatar -->
-            <router-link v-if="!isCart" to="/dashboard" @click="closeMenu">
+            <router-link
+              v-if="!isCart && !isCheckout"
+              to="/dashboard"
+              @click="closeMenu"
+            >
               <img
                 :src="userAvatarUrl"
                 alt="User Avatar"
