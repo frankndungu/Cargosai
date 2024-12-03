@@ -21,14 +21,13 @@
                 class="item-image"
                 loading="lazy"
               />
-              <!-- <div class="item-badge">{{ item.category }}</div> -->
             </div>
             <div class="item-details">
               <div class="item-header">
                 <h3 class="item-name">{{ item.name }}</h3>
                 <span class="item-price">${{ item.price.toFixed(2) }}</span>
               </div>
-
+              <p class="item-description">{{ item.description }}</p>
               <div class="item-actions">
                 <div class="quantity-control">
                   <button @click="decreaseQuantity(item.id)" class="qty-btn">
@@ -71,6 +70,25 @@
 
           <div class="promo-banner">
             <p>🌿 Shopping small, impacting big—thank you!</p>
+          </div>
+
+          <!-- Payment Logos -->
+          <div class="payment-logos">
+            <img
+              src="https://res.cloudinary.com/kwishi/image/upload/v1733219157/visa_wlume7.svg"
+              alt="Visa"
+              class="payment-logo"
+            />
+            <img
+              src="https://res.cloudinary.com/kwishi/image/upload/v1733219157/mastercard_hd0shs.svg"
+              alt="Mastercard"
+              class="payment-logo"
+            />
+            <img
+              src="https://res.cloudinary.com/kwishi/image/upload/v1733219157/apple_pay_by7btv.svg"
+              alt="Apple Pay"
+              class="payment-logo"
+            />
           </div>
         </div>
       </div>
@@ -164,9 +182,8 @@ const getImageUrl = (imagePath) => {
 
 .cart-item-card {
   display: flex;
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  /* background-color: white; */
+  /* box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); */
   overflow: hidden;
   transition: transform 0.3s ease;
 }
@@ -180,6 +197,7 @@ const getImageUrl = (imagePath) => {
   width: 100%;
   height: 250px;
   object-fit: cover;
+  border-radius: 10px;
 }
 
 .item-badge {
@@ -199,6 +217,7 @@ const getImageUrl = (imagePath) => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  margin: 5px 0 5px;
 }
 
 .item-header {
@@ -216,6 +235,13 @@ const getImageUrl = (imagePath) => {
 .item-price {
   font-weight: bold;
   color: var(--accent-color);
+}
+
+.item-description {
+  font-size: 0.9rem;
+  color: var(--dark-color);
+  margin-bottom: 20px;
+  line-height: 1.4;
 }
 
 .item-actions {
@@ -376,6 +402,20 @@ const getImageUrl = (imagePath) => {
   border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
+}
+
+/* Payment logos */
+.payment-logos {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.payment-logo {
+  width: 50px;
+  height: auto;
+  object-fit: contain;
 }
 
 /* Responsive Styles */
