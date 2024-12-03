@@ -6,7 +6,9 @@
       <div v-if="cartItems.length === 0" class="empty-cart">
         <h3 class="empty-cart-title">Something is missing</h3>
         <p class="empty-cart-description">Your cart is empty</p>
-        <button class="continue-shopping-btn">Continue Shopping</button>
+        <button @click="continueShopping" class="continue-shopping-btn">
+          Continue Shopping
+        </button>
       </div>
 
       <div v-else class="cart-layout">
@@ -24,15 +26,15 @@
 
               <div class="item-actions">
                 <div class="quantity-control">
-                  <button @click="decreaseQuantity(item)" class="qty-btn">
+                  <button @click="decreaseQuantity(item.id)" class="qty-btn">
                     -
                   </button>
                   <span class="qty-display">{{ item.quantity }}</span>
-                  <button @click="increaseQuantity(item)" class="qty-btn">
+                  <button @click="increaseQuantity(item.id)" class="qty-btn">
                     +
                   </button>
                 </div>
-                <button @click="removeItem(item)" class="remove-item-btn">
+                <button @click="removeItem(item.id)" class="remove-item-btn">
                   🗑️ Remove
                 </button>
               </div>
@@ -58,7 +60,9 @@
             </div>
           </div>
 
-          <button class="checkout-btn">Proceed to Checkout</button>
+          <button @click="proceedToCheckout" class="checkout-btn">
+            Proceed to Checkout
+          </button>
 
           <div class="promo-banner">
             <p>🌿 Shopping small, impacting big—thank you!</p>
@@ -70,50 +74,46 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { computed } from "vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 
-const cartItems = ref([
-  {
-    id: 1,
-    name: "Classic Soft T-Shirt",
-    price: 29.99,
-    quantity: 1,
-    image:
-      "https://royallooks.co.ke/wp-content/uploads/2020/09/royal-looks-kenya-2.jpg",
-    category: "Clothing",
-  },
-  {
-    id: 2,
-    name: "Vintage Denim Jacket",
-    price: 89.99,
-    quantity: 1,
-    image:
-      "https://royallooks.co.ke/wp-content/uploads/2020/09/royal-looks-kenya-2.jpg",
-    category: "Outerwear",
-  },
-]);
+const store = useStore();
+const router = useRouter();
+
+const cartItems = computed(() => store.getters.cartItems);
 
 const subtotal = computed(() =>
   cartItems.value.reduce((total, item) => total + item.price * item.quantity, 0)
 );
 
-const tax = computed(() => subtotal.value * 0.1);
-const total = computed(() => subtotal.value + tax.value);
+const total = computed(() => subtotal.value);
 
-const increaseQuantity = (item) => {
-  item.quantity++;
+const increaseQuantity = (id) => {
+  store.dispatch("updateCartItem", { productId: id, quantity: 1 });
 };
 
-const decreaseQuantity = (item) => {
+const decreaseQuantity = (id) => {
+  const item = cartItems.value.find((item) => item.id === id);
   if (item.quantity > 1) {
-    item.quantity--;
+    store.dispatch("updateCartItem", { productId: id, quantity: -1 });
   }
 };
 
-const removeItem = (itemToRemove) => {
-  cartItems.value = cartItems.value.filter(
-    (item) => item.id !== itemToRemove.id
-  );
+const removeItem = (id) => {
+  store.dispatch("removeFromCart", id);
+};
+
+const proceedToCheckout = () => {
+  if (store.getters.isLoggedIn) {
+    router.push("/checkout");
+  } else {
+    router.push("/login");
+  }
+};
+
+const continueShopping = () => {
+  router.push("/shop");
 };
 </script>
 

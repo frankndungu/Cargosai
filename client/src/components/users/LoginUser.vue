@@ -88,6 +88,7 @@ const handleSubmit = async () => {
       if (response.ok) {
         localStorage.setItem("token", data.token);
         await store.dispatch("fetchUser"); // Fetch user data from API
+        store.dispatch("login", data.user.id); // Add this line to dispatch login with user ID
         router.push("/dashboard");
       } else {
         if (data.error) {
