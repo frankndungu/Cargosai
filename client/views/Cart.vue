@@ -105,7 +105,7 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 
@@ -114,30 +114,51 @@ const storageBaseUrl = import.meta.env.VITE_STORAGE_BASE_URL;
 const store = useStore();
 const router = useRouter();
 
+// Fetch the current user on component mount and log userId to the console
+onMounted(async () => {
+  try {
+    await store.dispatch("fetchCurrentUser");
+    // Log the userId after fetchCurrentUser completes
+    console.log("User ID:", store.state.currentUserId);
+  } catch (error) {
+    console.error("Failed to fetch the current user:", error);
+  }
+});
+
+// Reactive properties for current user ID and cart items
+const currentUserId = computed(() => store.state.currentUserId);
 const cartItems = computed(() => store.getters.cartItems);
 
+// Compute subtotal and total
 const subtotal = computed(() =>
   cartItems.value.reduce((total, item) => total + item.price * item.quantity, 0)
 );
-
 const total = computed(() => subtotal.value);
 
+// Action to increase item quantity
 const increaseQuantity = (id) => {
   store.dispatch("updateCartItem", { productId: id, quantity: 1 });
 };
 
+// Action to decrease item quantity with minimum validation
 const decreaseQuantity = (id) => {
   const item = cartItems.value.find((item) => item.id === id);
-  if (item.quantity > 1) {
+  if (item && item.quantity > 1) {
     store.dispatch("updateCartItem", { productId: id, quantity: -1 });
   }
 };
 
+// Remove an item from the cart
 const removeItem = (id) => {
-  store.dispatch("removeFromCart", id);
+  if (confirm("Are you sure you want to remove this item?")) {
+    store.dispatch("removeFromCart", id);
+  }
 };
 
+// Proceed to checkout or redirect to login
 const proceedToCheckout = () => {
+  console.log("Is Logged In:", store.getters.isLoggedIn);
+
   if (store.getters.isLoggedIn) {
     router.push("/checkout");
   } else {
@@ -145,25 +166,30 @@ const proceedToCheckout = () => {
   }
 };
 
+// Continue shopping by navigating to the shop page
 const continueShopping = () => {
   router.push("/shop");
 };
 
+// Navigate to a product's details page
 const goToProductPage = (slug) => {
   router.push(`/shop/product/${slug}`);
 };
 
-const hoverEffect = () => {
-  event.target.style.textDecoration = "underline"; // Add underline on hover
-  event.target.style.cursor = "pointer"; // Change cursor to indicate it's clickable
+// Handle hover effects for better UI feedback
+const hoverEffect = (event) => {
+  event.target.style.textDecoration = "underline";
+  event.target.style.cursor = "pointer";
 };
-
 const removeHoverEffect = (event) => {
-  event.target.style.textDecoration = ""; // Remove underline when mouse leaves
+  event.target.style.textDecoration = "";
 };
 
+// Get the full image URL
 const getImageUrl = (imagePath) => {
-  return `${storageBaseUrl}/${imagePath}`;
+  return imagePath
+    ? `${storageBaseUrl}/${imagePath}`
+    : "default-placeholder.png";
 };
 </script>
 

@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export default {
   state: {
     carts: JSON.parse(localStorage.getItem("userCarts") || "{}"),
@@ -127,8 +129,30 @@ export default {
   },
 
   actions: {
-    login({ commit }, userId) {
-      commit("SET_LOGGED_IN", { status: true, userId });
+    async fetchCurrentUser({ commit }) {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/user`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+
+        if (response.data && response.data.id) {
+          commit("SET_LOGGED_IN", { status: true, userId: response.data.id });
+        } else {
+          commit("SET_LOGGED_IN", { status: false, userId: null });
+        }
+      } catch (error) {
+        console.error("Error fetching current user:", error);
+        commit("SET_LOGGED_IN", { status: false, userId: null });
+      }
+    },
+
+    login({ dispatch }, userId) {
+      dispatch("fetchCurrentUser", userId); // Ensure the user session is synced with the backend
     },
 
     logout({ commit }) {
