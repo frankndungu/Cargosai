@@ -150,9 +150,7 @@ const decreaseQuantity = (id) => {
 
 // Remove an item from the cart
 const removeItem = (id) => {
-  if (confirm("Are you sure you want to remove this item?")) {
-    store.dispatch("removeFromCart", id);
-  }
+  store.dispatch("removeFromCart", id);
 };
 
 // Proceed to checkout or redirect to login

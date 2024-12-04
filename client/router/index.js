@@ -156,7 +156,7 @@ const routes = [
   {
     path: "/login",
     component: Login,
-    meta: { title: "Welcome Back | Login" },
+    meta: { title: "Welcome Back" },
     description: "Login to your account to access your personal dashboard",
   },
   {
@@ -169,7 +169,7 @@ const routes = [
   {
     path: "/admin/login",
     component: AdminLogin,
-    meta: { title: "Admin Portal | Login" },
+    meta: { title: "Admin Portal" },
     description: "Admin login portal to manage products and orders.",
   },
   {

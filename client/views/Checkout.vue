@@ -308,6 +308,10 @@ const persistData = () => {
     formData: formData.value,
     selectedShippingOption: selectedShippingOption.value,
     cartTotal: cartTotal.value,
+    shipping: selectedShippingOption.value
+      ? selectedShippingOption.value.price
+      : 0,
+    total: total.value,
   };
   localStorage.setItem("checkoutData", JSON.stringify(dataToPersist));
 };
@@ -318,6 +322,9 @@ const loadPersistedData = () => {
   if (savedData) {
     formData.value = savedData.formData || formData.value;
     selectedShippingOption.value = savedData.selectedShippingOption || null;
+    // Restore subtotal, shipping, and total
+    store.commit("setCartTotal", savedData.cartTotal || cartTotal.value); // Use a Vuex mutation to update the cart total
+    shippingOptions.value = savedData.shipping || [];
   }
 };
 
