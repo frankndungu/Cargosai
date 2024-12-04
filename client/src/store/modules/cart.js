@@ -2,6 +2,7 @@ import axios from "axios";
 
 export default {
   state: {
+    namespace: true,
     carts: JSON.parse(localStorage.getItem("userCarts") || "{}"),
     guestCart: JSON.parse(localStorage.getItem("guestCart") || "[]"),
     currentUserId: null,
@@ -101,41 +102,24 @@ export default {
     },
 
     SET_LOGGED_IN(state, { status, userId }) {
-      if (status && state.guestCart.length > 0) {
-        if (!state.carts[userId]) {
-          state.carts[userId] = [];
-        }
-
-        state.guestCart.forEach((guestItem) => {
-          const existingItem = state.carts[userId].find(
-            (item) => item.id === guestItem.id
-          );
-
-          if (existingItem) {
-            existingItem.quantity += guestItem.quantity;
-          } else {
-            state.carts[userId].push(guestItem);
-          }
-        });
-
-        state.guestCart = [];
-      }
-
       state.isLoggedIn = status;
       state.currentUserId = status ? userId : null;
-
+      console.log("User ID set:", state.currentUserId); // Log the user ID
       this.commit("SAVE_CARTS");
     },
   },
 
   actions: {
     async fetchCurrentUser({ commit }) {
+      const token = localStorage.getItem("token");
+      console.log("Token:", token); // Check if the token is valid
+
       try {
         const response = await axios.get(
           `${import.meta.env.VITE_API_URL}/user`,
           {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              Authorization: `Bearer ${token}`,
             },
           }
         );
@@ -152,6 +136,7 @@ export default {
     },
 
     login({ dispatch }, userId) {
+      localStorage.setItem("token"); // Make sure the token is stored
       dispatch("fetchCurrentUser", userId); // Ensure the user session is synced with the backend
     },
 

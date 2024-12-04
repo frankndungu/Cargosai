@@ -26,7 +26,7 @@
 
       <div class="login-auxiliary">
         <div class="login-checkbox">
-          <input type="checkbox" id="remember-me" />
+          <input type="checkbox" id="remember-me" v-model="rememberMe" />
           <label for="remember-me" class="login-label">Remember me</label>
         </div>
         <router-link to="/recovery" class="login-forgot-link"
@@ -34,7 +34,9 @@
         >
       </div>
 
-      <button type="submit" class="login-submit-btn">Sign in</button>
+      <button type="submit" class="login-submit-btn" :disabled="isSubmitting">
+        Sign in
+      </button>
 
       <p class="login-footer">
         Don’t have an account yet?
@@ -56,6 +58,8 @@ const router = useRouter();
 const email = ref("");
 const password = ref("");
 const errors = ref({ email: "", password: "" });
+const rememberMe = ref(false);
+const isSubmitting = ref(false);
 
 const handleSubmit = async () => {
   errors.value.email = "";
@@ -75,12 +79,17 @@ const handleSubmit = async () => {
 
   if (!errors.value.email && !errors.value.password) {
     try {
+      isSubmitting.value = true;
       const response = await fetch(`${import.meta.env.VITE_API_URL}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email: email.value, password: password.value }),
+        body: JSON.stringify({
+          email: email.value,
+          password: password.value,
+          rememberMe: rememberMe.value,
+        }),
       });
 
       const data = await response.json();
@@ -88,7 +97,8 @@ const handleSubmit = async () => {
       if (response.ok) {
         localStorage.setItem("token", data.token);
         await store.dispatch("fetchUser"); // Fetch user data from API
-        store.dispatch("login", data.user.id); // Add this line to dispatch login with user ID
+        email.value = "";
+        password.value = "";
         router.push("/dashboard");
       } else {
         if (data.error) {
@@ -102,6 +112,8 @@ const handleSubmit = async () => {
     } catch (error) {
       console.error("Error:", error);
       alert("An error occurred during login. Please try again.");
+    } finally {
+      isSubmitting.value = false;
     }
   }
 };

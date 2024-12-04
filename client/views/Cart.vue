@@ -114,19 +114,19 @@ const storageBaseUrl = import.meta.env.VITE_STORAGE_BASE_URL;
 const store = useStore();
 const router = useRouter();
 
-// Fetch the current user on component mount and log userId to the console
+// Reactive property for current user ID
+const currentUserId = computed(() => store.state.cart.currentUserId);
+
+// Fetch the current user on component mount
 onMounted(async () => {
   try {
-    await store.dispatch("fetchCurrentUser");
-    // Log the userId after fetchCurrentUser completes
-    console.log("User ID:", store.state.currentUserId);
+    await store.dispatch("fetchCurrentUser"); // Use namespace if applicable
+    console.log("User ID in Cart.vue after fetch:", currentUserId.value); // Log after fetch
   } catch (error) {
-    console.error("Failed to fetch the current user:", error);
+    console.error("Failed to fetch current user in Cart.vue:", error);
   }
 });
 
-// Reactive properties for current user ID and cart items
-const currentUserId = computed(() => store.state.currentUserId);
 const cartItems = computed(() => store.getters.cartItems);
 
 // Compute subtotal and total
