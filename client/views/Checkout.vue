@@ -122,7 +122,7 @@
               <div class="summary-breakdown">
                 <div class="summary-row">
                   <span>Subtotal</span>
-                  <span>${{ cartTotalPrice }}</span>
+                  <span>${{ cartTotal.toFixed(2) }}</span>
                 </div>
                 <div class="summary-row">
                   <span>Shipping</span>
@@ -265,7 +265,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 import { useStore } from "vuex";
 import axios from "axios";
 
@@ -286,22 +286,51 @@ const formData = ref({
 });
 
 const countries = ref([]);
-
 const isLoading = ref(false);
 const errorMessage = ref("");
 const shippingOptions = ref([]);
 const selectedShippingOption = ref(null);
 
-const cartTotalPrice = computed(() => store.getters.cartTotalPrice);
+// Load cart total from Vuex
+const cartTotal = computed(() => store.getters.cartTotal);
 
+// Calculate total including shipping
 const total = computed(() => {
   return selectedShippingOption.value
-    ? parseFloat(cartTotalPrice.value) +
+    ? parseFloat(cartTotal.value) +
         parseFloat(selectedShippingOption.value.price)
-    : parseFloat(cartTotalPrice.value);
+    : parseFloat(cartTotal.value);
 });
 
-// Fetch and sort countries
+// Persist data in localStorage
+const persistData = () => {
+  const dataToPersist = {
+    formData: formData.value,
+    selectedShippingOption: selectedShippingOption.value,
+    cartTotal: cartTotal.value,
+  };
+  localStorage.setItem("checkoutData", JSON.stringify(dataToPersist));
+};
+
+// Load persisted data from localStorage
+const loadPersistedData = () => {
+  const savedData = JSON.parse(localStorage.getItem("checkoutData"));
+  if (savedData) {
+    formData.value = savedData.formData || formData.value;
+    selectedShippingOption.value = savedData.selectedShippingOption || null;
+  }
+};
+
+// Watch for changes and persist them
+watch(
+  [formData, selectedShippingOption, cartTotal],
+  () => {
+    persistData();
+  },
+  { deep: true }
+);
+
+// Fetch countries
 const fetchCountries = async () => {
   try {
     const response = await axios.get("https://restcountries.com/v3.1/all");
@@ -313,10 +342,7 @@ const fetchCountries = async () => {
   }
 };
 
-onMounted(() => {
-  fetchCountries(); // Fetch countries when component is mounted
-});
-
+// Calculate shipping
 const calculateShipping = async () => {
   try {
     const response = await axios.post(
@@ -332,20 +358,23 @@ const calculateShipping = async () => {
         },
       }
     );
-    shippingOptions.value = response.data.shipping_rates; // Assuming this response contains a list of options
-    selectedShippingOption.value = shippingOptions.value[0]; // Default to the first shipping option
+    shippingOptions.value = response.data.shipping_rates;
+    selectedShippingOption.value = shippingOptions.value[0];
   } catch (error) {
     errorMessage.value = "Failed to calculate shipping. Please try again.";
   }
 };
 
+// Submit order
 const submitOrder = async () => {
-  errorMessage.value = "";
   isLoading.value = true;
+  errorMessage.value = "";
 
   try {
-    // Place order logic...
-    alert("Order Placed Successfully!");
+    // Simulate placing order
+    alert("Order placed successfully!");
+    // Clear persisted data on successful order
+    localStorage.removeItem("checkoutData");
   } catch (error) {
     errorMessage.value = error.message || "An unexpected error occurred";
   } finally {
@@ -353,9 +382,16 @@ const submitOrder = async () => {
   }
 };
 
+// Clear error messages
 const clearError = () => {
   errorMessage.value = "";
 };
+
+// Load persisted data on component mount
+onMounted(() => {
+  fetchCountries();
+  loadPersistedData();
+});
 </script>
 
 <style>
@@ -795,7 +831,7 @@ const clearError = () => {
 /* Responsive Styles */
 @media (max-width: 768px) {
   .checkout-container {
-    padding: 1rem;
+    padding: 40px 10px;
   }
 
   .form-grid {
