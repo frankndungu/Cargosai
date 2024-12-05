@@ -153,13 +153,27 @@
           <h2>Shipping Address</h2>
           <span>Ensure your delivery information is correct</span>
         </div>
+
         <div class="input-group">
           <div class="input-wrapper">
-            <label>Address</label>
+            <label>Country</label>
+            <select v-model="formData.country" required>
+              <option value="" disabled>Select your country</option>
+              <option
+                v-for="(country, index) in countries"
+                :key="index"
+                :value="country"
+              >
+                {{ country }}
+              </option>
+            </select>
+          </div>
+          <div class="input-wrapper">
+            <label>State/Province</label>
             <input
-              v-model="formData.address"
+              v-model="formData.state"
               type="text"
-              placeholder="123 Main St"
+              placeholder="New York"
               required
             />
           </div>
@@ -173,6 +187,15 @@
             />
           </div>
           <div class="input-wrapper">
+            <label>Address</label>
+            <input
+              v-model="formData.address"
+              type="text"
+              placeholder="123 Main St"
+              required
+            />
+          </div>
+          <div class="input-wrapper">
             <label>Postal Code</label>
             <input
               v-model="formData.postalCode"
@@ -180,19 +203,6 @@
               placeholder="10001"
               required
             />
-          </div>
-          <div class="input-wrapper">
-            <label>Country</label>
-            <select v-model="formData.country" required>
-              <option value="" disabled>Select your country</option>
-              <option
-                v-for="(country, index) in countries"
-                :key="index"
-                :value="country"
-              >
-                {{ country }}
-              </option>
-            </select>
           </div>
         </div>
 
@@ -283,6 +293,7 @@ const formData = ref({
   city: "",
   postalCode: "",
   country: "",
+  state: "",
 });
 
 const countries = ref([]);
@@ -349,6 +360,65 @@ const fetchCountries = async () => {
   }
 };
 
+// Fetch personal details
+const fetchUserDetails = async () => {
+  try {
+    const response = await axios.get(`${import.meta.env.VITE_API_URL}/user`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+
+    const user = response.data;
+    formData.value.name = user.name || "";
+    formData.value.email = user.email || "";
+    formData.value.phone = user.phonenumber || "";
+  } catch (error) {
+    errorMessage.value =
+      "Failed to load user details. Please check your connection.";
+  }
+};
+
+// Fetch shipping address
+const fetchShippingAddress = async () => {
+  try {
+    const response = await axios.get(`${import.meta.env.VITE_API_URL}/user`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+
+    const userId = response.data?.id;
+    if (!userId) {
+      errorMessage.value = "User ID not found. Cannot fetch shipping address.";
+      return;
+    }
+
+    const addressResponse = await axios.get(
+      `${import.meta.env.VITE_API_URL}/shipping-address/user/${userId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+
+    const shippingAddresses = addressResponse.data;
+    if (shippingAddresses.length > 0) {
+      const shippingAddress = shippingAddresses[0];
+      formData.value.address = shippingAddress.address1;
+      formData.value.city = shippingAddress.city;
+      formData.value.state = shippingAddress.state;
+      formData.value.postalCode = shippingAddress.postal_code;
+      formData.value.country = shippingAddress.country;
+    } else {
+      errorMessage.value = "No shipping address found.";
+    }
+  } catch (error) {
+    errorMessage.value = "Failed to fetch shipping address. Please try again.";
+  }
+};
+
 // Calculate shipping
 const calculateShipping = async () => {
   try {
@@ -378,9 +448,7 @@ const submitOrder = async () => {
   errorMessage.value = "";
 
   try {
-    // Simulate placing order
     alert("Order placed successfully!");
-    // Clear persisted data on successful order
     localStorage.removeItem("checkoutData");
   } catch (error) {
     errorMessage.value = error.message || "An unexpected error occurred";
@@ -394,10 +462,12 @@ const clearError = () => {
   errorMessage.value = "";
 };
 
-// Load persisted data on component mount
-onMounted(() => {
+// Load persisted data and user details on component mount
+onMounted(async () => {
   fetchCountries();
   loadPersistedData();
+  await fetchUserDetails();
+  await fetchShippingAddress();
 });
 </script>
 
