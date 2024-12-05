@@ -91,6 +91,20 @@ export default {
       this.commit("SAVE_CARTS");
     },
 
+    SET_CART_TOTAL(state, total) {
+      if (state.currentUserId) {
+        // Assuming cart total is stored per user, update the relevant user's total
+        if (!state.carts[state.currentUserId]) {
+          state.carts[state.currentUserId] = [];
+        }
+        state.carts[state.currentUserId].total = total; // Update total for the user's cart
+      } else {
+        state.guestCartTotal = total; // Update guest cart total
+      }
+
+      this.commit("SAVE_CARTS"); // Ensure changes persist in localStorage
+    },
+
     CLEAR_CART(state) {
       if (state.currentUserId) {
         delete state.carts[state.currentUserId];

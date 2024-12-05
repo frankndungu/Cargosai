@@ -334,7 +334,7 @@ const loadPersistedData = () => {
     formData.value = savedData.formData || formData.value;
     selectedShippingOption.value = savedData.selectedShippingOption || null;
     // Restore subtotal, shipping, and total
-    store.commit("setCartTotal", savedData.cartTotal || cartTotal.value); // Use a Vuex mutation to update the cart total
+    store.commit("SET_CART_TOTAL", savedData.cartTotal || cartTotal.value);
     shippingOptions.value = savedData.shipping || [];
   }
 };
