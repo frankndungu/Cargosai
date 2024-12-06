@@ -33,7 +33,7 @@
                 >
                   {{ item.name }}
                 </h3>
-                <span class="item-price">${{ item.price.toFixed(2) }}</span>
+                <span class="item-price">{{ formatPrice(item.price) }}</span>
               </div>
               <p class="item-description">{{ item.description }}</p>
               <div class="item-actions">
@@ -60,7 +60,9 @@
           <div class="summary-details">
             <div class="summary-row">
               <span>Subtotal</span>
-              <span>${{ subtotal.toFixed(2) }}</span>
+              <span>{{
+                subtotal !== null ? `$${subtotal.toFixed(2)}` : "$0.00"
+              }}</span>
             </div>
             <div class="summary-row">
               <span>Shipping</span>
@@ -68,7 +70,9 @@
             </div>
             <div class="summary-row total">
               <span>Total</span>
-              <span>${{ total.toFixed(2) }}</span>
+              <span>{{
+                total !== null ? `$${total.toFixed(2)}` : "$0.00"
+              }}</span>
             </div>
           </div>
 
@@ -129,11 +133,26 @@ onMounted(async () => {
 
 const cartItems = computed(() => store.getters.cartItems);
 
+// format price
+const formatPrice = (price) => {
+  return price ? `$${Number(price).toFixed(2)}` : "$0.00";
+};
+
 // Compute subtotal and total
 const subtotal = computed(() =>
-  cartItems.value.reduce((total, item) => total + item.price * item.quantity, 0)
+  cartItems.value.reduce((total, item) => {
+    // Ensure price and quantity are valid numbers before calculating
+    const price = Number(item.price) || 0;
+    const quantity = Number(item.quantity) || 0;
+    return total + price * quantity;
+  }, 0)
 );
-const total = computed(() => subtotal.value);
+
+const total = computed(() => {
+  // Use subtotal value, ensuring it's a number
+  const subtotalValue = subtotal.value || 0;
+  return Number(subtotalValue);
+});
 
 // Action to increase item quantity
 const increaseQuantity = (id) => {

@@ -275,7 +275,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import axios from "axios";
 
@@ -312,41 +312,6 @@ const total = computed(() => {
         parseFloat(selectedShippingOption.value.price)
     : parseFloat(cartTotal.value);
 });
-
-// Persist data in localStorage
-const persistData = () => {
-  const dataToPersist = {
-    formData: formData.value,
-    selectedShippingOption: selectedShippingOption.value,
-    cartTotal: cartTotal.value,
-    shipping: selectedShippingOption.value
-      ? selectedShippingOption.value.price
-      : 0,
-    total: total.value,
-  };
-  localStorage.setItem("checkoutData", JSON.stringify(dataToPersist));
-};
-
-// Load persisted data from localStorage
-const loadPersistedData = () => {
-  const savedData = JSON.parse(localStorage.getItem("checkoutData"));
-  if (savedData) {
-    formData.value = savedData.formData || formData.value;
-    selectedShippingOption.value = savedData.selectedShippingOption || null;
-    // Restore subtotal, shipping, and total
-    store.commit("SET_CART_TOTAL", savedData.cartTotal || cartTotal.value);
-    shippingOptions.value = savedData.shipping || [];
-  }
-};
-
-// Watch for changes and persist them
-watch(
-  [formData, selectedShippingOption, cartTotal],
-  () => {
-    persistData();
-  },
-  { deep: true }
-);
 
 // Fetch countries
 const fetchCountries = async () => {
@@ -449,7 +414,6 @@ const submitOrder = async () => {
 
   try {
     alert("Order placed successfully!");
-    localStorage.removeItem("checkoutData");
   } catch (error) {
     errorMessage.value = error.message || "An unexpected error occurred";
   } finally {
@@ -462,10 +426,9 @@ const clearError = () => {
   errorMessage.value = "";
 };
 
-// Load persisted data and user details on component mount
+// Load user details on component mount
 onMounted(async () => {
   fetchCountries();
-  loadPersistedData();
   await fetchUserDetails();
   await fetchShippingAddress();
 });
