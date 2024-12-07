@@ -1,12 +1,7 @@
 <template>
   <!-- Right Section - BlogList -->
   <div class="right-section">
-    <div
-      v-for="post in posts"
-      :key="post._id"
-      @click="goToPost(post._id)"
-      class="post-card"
-    >
+    <div v-for="post in posts" :key="post._id" class="post-card">
       <div class="post-content">
         <div class="post-tag-container">
           <span class="post-tag">Article</span>

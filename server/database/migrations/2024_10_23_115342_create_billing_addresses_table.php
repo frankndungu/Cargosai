@@ -11,10 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('carts', function (Blueprint $table) {
+        Schema::create('billing_addresses', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->nullable(); // For authenticated users
-            $table->string('session_id')->nullable(); // For guest users
+            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Link to users table
+            $table->string('address1');
+            $table->string('country');
+            $table->string('city');
+            $table->string('state');
+            $table->string('postal_code');
             $table->timestamps();
         });
     }
@@ -24,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('carts');
+        Schema::dropIfExists('billing_addresses');
     }
 };

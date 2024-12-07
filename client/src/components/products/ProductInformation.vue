@@ -9,7 +9,7 @@
     </div>
     <div v-if="isOpen" class="product-info-content">
       <p>Dimensions: {{ product.dimensions }}</p>
-      <p>Weight: {{ product.weight }} kg</p>
+      <p>Weight: {{ product.weight }}</p>
       <p>Material: {{ product.material }}</p>
     </div>
     <hr class="separator" />

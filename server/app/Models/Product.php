@@ -16,7 +16,7 @@ class Product extends Model
         'name',
         'slug',
         'price',
-        'image_url',
+        'main_image', // Updated here
         'stock',
         'thumbnails',
         'rating',

@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
@@ -86,44 +89,196 @@ class ProductController extends Controller
         return response()->json($productData);
     }
 
+    // Create a product
     public function store(Request $request)
     {
-        // Validate the incoming request data
+        // Log the authentication status
+        \Log::info('Auth Status:', [
+            'is_authenticated' => Auth::check(),
+            'user' => Auth::user(),
+            'role' => Auth::user() ? Auth::user()->role : 'no role'
+        ]);
+
+        // Check if the logged-in user is an admin
+        if (Auth::user()->role !== 'admin') {
+            \Log::info('Authorization failed: User is not admin');
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        // Log the incoming request data
+        \Log::info('Incoming Request Data:', [
+            'all' => $request->all(),
+            'files' => $request->allFiles(),
+            'headers' => $request->headers->all()
+        ]);
+
+        try {
+            // Validate the incoming request data
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'price' => 'required|numeric',
+                'main_image' => 'required|image|mimes:jpg,jpeg,png,gif,webp,avif',
+                'description' => 'nullable|string',
+                'stock' => 'required|integer|min:0',
+                'thumbnails' => 'nullable|array',
+                'thumbnails.*' => 'image|mimes:jpg,jpeg,png,gif,webp,avif',
+                'dimensions' => 'nullable|string',
+                'weight' => 'nullable|numeric',
+                'material' => 'nullable|string',
+                'vendor_name' => 'required|string|max:255',
+                'vendor_email' => 'required|email|max:255',
+                'vendor_location' => 'required|string|max:255',
+            ]);
+
+            \Log::info('Validation passed:', $validatedData);
+
+            // Handle main image upload
+            $mainImagePath = null;
+            if ($request->hasFile('main_image')) {
+                $mainImage = $request->file('main_image');
+                $mainImagePath = $mainImage->store('products', 'public');
+                \Log::info('Main Image uploaded:', ['path' => $mainImagePath]);
+            } else {
+                \Log::warning('No main image found in request');
+            }
+
+            // Handle thumbnails upload
+            $thumbnails = [];
+            if ($request->hasFile('thumbnails')) {
+                foreach ($request->file('thumbnails') as $thumbnail) {
+                    $thumbnailPath = $thumbnail->store('thumbnails', 'public');
+                    $thumbnails[] = $thumbnailPath;
+                    \Log::info('Thumbnail uploaded:', ['path' => $thumbnailPath]);
+                }
+            }
+
+            // Log the data about to be inserted
+            \Log::info('Attempting to create product with data:', [
+                'name' => $validatedData['name'],
+                'price' => $validatedData['price'],
+                'main_image' => $mainImagePath,
+                'stock' => $validatedData['stock'],
+                'thumbnails' => $thumbnails,
+            ]);
+
+            // Create product
+            $product = Product::create([
+                'name' => $validatedData['name'],
+                'price' => $validatedData['price'],
+                'main_image' => $mainImagePath,
+                'description' => $validatedData['description'] ?? '',
+                'stock' => $validatedData['stock'],
+                'thumbnails' => $thumbnails,
+                'dimensions' => $validatedData['dimensions'] ?? '',
+                'weight' => $validatedData['weight'] ?? null,
+                'material' => $validatedData['material'] ?? '',
+                'vendor_name' => $validatedData['vendor_name'],
+                'vendor_email' => $validatedData['vendor_email'],
+                'vendor_location' => $validatedData['vendor_location'],
+            ]);
+
+            \Log::info('Product created:', $product->toArray());
+
+            return response()->json($product, 201);
+        } catch (\Exception $e) {
+            \Log::error('Error in product creation:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    // Update a product
+    public function update(Request $request, $id)
+    {
+        // Ensure only admins can update products
+        if (Auth::user()->role !== 'admin') {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        // Find the product
+        $product = Product::find($id);
+        if (!$product) {
+            return response()->json(['error' => 'Product not found'], 404);
+        }
+
+        // Log the incoming request data
+        \Log::info('Incoming Update Request Data:', [
+            'id' => $id,
+            'request_data' => $request->all(),
+        ]);
+
+        // Validate the incoming request data (removed validation for images and thumbnails)
         $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'price' => 'required|numeric',
-            'image_url' => 'required|string',
+            'name' => 'string|max:255',
+            'price' => 'numeric',
             'description' => 'nullable|string',
-            'stock' => 'required|integer|min:0',
-            'thumbnails' => 'nullable|array',
-            'thumbnails.*.src' => 'required_with:thumbnails|string',
-            'thumbnails.*.alt' => 'nullable|string',
+            'stock' => 'integer|min:0',
             'dimensions' => 'nullable|string',
             'weight' => 'nullable|numeric',
             'material' => 'nullable|string',
-            'vendor_name' => 'required|string|max:255',
-            'vendor_email' => 'required|email|max:255',
-            'vendor_location' => 'required|string|max:255',
+            'vendor_name' => 'string|max:255',
+            'vendor_email' => 'email|max:255',
+            'vendor_location' => 'string|max:255',
         ]);
 
-        // Create a new product using the validated data
-        $product = Product::create([
-            'name' => $validatedData['name'],
-            'slug' => $validatedData['name'], // Sluggable trait will generate this automatically
-            'price' => $validatedData['price'],
-            'image_url' => $validatedData['image_url'],
-            'description' => $validatedData['description'] ?? '',
-            'stock' => $validatedData['stock'],
-            'thumbnails' => $validatedData['thumbnails'] ?? [],
-            'dimensions' => $validatedData['dimensions'] ?? '',
+        \Log::info('Validation Passed:', $validatedData);
+
+        // Log the data to be updated (removed image and thumbnail data)
+        \Log::info('Attempting to update product with data:', [
+            'name' => $validatedData['name'] ?? null,
+            'price' => $validatedData['price'] ?? null,
+            'stock' => $validatedData['stock'] ?? null,
+            'dimensions' => $validatedData['dimensions'] ?? null,
             'weight' => $validatedData['weight'] ?? null,
-            'material' => $validatedData['material'] ?? '',
-            'vendor_name' => $validatedData['vendor_name'],
-            'vendor_email' => $validatedData['vendor_email'],
-            'vendor_location' => $validatedData['vendor_location'],
+            'material' => $validatedData['material'] ?? null,
+            'vendor_name' => $validatedData['vendor_name'] ?? null,
+            'vendor_email' => $validatedData['vendor_email'] ?? null,
+            'vendor_location' => $validatedData['vendor_location'] ?? null,
         ]);
 
-        // Return the created product as JSON
-        return response()->json($product, 201);
+        // Update the product with the validated data (no image or thumbnail fields)
+        $product->update($validatedData);
+
+        // Log the updated product data
+        \Log::info('Updated Product:', $product->toArray());
+
+        return response()->json($product, 200);
     }
+
+    // Delete a product
+    public function destroy($id)
+    {
+        // Ensure only admins can delete products
+        if (Auth::user()->role !== 'admin') {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+    
+        // Find the product
+        $product = Product::find($id);
+        if (!$product) {
+            return response()->json(['error' => 'Product not found'], 404);
+        }
+    
+        // Delete the main image if it exists
+        if ($product->main_image && Storage::disk('public')->exists($product->main_image)) {
+            Storage::disk('public')->delete($product->main_image);
+        }
+    
+        // Delete each thumbnail if it exists
+        if ($product->thumbnails) {
+            foreach ($product->thumbnails as $thumbnail) {
+                if (Storage::disk('public')->exists($thumbnail)) {
+                    Storage::disk('public')->delete($thumbnail);
+                }
+            }
+        }
+    
+        // Delete the product
+        $product->delete();
+    
+        return response()->json(['message' => 'Product and associated images deleted successfully'], 200);
+    }
+    
 }

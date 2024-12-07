@@ -4,108 +4,133 @@ namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use App\Models\CartItem;
+use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB; // Ensure this is included
-use Illuminate\Database\Eloquent\ModelNotFoundException; // Include this for error handling
-use Exception; // For general exception handling
+use Illuminate\Support\Str;
 
 class CartController extends Controller
 {
-    // Get the cart for the authenticated user or a guest
     public function getCart(Request $request)
     {
-        $cart = $this->getUserCart($request);
-        return response()->json($cart->load('cartItems'));
+        $cart = $this->getOrCreateCart($request);
+
+        return response()->json([
+            'cart' => $cart,
+            'items' => $cart->items()->with('product')->get(),
+        ]);
     }
 
-    // Add item to the cart
     public function addItem(Request $request)
     {
         try {
-            // Validate the request
-            $request->validate([
-                'product_id' => 'required|exists:products,id',
-                'quantity' => 'required|integer|min:1',
-                'price' => 'required|numeric', // Assuming price is passed in the request
+            // Validate incoming request
+            $validated = $request->validate([
+                'product_id' => 'required|exists:products,id',  // Ensure the product exists
+                'quantity' => 'required|integer|min:1',  // Ensure quantity is valid
             ]);
-
-            // Get the user's cart
-            $cart = $this->getUserCart($request);
-
-            // Find the existing cart item
-            $cartItem = CartItem::where('cart_id', $cart->id)
-                ->where('product_id', $request->product_id)
-                ->first();
-
-            if ($cartItem) {
-                // If the cart item exists, update the quantity
-                $cartItem->quantity += $request->quantity; // Increment quantity
-                $cartItem->price = $request->price; // Update price
-                $cartItem->save();
+    
+            // Get or create the cart
+            $cart = $this->getOrCreateCart($request);
+    
+            // Check if the product already exists in the cart
+            $item = $cart->items()->where('product_id', $validated['product_id'])->first();
+    
+            if ($item) {
+                // Update the quantity if the product already exists in the cart
+                $item->quantity += $validated['quantity'];
+                $item->save();
+    
+                return response()->json([
+                    'message' => 'Item quantity updated in cart',
+                    'item' => $item,
+                ]);
             } else {
-                // If the cart item does not exist, create a new one
-                $cartItem = CartItem::create([
-                    'cart_id' => $cart->id,
-                    'product_id' => $request->product_id,
-                    'quantity' => $request->quantity,
-                    'price' => $request->price,
+                // Get the price from the products table
+                $product = Product::find($validated['product_id']);
+                if (!$product) {
+                    return response()->json(['error' => 'Product not found'], 404);
+                }
+    
+                // Add the new item to the cart
+                $newItem = $cart->items()->create([
+                    'product_id' => $validated['product_id'],
+                    'quantity' => $validated['quantity'],
+                    'price' => $product->price,  // Use the product's price
+                ]);
+    
+                return response()->json([
+                    'message' => 'Item added to cart',
+                    'item' => $newItem,
                 ]);
             }
-
-            return response()->json($cartItem, 201);
-        } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'Product not found.'], 404);
-        } catch (Exception $e) {
-            return response()->json(['error' => 'Unable to add item to cart. ' . $e->getMessage()], 500);
+        } catch (\Exception $e) {
+            // Catch any errors and return them in the response
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-
-    // Update item quantity
-    public function updateItem(Request $request, $itemId)
+    
+    
+    public function updateItem(Request $request, CartItem $cartItem)
     {
-        try {
-            $request->validate([
-                'quantity' => 'required|integer|min:1',
-            ]);
+        $request->validate(['quantity' => 'required|integer|min:1']);
 
-            $cartItem = CartItem::findOrFail($itemId);
-            $cartItem->quantity = $request->quantity;
-            $cartItem->save();
+        $cartItem->update(['quantity' => $request->quantity]);
 
-            return response()->json($cartItem);
-        } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'Cart item not found.'], 404);
-        } catch (Exception $e) {
-            return response()->json(['error' => 'Unable to update item. ' . $e->getMessage()], 500);
-        }
+        return response()->json(['message' => 'Item updated', 'item' => $cartItem]);
     }
 
-    // Remove item from cart
-    public function removeItem($itemId)
+    public function removeItem(CartItem $cartItem)
     {
-        try {
-            $cartItem = CartItem::findOrFail($itemId);
-            $cartItem->delete();
+        $cartItem->delete();
 
-            return response()->json(null, 204);
-        } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'Cart item not found.'], 404);
-        } catch (Exception $e) {
-            return response()->json(['error' => 'Unable to remove item. ' . $e->getMessage()], 500);
-        }
+        return response()->json(['message' => 'Item removed']);
     }
 
-    // Helper function to get the cart
-    protected function getUserCart(Request $request)
+    /**
+     * Get the total items in the cart.
+     */
+    public function getTotalItems(Request $request)
     {
-        // Check if the user is authenticated
+        $cart = $this->getOrCreateCart($request);
+
+        $totalItems = $cart->items()->sum('quantity');
+
+        return response()->json(['total_items' => $totalItems]);
+    }
+
+    /**
+     * Delete the cart and all its items.
+     */
+    public function deleteCart(Request $request)
+    {
+        $cart = $this->getOrCreateCart($request);
+
+        $cart->items()->delete(); // Delete all cart items
+        $cart->delete(); // Delete the cart itself
+
+        return response()->json(['message' => 'Cart deleted successfully']);
+    }
+    // Helper method to get or create a cart for the given request.
+    private function getOrCreateCart(Request $request)
+    {
+        // 1. For authenticated users, find or create a cart associated with their user ID
         if ($request->user()) {
-            // For authenticated users
             return Cart::firstOrCreate(['user_id' => $request->user()->id]);
-        } else {
-            // For guest users, use session ID
-            $sessionId = session()->getId();
-            return Cart::firstOrCreate(['session_id' => $sessionId]);
         }
+
+        // 2. For guest users, use a guest token from the cookies or generate a new one
+        $guestToken = $request->cookie('guest_token') ?? Str::uuid();
+
+        // 3. Find or create a cart using the guest token
+        $cart = Cart::firstOrCreate(['guest_token' => $guestToken]);
+
+        // 4. If a new guest token was generated, queue it in the cookies for persistence
+        if (!$request->cookie('guest_token')) {
+            cookie()->queue('guest_token', $guestToken, 60 * 24 * 30); // 30-day cookie
+        }
+
+        // 5. Return the identified or created cart
+        return $cart;
     }
+
 }

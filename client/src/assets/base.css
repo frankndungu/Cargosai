@@ -17,10 +17,17 @@
   --dark-color-border: #ccc;
   --error-message: #ff0000;
   --green-color: #009e60;
+  --table-color: #f4f4f4;
   --rating-color: #ffcc00;
+  --pending-color: #ffa600;
+  --shipped-color: #1c1cd6;
+  --canceled-color: #ff2400;
+  --cancel-color: #cc0000;
   --rating-empty: #ddd;
   --modal-color: #fff;
-
+  --stat-color: #f3f4f6;
+  --stat-name: #6b7280;
+  --border-color: #e5e7eb;
   /* margins */
   --mb-0-5: 0.5rem;
   --mb-0-75: 0.75rem;

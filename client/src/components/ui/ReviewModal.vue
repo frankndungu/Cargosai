@@ -114,7 +114,6 @@ const submitReview = () => {
   if (validateForm()) {
     // Submit review to API
     submitReviewToAPI();
-    closeModal(); // Close modal after submitting
   }
 };
 
@@ -163,10 +162,12 @@ const submitReviewToAPI = async () => {
     );
 
     // Dispatch action to reset review data in Vuex
-    store.dispatch("resetReview");
+    store.dispatch("resetReview"); // Reset review data after submission
 
     // Optional: You can log or handle the response if needed
     console.log("Review submitted successfully:", response.data);
+
+    closeModal(); // Close the modal after submitting
   } catch (error) {
     console.error("Failed to submit review:", error);
   }

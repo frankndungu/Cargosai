@@ -1,5 +1,5 @@
 <template>
-  <footer class="footer">
+  <footer v-if="shouldShowFooter" class="footer">
     <div class="footer__content">
       <div class="footer__left">
         <div class="footer__logo">
@@ -7,8 +7,8 @@
           <span class="logo-sub-title">online</span>
         </div>
         <p class="footer__text">
-          Join us in bringing authentic Maasai and African antiques, jewelry,
-          and fabrics to a global audience
+          An online platform dedicated to selling authentic Maasai and African
+          products
         </p>
         <p class="footer__copy">
           &copy; 2024 Fueled By Dosha LLC, All Rights Reserved
@@ -50,3 +50,20 @@
     </div>
   </footer>
 </template>
+
+<script setup>
+import { computed } from "vue";
+import { useStore } from "vuex";
+import { useRoute } from "vue-router";
+
+const store = useStore();
+const route = useRoute();
+
+const userRole = computed(() => store.getters.userRole);
+const shouldShowFooter = computed(
+  () =>
+    route.path !== "/checkout" &&
+    route.path !== "/cart" &&
+    userRole.value !== "admin"
+);
+</script>

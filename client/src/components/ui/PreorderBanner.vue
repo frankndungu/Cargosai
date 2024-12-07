@@ -13,10 +13,10 @@
       </div>
       <div class="banner-image">
         <!-- Use an image or illustration that matches the Maasai theme -->
-        <img
+        <!-- <img
           src="https://res.cloudinary.com/kwishi/image/upload/v1723030094/crafting_r67xvv.png"
           alt="Maasai Artistry Illustration"
-        />
+        /> -->
       </div>
     </div>
   </section>

@@ -1,42 +1,110 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\AdminController; 
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\OrderDetailsController;
+use App\Http\Controllers\ShippingAddressController;
+use App\Http\Controllers\BillingAddressController;
+use App\Http\Controllers\ShippingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\RateLimitMiddleware;
-use Illuminate\Session\Middleware\StartSession; // Import the StartSession middleware
 
-// Apply the rate limiting and session middleware to all routes in this file
-Route::middleware([RateLimitMiddleware::class, StartSession::class])->group(function () {
+// Apply rate limiting and session middleware to all routes in this file
+Route::middleware([RateLimitMiddleware::class])->group(function () {
+
+    // Auth Routes
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+
+    //Admin Routes
+    Route::post('/admin/login', [AdminController::class, 'login']);
+    
+    Route::middleware(['auth:sanctum'])->prefix('admin')->group(function () {
+        Route::post('/create', [AdminController::class, 'createAdminUser']); // Create admin user
+        Route::get('/admins', [AdminController::class, 'listAdmins']); // Get all admins
+        Route::get('/users/{id}', [AdminController::class, 'showUser']); // Get individual user by ID
+        Route::delete('/users/{id}', [AdminController::class, 'deleteUser']); // Admin Delete user
+        Route::get('/users', [UserController::class, 'index']); // Get all users
+        Route::put('/users/{id}', [UserController::class, 'update']); // Update user
+    });
+    
+    // Cart Routes
+    Route::get('/cart', [CartController::class, 'getCart']);
+    Route::post('/cart/add', [CartController::class, 'addItem']);
+    Route::put('/cart/item/{cartItem}', [CartController::class, 'updateItem']);
+    Route::get('/cart/total-items', [CartController::class, 'getTotalItems']); // Total items in cart
+    Route::delete('/cart/item/{cartItem}', [CartController::class, 'removeItem']);
+    Route::delete('/cart', [CartController::class, 'deleteCart']); // Delete cart
+
     // Product Routes
     Route::prefix('products')->group(function () {
-        Route::get('/', [ProductController::class, 'index']); // All products
-        Route::get('{id}', [ProductController::class, 'show']); // Individual product by ID
-        Route::get('slug/{slug}', [ProductController::class, 'showBySlug']); // Individual product by slug
-        Route::get('{id}/with-reviews', [ProductController::class, 'showWithReviews']); // Product with reviews
-        Route::post('/', [ProductController::class, 'store']); // Store a new product
+        Route::get('/', [ProductController::class, 'index']);
+        Route::get('{id}', [ProductController::class, 'show']);
+        Route::get('slug/{slug}', [ProductController::class, 'showBySlug']);
+        Route::get('{id}/with-reviews', [ProductController::class, 'showWithReviews']);
+        // Apply auth middleware for store method to require login
+        Route::post('/', [ProductController::class, 'store'])->middleware('auth:sanctum');
+        Route::put('{id}', [ProductController::class, 'update'])->middleware('auth:sanctum');
+        Route::delete('{id}', [ProductController::class, 'destroy'])->middleware('auth:sanctum');
+    
     });
 
     // Review Routes
     Route::prefix('reviews')->group(function () {
-        Route::get('/', [ReviewController::class, 'indexAll']); // Get all reviews
-        Route::get('/products/{productId}', [ReviewController::class, 'index']); // Get reviews for a specific product
-        Route::get('/products/{productId}/average', [ReviewController::class, 'averageRating']); // Get average rating for a specific product
-        Route::post('/products/{productId}', [ReviewController::class, 'store']); // Store a new review for a specific product
-        Route::put('/{reviewId}', [ReviewController::class, 'update']); // Update an existing review
-        Route::delete('/{reviewId}', [ReviewController::class, 'destroy']); // Delete a review
+        Route::get('/', [ReviewController::class, 'indexAll']);
+        Route::get('/products/{productId}', [ReviewController::class, 'index']);
+        Route::get('/products/{productId}/average', [ReviewController::class, 'averageRating']);
+        Route::post('/products/{productId}', [ReviewController::class, 'store']);
+        Route::put('/{reviewId}', [ReviewController::class, 'update']);
+        Route::delete('/{reviewId}', [ReviewController::class, 'destroy']);
     });
 
-    // Cart Routes
-    Route::get('/cart', [CartController::class, 'getCart']);
-    Route::post('/cart/add', [CartController::class, 'addItem']);
-    Route::put('/cart/update/{itemId}', [CartController::class, 'updateItem']);
-    Route::delete('/cart/remove/{itemId}', [CartController::class, 'removeItem']);
+    // User Routes
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/user', function (Request $request) {
+            return $request->user();
+        });
+        Route::get('/users', [UserController::class, 'index']); // Get all users
+        Route::get('/users/{id}', [UserController::class, 'show']); // Get individual user by ID
+        Route::put('/users/{id}', [UserController::class, 'update']); // Update user
+        Route::post('/users/{id}/phonenumber', [UserController::class, 'createPhoneNumber']); // Create phone number
+        Route::put('/users/{id}/phonenumber', [UserController::class, 'updatePhoneNumber']); // Update phone number
+        Route::delete('/users/{id}/phonenumber', [UserController::class, 'deletePhoneNumber']); // Delete phone number
 
-    // User Route
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    })->middleware('auth:sanctum');
+        // Shipping Address Routes
+        Route::prefix('shipping-address')->group(function () {
+            Route::get('/user/{userId}', [ShippingAddressController::class, 'index']);
+            Route::post('/create', [ShippingAddressController::class, 'store']);
+            Route::put('/update/{id}', [ShippingAddressController::class, 'update']);
+            Route::get('/{id}', [ShippingAddressController::class, 'show']);
+        });
+
+        // Billing Address Routes
+        Route::prefix('billing-address')->group(function () {
+            Route::get('/user/{userId}', [BillingAddressController::class, 'index']);
+            Route::post('/create', [BillingAddressController::class, 'store']);
+            Route::put('/update/{id}', [BillingAddressController::class, 'update']);
+            Route::get('/{id}', [BillingAddressController::class, 'show']);
+        });
+
+        // Orders Routes
+        Route::prefix('orders')->group(function () {
+            Route::get('/', [OrderController::class, 'index']);
+            Route::get('{order}', [OrderController::class, 'show']);
+            Route::get('{order}/details', [OrderDetailsController::class, 'show']);
+            Route::post('/', [OrderController::class, 'create']);
+            Route::put('{order}/status', [OrderController::class, 'updateStatus']);
+            Route::delete('{order}', [OrderController::class, 'destroy']);
+        });
+
+        // Shipping Routes
+        Route::post('/shipping-rates', [ShippingController::class, 'calculateRates']);
+    });
 });
