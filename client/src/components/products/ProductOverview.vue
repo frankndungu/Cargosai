@@ -80,9 +80,9 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import { useStore } from "vuex";
 import { useToast } from "vue-toast-notification";
-import ProductInformation from "../products/ProductInformation.vue";
-import Vendor from "../products/Vendor.vue";
-import ProductReviews from "../products/ProductReviews.vue";
+import ProductInformation from "./ProductInformation.vue";
+import Vendor from "./Vendor.vue";
+import ProductReviews from "./ProductReviews.vue";
 
 const API_URL = import.meta.env.VITE_API_URL;
 const storageBaseURL = import.meta.env.VITE_STORAGE_BASE_URL;
