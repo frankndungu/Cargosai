@@ -146,8 +146,15 @@ const setCurrentImage = (image) => {
 
 const addToCart = () => {
   if (product.value) {
-    store.dispatch("addToCart", product.value);
-    toast.success(`${product.value.name} has been added to your cart!`);
+    const formattedProduct = {
+      ...product.value,
+      price: Number(product.value.price),
+      quantity: 1, // Default quantity to 1 for new additions
+    };
+    store.dispatch("addToCart", formattedProduct);
+    toast.success(`${formattedProduct.name} has been added to your cart!`);
+  } else {
+    toast.error("Failed to add product to the cart. Please try again.");
   }
 };
 
