@@ -7,7 +7,7 @@
       </h1>
       <p class="hero-description">
         maasai market online is your one-stop shop for authentic Maasai and
-        African antiques, jewelry, and fabrics.
+        African products
       </p>
       <div class="hero-buttons">
         <router-link class="button-link" to="/blog">
