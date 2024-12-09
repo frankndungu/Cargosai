@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\AdminController; 
@@ -65,6 +67,12 @@ Route::middleware([RateLimitMiddleware::class])->group(function () {
         Route::put('/{reviewId}', [ReviewController::class, 'update']);
         Route::delete('/{reviewId}', [ReviewController::class, 'destroy']);
     });
+
+    // Contact Routes
+    Route::post('/contact', [ContactController::class, 'store']);
+
+    // Subscription Routes
+    Route::post('/subscribe', [SubscriptionController::class, 'subscribe']);
 
     // User Routes
     Route::middleware('auth:sanctum')->group(function () {

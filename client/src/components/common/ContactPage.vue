@@ -7,16 +7,12 @@
       </p>
       <div class="contact-details">
         <div class="contact-more">
-          <strong>Address</strong><br />
-          <p class="contact-link">CPA Center - Survey Nairobi, Kenya</p>
-        </div>
-        <div class="contact-more">
           <strong>Phone Number</strong><br />
           <p class="contact-link">Customer Support: +254 746 884 254</p>
         </div>
         <div class="contact-more">
           <strong>Email Address</strong><br />
-          <p class="contact-link">support@maasaimarket.online</p>
+          <p class="contact-link">support@maasaimarketonline.com</p>
         </div>
       </div>
     </div>
@@ -74,6 +70,8 @@
 
 <script setup>
 import { reactive } from "vue";
+import axios from "axios";
+import { useToast } from "vue-toast-notification";
 
 const formState = reactive({
   name: "",
@@ -89,38 +87,41 @@ const errors = reactive({
   message: null,
 });
 
-const handleSubmit = () => {
+const toast = useToast();
+
+const handleSubmit = async () => {
   // Reset errors
   errors.name = null;
   errors.email = null;
   errors.subject = null;
   errors.message = null;
 
-  // Validate name
-  if (!formState.name) {
-    errors.name = "Name is required";
-  }
-  // Validate email
+  // Validate form
+  if (!formState.name) errors.name = "Name is required";
   if (!formState.email) {
     errors.email = "Email is required";
   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formState.email)) {
     errors.email = "Please enter a valid email";
   }
+  if (!formState.subject) errors.subject = "Please select a subject";
+  if (!formState.message) errors.message = "Message is required";
 
-  // Validate subject
-  if (!formState.subject) {
-    errors.subject = "Please select a subject";
-  }
-
-  // Validate message
-  if (!formState.message) {
-    errors.message = "Message is required";
-  }
-
-  // If there are no errors, proceed with form submission
+  // Submit form if no errors
   if (!errors.name && !errors.email && !errors.subject && !errors.message) {
-    alert("Form submitted successfully!");
-    // Perform form submission logic here, such as sending data to a server
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/contact`,
+        formState
+      );
+      // Show success toast
+      toast.success(response.data.message);
+      // Clear the form
+      Object.keys(formState).forEach((key) => (formState[key] = ""));
+    } catch (error) {
+      console.error(error);
+      // Show error toast
+      toast.error("An error occurred. Please try again later.");
+    }
   }
 };
 </script>
