@@ -73,7 +73,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
 import AOS from "aos";
@@ -82,7 +82,7 @@ import { useStore } from "vuex";
 import { useToast } from "vue-toast-notification";
 import ProductInformation from "./ProductInformation.vue";
 import Vendor from "./Vendor.vue";
-import ProductReviews from "@/components/products/ProductReviews.vue";
+import ProductReviews from "./ProductReviews.vue";
 
 const API_URL = import.meta.env.VITE_API_URL;
 const storageBaseURL = import.meta.env.VITE_STORAGE_BASE_URL;
@@ -95,6 +95,12 @@ const reviews = ref([]);
 const averageRating = ref(null);
 const currentImage = ref("");
 
+const updateDocumentTitle = () => {
+  document.title = product.value?.name
+    ? `${product.value.name} - Maasai Market Online`
+    : "Product Details - Maasai Market Online";
+};
+
 const fetchProduct = async () => {
   try {
     const response = await axios.get(
@@ -102,10 +108,12 @@ const fetchProduct = async () => {
     );
     product.value = response.data;
     currentImage.value = `${storageBaseURL}${product.value.main_image}`;
+    updateDocumentTitle();
     await fetchReviews(product.value.id);
     await fetchAverageRating(product.value.id);
   } catch (error) {
     console.error("Failed to fetch product:", error);
+    document.title = "Product Details - Maasai Market Online";
   }
 };
 
@@ -166,6 +174,16 @@ const scrollToReviews = () => {
     reviewsSection.scrollIntoView({ behavior: "smooth" });
   }
 };
+
+// Watch for route changes to update the product and title dynamically
+watch(
+  () => route.params.slug,
+  async (newSlug, oldSlug) => {
+    if (newSlug !== oldSlug) {
+      await fetchProduct();
+    }
+  }
+);
 
 onMounted(() => {
   fetchProduct();

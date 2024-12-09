@@ -62,7 +62,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import { createClient } from "@sanity/client";
 import { PortableText } from "@portabletext/vue";
@@ -80,6 +80,12 @@ const imageUrl = (source) => builder.image(source);
 
 const route = useRoute();
 const post = ref(null);
+
+const updateDocumentTitle = () => {
+  document.title = post.value?.title
+    ? `${post.value.title} - Maasai Market Blog`
+    : "Blog Post - Maasai Market Blog";
+};
 
 const fetchPost = async (slug) => {
   const query = `*[_type == "post" && slug.current == $slug][0]{
@@ -105,8 +111,10 @@ const fetchPost = async (slug) => {
 
   try {
     post.value = await sanityClient.fetch(query, { slug });
+    updateDocumentTitle();
   } catch (error) {
     console.error("Error fetching post:", error);
+    document.title = "Blog Post - Maasai Market Blog";
   }
 };
 
@@ -117,6 +125,16 @@ const formatDate = (dateStr) => {
     day: "numeric",
   });
 };
+
+// Watch for route changes to update the post and title dynamically
+watch(
+  () => route.params.slug,
+  async (newSlug, oldSlug) => {
+    if (newSlug !== oldSlug) {
+      await fetchPost(newSlug);
+    }
+  }
+);
 
 onMounted(() => {
   const postSlug = route.params.slug;

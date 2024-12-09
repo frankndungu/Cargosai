@@ -24,20 +24,16 @@
           </li>
           <li><router-link to="/contact">Contact</router-link></li>
         </ul>
-        <div class="footer__kofi">
-          <a href="https://ko-fi.com" target="_blank">
-            <img
-              src="https://res.cloudinary.com/kwishi/image/upload/v1722645593/64f1a9ddd0246590df69ea10_kofi_long_button_stroke_2x_dsqnnc.png"
-              alt="Support me on Ko-fi"
-            />
-          </a>
-        </div>
         <div class="footer__social-icons">
-          <a href="#" aria-label="Instagram">
-            <i class="fab fa-instagram"></i>
-          </a>
-          <a href="#" aria-label="X (Twitter)">
+          <a
+            href="https://x.com/maasaimarkethq"
+            target="_blank"
+            aria-label="X (Twitter)"
+          >
             <i class="fab fa-x-twitter"></i>
+          </a>
+          <a href="" aria-label="Instagram">
+            <i class="fab fa-instagram"></i>
           </a>
           <a href="#" aria-label="TikTok">
             <i class="fab fa-tiktok"></i>

@@ -15,6 +15,11 @@ export default {
     },
 
     SAVE_CARTS(state) {
+      console.log(
+        "Saving carts to localStorage:",
+        state.carts,
+        state.guestCart
+      );
       localStorage.setItem("userCarts", JSON.stringify(state.carts));
       localStorage.setItem("guestCart", JSON.stringify(state.guestCart));
     },
@@ -108,11 +113,12 @@ export default {
     CLEAR_CART(state) {
       if (state.currentUserId) {
         delete state.carts[state.currentUserId];
+        localStorage.removeItem("userCarts"); // Clear user carts from localStorage
       } else {
         state.guestCart = [];
+        localStorage.removeItem("guestCart"); // Clear guest cart from localStorage
       }
-
-      this.commit("SAVE_CARTS");
+      console.log("Cart cleared from state and localStorage.");
     },
 
     SET_LOGGED_IN(state, { status, userId }) {
@@ -158,6 +164,7 @@ export default {
       commit("SET_LOGGED_IN", { status: false, userId: null });
       localStorage.removeItem("userCarts");
       localStorage.removeItem("guestCart");
+      localStorage.removeItem("token"); // Remove the authentication token
       commit("CLEAR_CART");
     },
 
@@ -184,9 +191,11 @@ export default {
 
   getters: {
     cartItems(state) {
-      return state.currentUserId
+      const items = state.currentUserId
         ? state.carts[state.currentUserId] || []
         : state.guestCart;
+      console.log("Retrieved cart items:", items);
+      return items;
     },
 
     cartTotal(state) {
