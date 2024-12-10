@@ -62,54 +62,28 @@
             </div>
           </div>
 
-          <!-- Payment Details -->
+          <!-- Paystack Payment Details -->
           <div class="form-column payment-info">
             <div class="section-header">
-              <h2>Payment Details</h2>
-              <span>We protect your payment information</span>
+              <h2>Payment Method</h2>
+              <span>Secure Payment with Paystack</span>
             </div>
-            <div class="input-group">
-              <div class="input-wrapper">
-                <label>Card Holder Name</label>
-                <input
-                  v-model="formData.cardName"
-                  type="text"
-                  placeholder="John Doe"
-                  required
-                />
-              </div>
-              <div class="input-wrapper card-number">
-                <label>Card Number</label>
-                <input
-                  v-model="formData.cardNumber"
-                  type="text"
-                  placeholder="1234 5678 9012 3456"
-                  required
-                  pattern="\d{16}"
-                />
-              </div>
-              <div class="card-details-row">
-                <div class="input-wrapper">
-                  <label>Expiry (MM/YY)</label>
-                  <input
-                    v-model="formData.expiry"
-                    type="text"
-                    placeholder="12/25"
-                    required
-                    pattern="\d{2}/\d{2}"
-                  />
-                </div>
-                <div class="input-wrapper">
-                  <label>CVV</label>
-                  <input
-                    v-model="formData.cvv"
-                    type="text"
-                    placeholder="123"
-                    required
-                    pattern="\d{3}"
-                  />
-                </div>
-              </div>
+            <div class="payment-description">
+              <p>
+                You will be redirected to Paystack's secure payment gateway to
+                complete your transaction. Paystack supports multiple payment
+                methods including:
+              </p>
+              <ul>
+                <li>Credit/Debit Cards</li>
+                <li>Bank Transfer</li>
+                <li>Mobile Money</li>
+                <li>PayPal</li>
+              </ul>
+              <p>
+                Your payment information will be processed securely through
+                Paystack's encrypted platform.
+              </p>
             </div>
           </div>
         </div>
@@ -140,7 +114,7 @@
                 </div>
               </div>
               <button type="submit" class="submit-button" :disabled="isLoading">
-                Pay Now
+                Pay Now With Card
               </button>
             </div>
           </div>
@@ -278,6 +252,7 @@
 import { ref, computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import axios from "axios";
+import PaystackPop from "@paystack/inline-js";
 
 const store = useStore();
 
@@ -285,10 +260,6 @@ const formData = ref({
   name: "",
   email: "",
   phone: "",
-  cardName: "",
-  cardNumber: "",
-  expiry: "",
-  cvv: "",
   address: "",
   city: "",
   postalCode: "",
@@ -413,9 +384,51 @@ const submitOrder = async () => {
   errorMessage.value = "";
 
   try {
-    alert("Order placed successfully!");
+    // Initialize payment using Paystack inline API
+    const handler = PaystackPop.setup({
+      key: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY, // Public key from .env
+      email: formData.value.email,
+      amount: total.value * 100, // Convert to kobo (Paystack's currency format)
+      currency: "USD",
+      ref: `MMO_${new Date().getTime()}`, // Unique transaction reference
+      metadata: {
+        name: formData.value.name,
+        phone: formData.value.phone,
+      },
+      callback: async (response) => {
+        // Handle successful payment
+        const { reference } = response;
+
+        try {
+          const verifyResponse = await axios.post(
+            `${import.meta.env.VITE_API_URL}/paystack/verify`,
+            { reference },
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          );
+
+          if (verifyResponse.data.status === "success") {
+            alert("Payment successful! Order placed.");
+          } else {
+            errorMessage.value =
+              "Payment verification failed. Please contact support.";
+          }
+        } catch (error) {
+          errorMessage.value =
+            error.response?.data?.message || "Verification failed.";
+        }
+      },
+      onClose: () => {
+        errorMessage.value = "Payment process was canceled.";
+      },
+    });
+
+    handler.openIframe(); // Open Paystack payment modal
   } catch (error) {
-    errorMessage.value = error.message || "An unexpected error occurred";
+    errorMessage.value = error.message || "An unexpected error occurred.";
   } finally {
     isLoading.value = false;
   }
@@ -471,6 +484,22 @@ onMounted(async () => {
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
   margin-bottom: 2rem;
+}
+
+.payment-description {
+  border-radius: 8px;
+}
+
+.payment-description p {
+  margin-bottom: 0.75rem;
+  color: var(--dark-color);
+}
+
+.payment-description ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: var(--dark-color);
 }
 
 .shipping-address-section {

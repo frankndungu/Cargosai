@@ -32,7 +32,7 @@
           >
             <i class="fab fa-x-twitter"></i>
           </a>
-          <a href="" aria-label="Instagram">
+          <!-- <a href="" aria-label="Instagram">
             <i class="fab fa-instagram"></i>
           </a>
           <a href="#" aria-label="TikTok">
@@ -40,7 +40,7 @@
           </a>
           <a href="#" aria-label="Pinterest">
             <i class="fab fa-pinterest"></i>
-          </a>
+          </a> -->
         </div>
       </div>
     </div>

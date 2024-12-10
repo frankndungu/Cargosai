@@ -4,6 +4,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PaystackWebhookController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\AdminController; 
@@ -73,6 +75,13 @@ Route::middleware([RateLimitMiddleware::class])->group(function () {
 
     // Subscription Routes
     Route::post('/subscribe', [SubscriptionController::class, 'subscribe']);
+
+    // Payment Routes
+    Route::post('/payment/initialize', [PaymentController::class, 'initializePayment']);
+    Route::get('/payment/verify', [PaymentController::class, 'verifyPayment']);
+
+    // Payment Webhook
+    Route::post('/paystack/webhook', [PaystackWebhookController::class, 'handleWebhook']);
 
     // User Routes
     Route::middleware('auth:sanctum')->group(function () {
