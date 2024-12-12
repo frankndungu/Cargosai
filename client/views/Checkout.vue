@@ -114,7 +114,7 @@
                 </div>
               </div>
               <button type="submit" class="submit-button" :disabled="isLoading">
-                Pay Now With Card
+                Pay With Card
               </button>
             </div>
           </div>

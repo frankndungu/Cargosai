@@ -4,23 +4,23 @@
       <img :src="imageUrl" :alt="product.name" class="product-image" />
     </div>
     <div class="product-info">
+      <div class="name-rating-container">
+        <router-link
+          :to="{ name: 'ProductPage', params: { slug: product.slug } }"
+          class="product-name-link"
+        >
+          <h3 class="product-name">{{ product.name }}</h3>
+        </router-link>
+        <div class="rating">
+          <div class="stars">
+            <span>★</span>
+            <span>{{ product.reviews_avg_rating }}</span>
+          </div>
+        </div>
+      </div>
       <span class="vendor-name">
-        <i class="fa-solid fa-tag vendor-icon"></i>
         {{ product.vendor_name }}
       </span>
-      <router-link
-        :to="{ name: 'ProductPage', params: { slug: product.slug } }"
-        class="product-name-link"
-      >
-        <h3 class="product-name">{{ product.name }}</h3>
-      </router-link>
-      <div class="rating">
-        <div class="stars">
-          <span>⭐</span>
-          <span>{{ product.reviews_avg_rating }}</span>
-        </div>
-        <span class="reviews">({{ product.reviews_count }})</span>
-      </div>
       <div class="price-section">
         <span class="price">${{ product.price }}</span>
         <button @click="addToCart(product)" class="add-to-cart">
@@ -103,15 +103,22 @@ const imageUrl = computed(
   justify-content: space-between;
 }
 
+/* Name and Rating Container */
+.name-rating-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
 /* Vendor Badge */
 .vendor-name {
-  background: var(--dark-color);
-  color: var(--background-color);
-  padding: 0.2rem 0.5rem;
+  color: var(--dark-color);
   border-radius: 4px;
   font-size: 0.875rem;
   margin-bottom: 0.5rem;
   display: inline-flex;
+  font-weight: 300;
   align-items: center;
   width: 50%;
 }
@@ -124,7 +131,8 @@ const imageUrl = computed(
 .product-name-link {
   text-decoration: none;
   display: block;
-  margin-bottom: 0.5rem;
+  flex-grow: 1;
+  margin-right: 1rem;
 }
 
 .product-name {
@@ -145,8 +153,7 @@ const imageUrl = computed(
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.875rem;
-  margin-bottom: 1rem;
+  font-size: 1.115rem;
 }
 
 .stars {
@@ -169,7 +176,7 @@ const imageUrl = computed(
 }
 
 .price {
-  font-size: 1.55rem;
+  font-size: 1.45rem;
   font-weight: 700;
   color: var(--accent-color);
 }

@@ -240,6 +240,18 @@ const routes = [
     meta: { requiresAuth: true, title: "Checkout" },
     description: "Complete your purchase and enter payment details.",
   },
+  // Paid orders
+  {
+    path: "/order/success/",
+    name: "OrderConfirmation",
+    component: () => import("../views/OrderConfirmation.vue"),
+    meta: {
+      title: "Order Confirmation",
+      requiresAuth: true,
+      description:
+        "Thank you for your order. View your order confirmation details.",
+    },
+  },
 ];
 
 // Router configuration
