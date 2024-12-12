@@ -83,8 +83,8 @@ const post = ref(null);
 
 const updateDocumentTitle = () => {
   document.title = post.value?.title
-    ? `${post.value.title} - Maasai Market Blog`
-    : "Blog Post - Maasai Market Blog";
+    ? `${post.value.title} | Maasai Market Blog`
+    : "Blog Post | Maasai Market Blog";
 };
 
 const fetchPost = async (slug) => {

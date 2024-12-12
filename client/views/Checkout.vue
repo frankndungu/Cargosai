@@ -252,7 +252,6 @@
 import { ref, computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import axios from "axios";
-import PaystackPop from "@paystack/inline-js";
 
 const store = useStore();
 
@@ -384,51 +383,23 @@ const submitOrder = async () => {
   errorMessage.value = "";
 
   try {
-    // Initialize payment using Paystack inline API
-    const handler = PaystackPop.setup({
-      key: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY, // Public key from .env
-      email: formData.value.email,
-      amount: total.value * 100, // Convert to kobo (Paystack's currency format)
-      currency: "USD",
-      ref: `MMO_${new Date().getTime()}`, // Unique transaction reference
-      metadata: {
-        name: formData.value.name,
-        phone: formData.value.phone,
-      },
-      callback: async (response) => {
-        // Handle successful payment
-        const { reference } = response;
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_URL}/paystack/initialize`,
+      {
+        email: formData.value.email,
+        amount: total.value,
+      }
+    );
 
-        try {
-          const verifyResponse = await axios.post(
-            `${import.meta.env.VITE_API_URL}/paystack/verify`,
-            { reference },
-            {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-            }
-          );
-
-          if (verifyResponse.data.status === "success") {
-            alert("Payment successful! Order placed.");
-          } else {
-            errorMessage.value =
-              "Payment verification failed. Please contact support.";
-          }
-        } catch (error) {
-          errorMessage.value =
-            error.response?.data?.message || "Verification failed.";
-        }
-      },
-      onClose: () => {
-        errorMessage.value = "Payment process was canceled.";
-      },
-    });
-
-    handler.openIframe(); // Open Paystack payment modal
+    if (response.data.status) {
+      // Redirect to Paystack payment page
+      window.location.href = response.data.data.authorization_url;
+    } else {
+      errorMessage.value = "Failed to initialize payment.";
+    }
   } catch (error) {
-    errorMessage.value = error.message || "An unexpected error occurred.";
+    errorMessage.value =
+      error.response?.data?.message || "An unexpected error occurred";
   } finally {
     isLoading.value = false;
   }
