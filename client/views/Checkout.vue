@@ -381,6 +381,8 @@ const calculateShipping = async () => {
 };
 
 // Submit order
+const orderId = ref(null);
+
 const submitOrder = async () => {
   isLoading.value = true;
   errorMessage.value = "";
@@ -407,8 +409,8 @@ const submitOrder = async () => {
     );
 
     if (orderResponse.status === 201) {
-      const orderId = orderResponse.data.order_id; // Capture the order_id from the response
-      console.log("Order ID:", orderId); // Log to verify the order_id
+      // Store orderId in a reactive state
+      orderId.value = orderResponse.data.order_id;
 
       // Step 2: Initialize payment with Paystack, include the order ID
       const paymentResponse = await axios.post(
@@ -416,25 +418,20 @@ const submitOrder = async () => {
         {
           email: formData.value.email,
           amount: total.value,
-          order_id: orderId, // Pass the order_id to the payment API
+          order_id: orderId.value,
         }
       );
-
-      console.log(paymentResponse.data); // Log Paystack response
 
       if (paymentResponse.data.status) {
         // Redirect to Paystack payment page
         window.location.href = paymentResponse.data.data.authorization_url;
       } else {
         errorMessage.value = "Failed to initialize payment.";
-        console.error("Payment initialization failed:", paymentResponse.data);
       }
     } else {
       errorMessage.value = "Failed to create order.";
-      console.error("Order creation failed:", orderResponse.data);
     }
   } catch (error) {
-    console.error("Order submission failed:", error);
     errorMessage.value =
       error.response?.data?.message || "An unexpected error occurred.";
   } finally {
