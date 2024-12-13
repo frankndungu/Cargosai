@@ -275,6 +275,9 @@ const selectedShippingOption = ref(null);
 // Load cart total from Vuex
 const cartTotal = computed(() => store.getters.cartTotal);
 
+// Access cart items from Vuex store
+const cartItems = computed(() => store.getters.cartItems);
+
 // Calculate total including shipping
 const total = computed(() => {
   return selectedShippingOption.value
@@ -383,23 +386,57 @@ const submitOrder = async () => {
   errorMessage.value = "";
 
   try {
-    const response = await axios.post(
-      `${import.meta.env.VITE_API_URL}/paystack/initialize`,
+    // Step 1: Submit the order to the backend
+    const orderResponse = await axios.post(
+      `${import.meta.env.VITE_API_URL}/orders`,
       {
-        email: formData.value.email,
-        amount: total.value,
+        items: cartItems.value.map((item) => ({
+          product_id: item.id,
+          price: item.price,
+          quantity: item.quantity,
+        })),
+        total_price: total.value,
+        status: "Pending",
+        payment_status: "Pending",
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       }
     );
 
-    if (response.data.status) {
-      // Redirect to Paystack payment page
-      window.location.href = response.data.data.authorization_url;
+    if (orderResponse.status === 201) {
+      const orderId = orderResponse.data.order_id; // Capture the order_id from the response
+      console.log("Order ID:", orderId); // Log to verify the order_id
+
+      // Step 2: Initialize payment with Paystack, include the order ID
+      const paymentResponse = await axios.post(
+        `${import.meta.env.VITE_API_URL}/paystack/initialize`,
+        {
+          email: formData.value.email,
+          amount: total.value,
+          order_id: orderId, // Pass the order_id to the payment API
+        }
+      );
+
+      console.log(paymentResponse.data); // Log Paystack response
+
+      if (paymentResponse.data.status) {
+        // Redirect to Paystack payment page
+        window.location.href = paymentResponse.data.data.authorization_url;
+      } else {
+        errorMessage.value = "Failed to initialize payment.";
+        console.error("Payment initialization failed:", paymentResponse.data);
+      }
     } else {
-      errorMessage.value = "Failed to initialize payment.";
+      errorMessage.value = "Failed to create order.";
+      console.error("Order creation failed:", orderResponse.data);
     }
   } catch (error) {
+    console.error("Order submission failed:", error);
     errorMessage.value =
-      error.response?.data?.message || "An unexpected error occurred";
+      error.response?.data?.message || "An unexpected error occurred.";
   } finally {
     isLoading.value = false;
   }

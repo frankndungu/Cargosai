@@ -67,7 +67,7 @@ class OrderController extends Controller
     {
         try {
             $user = $request->user();
-
+    
             $request->validate([
                 'items' => 'required|array',
                 'items.*.product_id' => 'required|integer|exists:products,id',
@@ -77,14 +77,15 @@ class OrderController extends Controller
                 'status' => 'required|string|in:Pending,Canceled,Shipped,Delivered',
                 'payment_status' => 'required|string|in:Pending,Completed,Failed,Refund', // Validate payment status
             ]);
-
+    
             $order = Order::create([
                 'user_id' => $user->id,
                 'total_price' => $request->total_price,
                 'status' => $request->status,
                 'payment_status' => $request->payment_status, // Add payment status from request
+                'reference' => uniqid('order_'), // Generate a unique reference
             ]);
-
+    
             // Create each order item
             foreach ($request->items as $item) {
                 OrderItem::create([
@@ -95,9 +96,14 @@ class OrderController extends Controller
                     'total' => $item['price'] * $item['quantity'], // Calculate total
                 ]);
             }
-
-            return response()->json(['message' => 'Order created successfully', 'order' => $order], 201);
-
+    
+            // Return order ID along with other details
+            return response()->json([
+                'message' => 'Order created successfully',
+                'order_id' => $order->id, // Explicitly return order_id
+                'order' => $order,
+            ], 201);
+    
         } catch (QueryException $qe) {
             return response()->json([
                 'message' => 'Database error during order creation',
@@ -110,6 +116,7 @@ class OrderController extends Controller
             ], 500);
         }
     }
+    
     
     // Update the status of a specific order
     public function updateStatus(Request $request, $id)
