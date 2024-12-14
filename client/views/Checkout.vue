@@ -423,6 +423,9 @@ const submitOrder = async () => {
       );
 
       if (paymentResponse.data.status) {
+        // Step 3: Clear the cart after successful checkout
+        store.dispatch("clearCart"); // Clear the cart from Vuex and localStorage
+
         // Redirect to Paystack payment page
         window.location.href = paymentResponse.data.data.authorization_url;
       } else {
