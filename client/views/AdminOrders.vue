@@ -13,7 +13,7 @@
           <th>User ID</th>
           <th>Total Price</th>
           <th>Payment Status</th>
-          <th>Status</th>
+          <th>Delivery Status</th>
           <th>Created At</th>
           <th>Actions</th>
         </tr>

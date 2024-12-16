@@ -55,12 +55,23 @@ import { useRoute } from "vue-router";
 const store = useStore();
 const route = useRoute();
 
+// Check user role from the Vuex store
 const userRole = computed(() => store.getters.userRole);
-const shouldShowFooter = computed(
-  () =>
-    route.path !== "/checkout" &&
-    route.path !== "/cart" &&
-    route.path !== "/order/success" && // Hide footer on /order/success
-    userRole.value !== "admin"
-);
+
+// Show or hide the footer based on route and user role
+const shouldShowFooter = computed(() => {
+  const hiddenRoutes = [
+    "/checkout",
+    "/cart",
+    "/order/success", // Hide footer on order success page
+    "/dashboard", // Hide footer on dashboard page
+    "/dashboard/profile",
+    "/dashboard/orders",
+    "/dashboard/orders/:id",
+    "/dashboard/wishlist",
+  ];
+
+  // Check if the current route is in the hidden routes array
+  return !hiddenRoutes.includes(route.path) && userRole.value !== "admin";
+});
 </script>

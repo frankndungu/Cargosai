@@ -44,6 +44,7 @@
 import { ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import axios from "axios";
+import { useStore } from "vuex";
 
 const order = ref({});
 const customerEmail = ref("");
@@ -118,8 +119,13 @@ const goToHomePage = () => {
   router.push("/shop");
 };
 
-// Fetch order details on component mount
-onMounted(fetchOrderDetails);
+const store = useStore();
+
+onMounted(() => {
+  fetchOrderDetails();
+  // Clear the cart after a successful checkout
+  store.dispatch("clearCart");
+});
 </script>
 
 <style scoped>
