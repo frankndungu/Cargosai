@@ -24,6 +24,36 @@ export default {
       localStorage.setItem("guestCart", JSON.stringify(state.guestCart));
     },
 
+    MERGE_CARTS(state) {
+      // If there's a logged-in user and a guest cart, merge the carts
+      if (state.currentUserId && state.guestCart.length > 0) {
+        // Ensure user's cart exists
+        if (!state.carts[state.currentUserId]) {
+          state.carts[state.currentUserId] = [];
+        }
+
+        // Merge guest cart items into user's cart
+        state.guestCart.forEach((guestItem) => {
+          const existingItemIndex = state.carts[state.currentUserId].findIndex(
+            (item) => item.id === guestItem.id
+          );
+
+          if (existingItemIndex !== -1) {
+            // If item exists, update quantity
+            state.carts[state.currentUserId][existingItemIndex].quantity +=
+              guestItem.quantity;
+          } else {
+            // If item doesn't exist, add it
+            state.carts[state.currentUserId].push(guestItem);
+          }
+        });
+
+        // Clear guest cart after merging
+        state.guestCart = [];
+        this.commit("SAVE_CARTS");
+      }
+    },
+
     ADD_TO_CART(state, product) {
       if (state.currentUserId) {
         if (!state.carts[state.currentUserId]) {
@@ -124,8 +154,13 @@ export default {
     SET_LOGGED_IN(state, { status, userId }) {
       state.isLoggedIn = status;
       state.currentUserId = status ? userId : null;
-      console.log("User ID set:", state.currentUserId); // Log the user ID
+
+      if (status) {
+        this.commit("MERGE_CARTS"); // Merge carts when user logs in
+      }
+
       this.commit("SAVE_CARTS");
+      console.log("User logged in. User ID:", state.currentUserId);
     },
   },
 
@@ -155,9 +190,30 @@ export default {
       }
     },
 
-    login({ dispatch }, userId) {
-      localStorage.setItem("token"); // Make sure the token is stored
-      dispatch("fetchCurrentUser", userId); // Ensure the user session is synced with the backend
+    login({ commit, dispatch }, credentials) {
+      return new Promise((resolve, reject) => {
+        // Assuming you have a login API call
+        axios
+          .post(`${import.meta.env.VITE_API_URL}/login`, credentials)
+          .then((response) => {
+            const { token, user } = response.data;
+
+            // Store token in localStorage
+            localStorage.setItem("token", token);
+
+            // Set logged-in state and user ID
+            commit("SET_LOGGED_IN", { status: true, userId: user.id });
+
+            // Fetch current user details
+            dispatch("fetchCurrentUser");
+
+            resolve(response);
+          })
+          .catch((error) => {
+            console.error("Login error:", error);
+            reject(error);
+          });
+      });
     },
 
     logout({ commit }) {
