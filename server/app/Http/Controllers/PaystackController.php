@@ -80,40 +80,42 @@ class PaystackController extends Controller
     public function handleCallback(Request $request)
     {
         $reference = $request->query('reference');
-
+    
         if (!$reference) {
             return redirect('/checkout')->with('error', 'Payment reference not found.');
         }
-
+    
         try {
             // Paystack verification endpoint
             $paystackUrl = config('paystack.payment_url') . "/transaction/verify/{$reference}";
-
+    
             // Make the API request to verify the transaction
             $response = Http::withOptions([
                 'verify' => 'C:\\certificates\\cacert.pem' // Path to your CA certificate file
             ])
             ->withToken(config('paystack.secret_key')) // Include the Paystack secret key
             ->get($paystackUrl);
-
+    
             if ($response->successful() && $response->json('data.status') === 'success') {
                 $order = Order::where('reference', $reference)->first();
-
+    
                 if ($order) {
                     $order->payment_status = 'Completed';
                     $order->status = 'Paid';
                     $order->save();
                 }
-
-                return redirect('/')->with('success', 'Payment successful!');
+    
+                // Redirect to Order Confirmation page with the order ID
+                return redirect(config('app.frontend_url') . '/order/success?order_id=' . $order->id)
+                    ->with('success', 'Payment successful!');
             }
-
+    
             // Log error if verification fails
             Log::error('Paystack Verification Failed', [
                 'response' => $response->body(),
                 'status' => $response->status()
             ]);
-
+    
             return redirect('/checkout')->with('error', 'Payment verification failed.');
         } catch (\Exception $e) {
             // Log any exceptions
@@ -121,8 +123,10 @@ class PaystackController extends Controller
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
-
+    
             return redirect('/checkout')->with('error', 'An unexpected error occurred during payment verification.');
         }
     }
+    
+    
 }

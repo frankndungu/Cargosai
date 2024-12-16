@@ -123,4 +123,17 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+        /*
+    |--------------------------------------------------------------------------
+    | Frontend URL
+    |--------------------------------------------------------------------------
+    |
+    | This URL points to the frontend of your application. It is used when
+    | you need to redirect users from backend logic to a frontend route.
+    | Update this value in your ".env" file if the frontend URL changes.
+    |
+    */
+
+    'frontend_url' => env('APP_FRONTEND_URL', 'http://localhost:3000'),
+
 ];

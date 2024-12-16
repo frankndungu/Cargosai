@@ -75,6 +75,7 @@ Route::middleware([RateLimitMiddleware::class])->group(function () {
     // Subscription Routes
     Route::post('/subscribe', [SubscriptionController::class, 'subscribe']);
 
+    // Paystack Routes
     Route::post('/paystack/initialize', [PaystackController::class, 'initializePayment']);
     Route::get('/paystack/callback', [PaystackController::class, 'handleCallback'])->name('paystack.callback');
 

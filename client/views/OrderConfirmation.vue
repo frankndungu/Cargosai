@@ -1,20 +1,32 @@
+<!--Order Confirmation-->
 <template>
   <div class="success-container">
-    <div class="success-card">
+    <div v-if="loading" class="loading-message">Loading order details...</div>
+    <div v-else class="success-card">
       <div class="success-icon">✓</div>
       <h1>Thank You for Your Order!</h1>
       <p>Your purchase has been successfully completed.</p>
       <div class="order-details">
-        <div class="detail-shimmer">
-          <p>
-            Order Number:
-            <strong class="shimmer-text">{{ orderNumber }}</strong>
-          </p>
-          <p>
-            Confirmation sent to:
-            <strong class="shimmer-text">{{ customerEmail }}</strong>
-          </p>
-        </div>
+        <p>
+          Order Number:
+          <strong>{{ order.reference || "Not Available" }}</strong>
+        </p>
+        <p>
+          Total Price:
+          <strong
+            >${{
+              order.total_price ? order.total_price.toFixed(2) : "0.00"
+            }}</strong
+          >
+        </p>
+        <p>
+          Payment Status:
+          <strong>{{ order.status || "Pending" }}</strong>
+        </p>
+        <p>
+          Confirmation sent to:
+          <strong>{{ customerEmail }}</strong>
+        </p>
       </div>
       <div class="action-buttons">
         <button @click="goToHomePage" class="btn-continue">
@@ -30,33 +42,87 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
+import axios from "axios";
 
-// Generate a random order number for demonstration
-const orderNumber = ref(`ORDER-${Math.floor(Math.random() * 1000000)}`);
-const customerEmail = ref("customer@example.com");
+const order = ref({});
+const customerEmail = ref("");
+const loading = ref(true);
 
 const router = useRouter();
+const route = useRoute();
+
+const fetchUserDetails = async () => {
+  try {
+    const response = await axios.get(`${import.meta.env.VITE_API_URL}/user`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    return response.data.email || "customer@example.com";
+  } catch (error) {
+    console.error("Error fetching user details:", error);
+    return "customer@example.com"; // Default email if the user fetch fails
+  }
+};
+
+const fetchOrderDetails = async () => {
+  try {
+    const orderId = route.query.order_id; // Fetch the order ID from query params
+    if (!orderId) {
+      throw new Error("Order ID is missing.");
+    }
+    const orderResponse = await axios.get(
+      `${import.meta.env.VITE_API_URL}/orders/${orderId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Replace with your auth mechanism if different
+        },
+      }
+    );
+    order.value = orderResponse.data;
+
+    // Fetch user details after the order details are loaded
+    customerEmail.value = await fetchUserDetails();
+  } catch (error) {
+    console.error("Error fetching order details:", error);
+    alert("Failed to load order details. Please try again later.");
+  } finally {
+    loading.value = false;
+  }
+};
+
+const viewOrderDetails = async () => {
+  try {
+    const orderId = route.query.order_id; // Fetch the order ID from query params
+    if (!orderId) {
+      throw new Error("Order ID is missing.");
+    }
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_URL}/orders/${orderId}/details`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Replace with your auth mechanism if different
+        },
+      }
+    );
+    // Use router.push with the `id` from the response to navigate to the order details page
+    router.push({ name: "OrderDetails", params: { id: response.data.id } });
+  } catch (error) {
+    console.error("Error fetching detailed order information:", error);
+    alert("Failed to load order details. Please try again later.");
+  }
+};
 
 const goToHomePage = () => {
   router.push("/shop");
 };
 
-const viewOrderDetails = () => {
-  router.push(`/order/${orderNumber.value}`);
-};
+// Fetch order details on component mount
+onMounted(fetchOrderDetails);
 </script>
 
 <style scoped>
-@keyframes shimmer {
-  0% {
-    background-position: -1000px 0;
-  }
-  100% {
-    background-position: 1000px 0;
-  }
-}
-
 .success-container {
   display: flex;
   justify-content: center;

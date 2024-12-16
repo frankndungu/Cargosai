@@ -60,6 +60,7 @@ const shouldShowFooter = computed(
   () =>
     route.path !== "/checkout" &&
     route.path !== "/cart" &&
+    route.path !== "/order/success" && // Hide footer on /order/success
     userRole.value !== "admin"
 );
 </script>
