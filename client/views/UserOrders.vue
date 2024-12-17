@@ -18,7 +18,7 @@
               <tr>
                 <th>Order ID</th>
                 <th>Date</th>
-                <th>Payment Status</th>
+                <th>Status</th>
                 <th>Total</th>
                 <th>Cancel Order</th>
                 <th>Actions</th>

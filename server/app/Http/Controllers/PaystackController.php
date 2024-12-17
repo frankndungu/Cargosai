@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use App\Models\Order;
+use App\Models\User;
 
 class PaystackController extends Controller
 {
@@ -18,12 +19,16 @@ class PaystackController extends Controller
     public function initializePayment(Request $request)
     {
         $validatedData = $request->validate([
-            'order_id' => 'required|exists:orders,id', // Validate that the order_id exists in the orders table
+            'order_id' => 'required|exists:orders,id',
+            'email' => 'required|email' // Add email validation
         ]);
 
-        $order = Order::findOrFail($validatedData['order_id']); // Fetch the order from the database
-
         try {
+            $order = Order::findOrFail($validatedData['order_id']); 
+
+            // Use provided email or fallback to user's email
+            $email = $validatedData['email'];
+
             // Ensure the reference is generated for the order if not already set
             if (!$order->reference) {
                 $order->reference = 'order_' . uniqid();
@@ -34,7 +39,7 @@ class PaystackController extends Controller
             $amountInKes = $order->total_price * self::USD_TO_KES_RATE;
 
             // Convert KES to Kobo
-            $amountInKobo = $amountInKes * 100;
+            $amountInKobo = round($amountInKes * 100);
 
             // Paystack payment initialization endpoint
             $paystackUrl = config('paystack.payment_url') . '/transaction/initialize';
@@ -45,7 +50,7 @@ class PaystackController extends Controller
             ])
             ->withToken(config('paystack.secret_key')) // Include the Paystack secret key
             ->post($paystackUrl, [
-                'email' => $order->user->email, // Use the email associated with the order's user
+                'email' => $email, // Use provided email
                 'amount' => $amountInKobo,      // Amount in Kobo
                 'reference' => $order->reference, // Pass the order reference
                 'callback_url' => route('paystack.callback'), // Set the callback URL
@@ -59,18 +64,23 @@ class PaystackController extends Controller
             // Log error if the response is not successful
             Log::error('Paystack Payment Initialization Failed', [
                 'response' => $response->body(),
-                'status' => $response->status()
+                'status' => $response->status(),
+                'order_id' => $order->id
             ]);
 
             return response()->json(['message' => 'Payment initialization failed.'], 500);
         } catch (\Exception $e) {
-            // Log any exceptions
+            // Log any exceptions with more context
             Log::error('Paystack Payment Error', [
                 'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
+                'order_id' => $request->input('order_id')
             ]);
 
-            return response()->json(['message' => 'An unexpected error occurred.'], 500);
+            return response()->json([
+                'message' => 'An unexpected error occurred.',
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 
