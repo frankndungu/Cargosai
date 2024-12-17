@@ -21,7 +21,7 @@
         </p>
         <p>
           Payment Status:
-          <strong>{{ order.status || "Pending" }}</strong>
+          <strong>{{ order.payment_status || "Pending" }}</strong>
         </p>
         <p>
           Confirmation sent to:

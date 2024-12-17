@@ -71,18 +71,12 @@
             <div class="payment-description">
               <p>
                 You will be redirected to Paystack's secure payment gateway to
-                complete your transaction. Paystack supports multiple payment
-                methods including:
+                complete your transaction.
               </p>
-              <ul>
-                <li>Credit/Debit Cards</li>
-                <li>Bank Transfer</li>
-                <li>Mobile Money</li>
-                <li>PayPal</li>
-              </ul>
               <p>
-                Your payment information will be processed securely through
-                Paystack's encrypted platform.
+                <strong>Note:</strong> Prices are displayed in USD. The final
+                payment amount will be converted to Kenyan Shillings (KES) at
+                the current exchange rate during checkout.
               </p>
             </div>
           </div>

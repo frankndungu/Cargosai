@@ -100,8 +100,11 @@ class PaystackController extends Controller
                 $order = Order::where('reference', $reference)->first();
     
                 if ($order) {
+                    // Update payment status to Completed
                     $order->payment_status = 'Completed';
-                    $order->status = 'Paid';
+                    
+                    // Keep the existing order status (don't change it to 'Paid')
+                    // The order status (Pending, Shipped, etc.) will be managed separately
                     $order->save();
                 }
     
@@ -127,6 +130,5 @@ class PaystackController extends Controller
             return redirect('/checkout')->with('error', 'An unexpected error occurred during payment verification.');
         }
     }
-    
-    
+
 }
