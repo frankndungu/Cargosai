@@ -1,7 +1,7 @@
 <template>
   <div class="success-container">
     <div v-if="loading" class="loading-wrapper">
-      <p class="loading-text">Loading order details...</p>
+      <p class="loading-text">Loading order confirmation...</p>
     </div>
     <div v-else class="success-card">
       <div class="success-icon">
@@ -185,6 +185,7 @@ onMounted(() => {
   transform: translateY(-20px);
   opacity: 0;
   animation: fadeInUp 0.8s forwards;
+  margin: 0 auto;
 }
 
 @keyframes fadeInUp {
@@ -211,7 +212,7 @@ onMounted(() => {
   width: 100px;
   height: 100px;
   margin: 0 auto 20px;
-  color: var(--dark-color);
+  color: var(--green-color);
   stroke-width: 3;
   animation: popIn 0.6s ease-out;
 }
@@ -219,7 +220,7 @@ onMounted(() => {
 .success-title {
   font-size: 1.8rem;
   font-weight: 700;
-  color: var(--color-text-dark);
+  color: var(--green-color);
   margin-bottom: 10px;
 }
 

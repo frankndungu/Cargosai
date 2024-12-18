@@ -11,7 +11,7 @@
         <tr>
           <th>Order ID</th>
           <th>User ID</th>
-          <th>Total Price</th>
+          <th>Amount Paid</th>
           <th>Payment Status</th>
           <th>Delivery Status</th>
           <th>Created At</th>
@@ -22,7 +22,7 @@
         <tr v-for="order in orders" :key="order.id">
           <td>{{ order.formatted_id }}</td>
           <td>{{ order.user_id }}</td>
-          <td>${{ order.total_price }}</td>
+          <td>${{ order.total_price.toFixed(2) }}</td>
           <td :class="getPaymentStatusClass(order.payment_status)">
             {{ order.payment_status }}
           </td>

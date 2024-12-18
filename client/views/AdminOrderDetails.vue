@@ -19,14 +19,26 @@
           <h3>Order Information</h3>
           <div class="info-grid">
             <div class="info-item">
-              <span class="label">Total Price:</span>
-              <span class="value">${{ order.total_price }}</span>
+              <span class="label">Reference:</span>
+              <span class="value">{{ order.reference }}</span>
             </div>
             <div class="info-item">
-              <span class="label">Created:</span>
+              <span class="label">User ID:</span>
+              <span class="value">{{ order.user_id }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Created at:</span>
               <span class="value">{{
                 new Date(order.created_at).toLocaleDateString()
               }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Shipping Fee:</span>
+              <span class="value">${{ order.shipping_fee }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Total Price:</span>
+              <span class="value">${{ order.total_price.toFixed(2) }}</span>
             </div>
           </div>
         </div>
