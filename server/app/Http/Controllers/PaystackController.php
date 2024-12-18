@@ -35,6 +35,9 @@ class PaystackController extends Controller
                 $order->save();
             }
 
+            // Calculate total amount including shipping fee
+            $totalAmount = $order->total_price + $order->shipping_fee;
+            
             // Convert USD to KES
             $amountInKes = $order->total_price * self::USD_TO_KES_RATE;
 

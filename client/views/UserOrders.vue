@@ -18,9 +18,9 @@
               <tr>
                 <th>Order ID</th>
                 <th>Date</th>
-                <th>Status</th>
+                <th>Order Status</th>
+                <th>Payment Status</th>
                 <th>Total</th>
-                <th>Cancel Order</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -31,16 +31,10 @@
                 <td :class="getStatusClass(order.status)">
                   {{ order.status }}
                 </td>
-                <td>${{ order.total_price.toFixed(2) }}</td>
-                <td>
-                  <button
-                    @click="cancelOrder(order.id)"
-                    class="cancel-btn"
-                    :disabled="order.status !== 'Pending'"
-                  >
-                    Cancel
-                  </button>
+                <td :class="getPaymentStatusClass(order.payment_status)">
+                  {{ order.payment_status }}
                 </td>
+                <td>${{ order.total_price.toFixed(2) }}</td>
                 <td>
                   <button @click="viewOrder(order.id)" class="view-btn">
                     View
@@ -75,11 +69,10 @@ onMounted(async () => {
   try {
     const response = await axios.get(`${API_URL}/orders`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`, // Replace with your auth mechanism if different
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     });
-    // console.log(response.data); // Check the structure of response data
-    orders.value = response.data; // Adjust this if the response has a different structure
+    orders.value = response.data;
   } catch (error) {
     // console.error("Failed to fetch orders:", error);
   }
@@ -87,7 +80,7 @@ onMounted(async () => {
 
 // Filter the orders based on the search query
 const filteredOrders = computed(() => {
-  if (!searchQuery.value) return orders.value; // Return all orders if search query is empty
+  if (!searchQuery.value) return orders.value;
   return orders.value.filter((order) =>
     order.formatted_id
       .toString()
@@ -101,27 +94,6 @@ const viewOrder = (orderId) => {
   router.push({ name: "OrderDetails", params: { id: orderId } });
 };
 
-// Cancel an order if it is in the 'Pending' state
-const cancelOrder = async (orderId) => {
-  try {
-    await axios.put(
-      `${API_URL}/orders/${orderId}/status`,
-      { status: "Canceled" },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
-    );
-    const order = orders.value.find((o) => o.id === orderId);
-    if (order) {
-      order.status = "Canceled";
-    }
-  } catch (error) {
-    // console.error("Failed to cancel order:", error);
-  }
-};
-
 // Get CSS classes for order status
 const getStatusClass = (status) => {
   switch (status.toLowerCase()) {
@@ -133,6 +105,20 @@ const getStatusClass = (status) => {
       return "status-delivered";
     case "canceled":
       return "status-canceled";
+    default:
+      return "";
+  }
+};
+
+// Get CSS classes for payment status
+const getPaymentStatusClass = (paymentStatus) => {
+  switch (paymentStatus.toLowerCase()) {
+    case "paid":
+      return "status-paid";
+    case "pending":
+      return "status-payment-pending";
+    case "failed":
+      return "status-payment-failed";
     default:
       return "";
   }
@@ -203,6 +189,21 @@ const getStatusClass = (status) => {
   font-weight: 700;
 }
 
+.status-paid {
+  color: var(--green-color);
+  font-weight: 700;
+}
+
+.status-payment-pending {
+  color: var(--pending-color);
+  font-weight: 700;
+}
+
+.status-payment-failed {
+  color: var(--canceled-color);
+  font-weight: 700;
+}
+
 .view-btn {
   background: var(--dark-tint);
   color: var(--background-color);
@@ -220,21 +221,6 @@ const getStatusClass = (status) => {
 .view-btn:focus {
   outline: none;
   box-shadow: 0 0 0 3px rgba(15, 15, 15, 0.6);
-}
-
-.cancel-btn {
-  background: transparent;
-  color: var(--cancel-color);
-  border: 1px solid;
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.cancel-btn:disabled {
-  background: var(--background-color);
-  color: var(--dark-color);
-  cursor: not-allowed;
 }
 
 .no-orders {

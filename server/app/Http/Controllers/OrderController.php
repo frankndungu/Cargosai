@@ -73,6 +73,7 @@ class OrderController extends Controller
                 'items.*.product_id' => 'required|integer|exists:products,id',
                 'items.*.price' => 'required|numeric',
                 'items.*.quantity' => 'required|integer|min:1',
+                'shipping_fee' => 'required|numeric', // Add shipping fee validation
                 'total_price' => 'required|numeric',
                 'status' => 'required|string|in:Pending,Canceled,Shipped,Delivered',
                 'payment_status' => 'required|string|in:Pending,Completed,Failed,Refund', // Validate payment status
@@ -80,6 +81,7 @@ class OrderController extends Controller
     
             $order = Order::create([
                 'user_id' => $user->id,
+                'shipping_fee' => $request->shipping_fee, // Add shipping fee to order creation
                 'total_price' => $request->total_price,
                 'status' => $request->status,
                 'payment_status' => $request->payment_status, // Add payment status from request

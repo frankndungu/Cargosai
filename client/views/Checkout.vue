@@ -378,6 +378,17 @@ const calculateShipping = async () => {
 const orderId = ref(null);
 
 const submitOrder = async () => {
+  // Validate shipping option selection
+  if (!selectedShippingOption.value) {
+    errorMessage.value = "Please select a shipping option first.";
+    return;
+  }
+
+  // Calculate shipping fee
+  const shippingFee = selectedShippingOption.value
+    ? parseFloat(selectedShippingOption.value.price)
+    : 0;
+
   isLoading.value = true;
   errorMessage.value = "";
 
@@ -391,7 +402,8 @@ const submitOrder = async () => {
           price: item.price,
           quantity: item.quantity,
         })),
-        total_price: total.value,
+        total_price: cartTotal.value, // Send cart total separately
+        shipping_fee: shippingFee, // Add shipping fee to the order submission
         status: "Pending",
         payment_status: "Pending",
       },
@@ -411,7 +423,7 @@ const submitOrder = async () => {
         `${import.meta.env.VITE_API_URL}/paystack/initialize`,
         {
           email: formData.value.email,
-          amount: total.value,
+          amount: total.value, // Send total amount including shipping
           order_id: orderId.value,
         }
       );
@@ -431,6 +443,7 @@ const submitOrder = async () => {
   } catch (error) {
     errorMessage.value =
       error.response?.data?.message || "An unexpected error occurred.";
+    console.error("Order submission error:", error);
   } finally {
     isLoading.value = false;
   }
