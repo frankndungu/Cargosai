@@ -1,4 +1,3 @@
-<!--Order Confirmation-->
 <template>
   <div class="success-container">
     <div v-if="loading" class="loading-wrapper">
@@ -72,7 +71,10 @@ import { ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import axios from "axios";
 import { useStore } from "vuex";
+import { useToast } from "vue-toast-notification";
+import "vue-toast-notification/dist/theme-sugar.css";
 
+const toast = useToast();
 const order = ref({});
 const customerEmail = ref("");
 const loading = ref(true);
@@ -90,6 +92,7 @@ const fetchUserDetails = async () => {
     return response.data.email || "customer@example.com";
   } catch (error) {
     console.error("Error fetching user details:", error);
+    toast.error("Unable to fetch user details. Using default email.");
     return "customer@example.com"; // Default email if the user fetch fails
   }
 };
@@ -114,7 +117,7 @@ const fetchOrderDetails = async () => {
     customerEmail.value = await fetchUserDetails();
   } catch (error) {
     console.error("Error fetching order details:", error);
-    alert("Failed to load order details. Please try again later.");
+    toast.error("Failed to load order details. Please try again later.");
   } finally {
     loading.value = false;
   }
@@ -138,7 +141,7 @@ const viewOrderDetails = async () => {
     router.push({ name: "OrderDetails", params: { id: response.data.id } });
   } catch (error) {
     console.error("Error fetching detailed order information:", error);
-    alert("Failed to load order details. Please try again later.");
+    toast.error("Failed to load order details. Please try again later.");
   }
 };
 
@@ -152,6 +155,12 @@ onMounted(() => {
   fetchOrderDetails();
   // Clear the cart after a successful checkout
   store.dispatch("clearCart");
+
+  // Show a success toast when the page loads
+  toast.success("Order confirmed successfully!", {
+    position: "top-right",
+    duration: 3000,
+  });
 });
 </script>
 
@@ -171,7 +180,7 @@ onMounted(() => {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   padding: 40px;
   text-align: center;
-  max-width: 500px;
+  max-width: 600px;
   width: 100%;
   transform: translateY(-20px);
   opacity: 0;

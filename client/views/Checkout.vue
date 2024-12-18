@@ -402,7 +402,7 @@ const submitOrder = async () => {
           price: item.price,
           quantity: item.quantity,
         })),
-        total_price: cartTotal.value, // Send cart total separately
+        total_price: total.value, // Send total price including shipping
         shipping_fee: shippingFee, // Add shipping fee to the order submission
         status: "Pending",
         payment_status: "Pending",
