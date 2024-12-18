@@ -1,38 +1,65 @@
 <!--Order Confirmation-->
 <template>
   <div class="success-container">
-    <div v-if="loading" class="loading-message">Loading order details...</div>
+    <div v-if="loading" class="loading-wrapper">
+      <p class="loading-text">Loading order details...</p>
+    </div>
     <div v-else class="success-card">
-      <div class="success-icon">✓</div>
-      <h1>Thank You for Your Order!</h1>
-      <p>Your purchase has been successfully completed.</p>
+      <div class="success-icon">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+      </div>
+      <h1 class="success-title">Thank You for Your Order!</h1>
+      <p class="success-subtitle">
+        Your purchase has been successfully completed.
+      </p>
       <div class="order-details">
-        <p>
-          Order Number:
+        <div class="detail-item">
+          <span class="detail-label">Order Number</span>
           <strong>{{ order.reference || "Not Available" }}</strong>
-        </p>
-        <p>
-          Total Price:
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Confirmation sent to</span>
+          <strong>{{ customerEmail }}</strong>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Payment Status</span>
+          <strong>{{ order.payment_status || "Pending" }}</strong>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Shipping Fee</span>
+          <strong>
+            ${{
+              !isNaN(Number(order.shipping_fee))
+                ? Number(order.shipping_fee).toFixed(2)
+                : "0.00"
+            }}</strong
+          >
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Total Price</span>
           <strong
             >${{
               order.total_price ? order.total_price.toFixed(2) : "0.00"
             }}</strong
           >
-        </p>
-        <p>
-          Payment Status:
-          <strong>{{ order.payment_status || "Pending" }}</strong>
-        </p>
-        <p>
-          Confirmation sent to:
-          <strong>{{ customerEmail }}</strong>
-        </p>
+        </div>
       </div>
       <div class="action-buttons">
-        <button @click="goToHomePage" class="btn-continue">
+        <button @click="goToHomePage" class="btn btn-continue">
           Continue Shopping
         </button>
-        <button @click="viewOrderDetails" class="btn-view-order">
+        <button @click="viewOrderDetails" class="btn btn-view-order">
           View Order Details
         </button>
       </div>
@@ -135,126 +162,171 @@ onMounted(() => {
   align-items: center;
   min-height: 100vh;
   background-color: var(--background-color);
+  padding: 20px;
 }
 
 .success-card {
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.125);
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   padding: 40px;
   text-align: center;
   max-width: 500px;
   width: 100%;
-  animation: fadeIn 1.2s ease-out;
+  transform: translateY(-20px);
+  opacity: 0;
+  animation: fadeInUp 0.8s forwards;
 }
 
-.order-details {
-  background-color: #f9f9f9;
-  padding: 20px;
-  border-radius: 8px;
-  margin: 20px 0;
-  text-align: left;
-  position: relative;
-  overflow: hidden;
-}
-
-.detail-shimmer {
-  position: relative;
-}
-
-.shimmer-text {
-  position: relative;
-  color: var(--dark-color);
-  display: inline-block;
-}
-
-.shimmer-text::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  transform: skewX(-20deg);
-  background: linear-gradient(
-    to right,
-    transparent 0%,
-    rgba(255, 255, 255, 0.4) 50%,
-    transparent 100%
-  );
-  animation: shimmer 7s infinite linear;
-}
-
-.success-icon {
-  font-size: 80px;
-  color: var(--green-color);
-  margin-bottom: 20px;
-  animation: popIn 1s ease-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes popIn {
-  from {
-    transform: scale(0);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-h1 {
-  color: var(--dark-color);
-  margin-bottom: 15px;
-  animation: slideIn 1s ease-out;
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateY(-20px);
-    opacity: 0;
-  }
+@keyframes fadeInUp {
   to {
     transform: translateY(0);
     opacity: 1;
   }
 }
 
-.action-buttons {
+.loading-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  color: var(--dark-color);
+  font-size: 1.2rem;
+}
+
+.loading-text {
+  opacity: 0.7;
+}
+
+.success-icon {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 20px;
+  color: var(--dark-color);
+  stroke-width: 3;
+  animation: popIn 0.6s ease-out;
+}
+
+.success-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--color-text-dark);
+  margin-bottom: 10px;
+}
+
+.success-subtitle {
+  color: var(--dark-color);
+  opacity: 0.7;
+  margin-bottom: 25px;
+}
+
+.order-details {
+  border-radius: 12px;
+  padding: 25px;
+  margin: 25px 0;
+  text-align: left;
+}
+
+.detail-item {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #ccc;
+}
+
+.detail-item:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  color: var(--dark-color);
+  opacity: 0.6;
+  font-weight: 600;
+}
+
+.action-buttons {
+  display: flex;
   gap: 15px;
 }
 
-.btn-continue,
-.btn-view-order {
+.btn {
   flex: 1;
-  padding: 12px 20px;
+  padding: 15px 20px;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   cursor: pointer;
-  font-weight: bold;
-  transition: all 0.3s ease;
+  transition: all var(--transition-speed) ease;
 }
 
 .btn-continue {
   background-color: var(--dark-tint);
-  color: white;
+  color: var(--background-color);
 }
 
 .btn-view-order {
-  background-color: var(--green-color);
-  color: white;
+  background-color: var(--dark-tint);
+  color: var(--background-color);
+}
+
+.btn:hover {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.loading-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.skeleton-loader {
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+  background-color: var(--color-text-light);
+  border-radius: 16px;
+}
+
+.skeleton-header,
+.skeleton-line {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  height: 20px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+.skeleton-header {
+  height: 100px;
+  margin-bottom: 30px;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .success-card {
+    padding: 20px;
+    margin: 0 10px;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .btn {
+    padding: 12px 15px;
+  }
 }
 </style>
