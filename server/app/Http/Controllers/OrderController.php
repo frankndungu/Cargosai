@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\OrderConfirmationMail;
+use Illuminate\Support\Facades\Mail;
 use App\Models\Order;
 use App\Models\OrderItem; // Ensure this is included
 use Illuminate\Http\Request;
@@ -15,23 +17,20 @@ class OrderController extends Controller
     {
         $user = $request->user();
 
-        // Check if the user is an admin
         if ($user->role === 'admin') {
-            // Fetch all orders for admin
-            $orders = Order::orderBy('id') // Orders will be sorted by ID (1, 2, 3, ...)
+            $orders = Order::with('user') // Include user details
+                ->orderBy('id')
                 ->get()
                 ->map(function ($order) {
-                    // Format the order ID as a three-digit string
                     $order->formatted_id = str_pad($order->id, 3, '0', STR_PAD_LEFT);
                     return $order;
                 });
         } else {
-            // Fetch orders for the authenticated user
-            $orders = Order::where('user_id', $user->id)
-                ->orderBy('id') // Orders will be sorted by ID (1, 2, 3, ...)
+            $orders = Order::with('user') // Include user details
+                ->where('user_id', $user->id)
+                ->orderBy('id')
                 ->get()
                 ->map(function ($order) {
-                    // Format the order ID as a three-digit string
                     $order->formatted_id = str_pad($order->id, 3, '0', STR_PAD_LEFT);
                     return $order;
                 });
@@ -45,10 +44,9 @@ class OrderController extends Controller
     {
         $user = $request->user();
 
-        // Admin can access any order, regular users can only access their own
-        $order = Order::where('id', $id)
+        $order = Order::with('orderItems.product', 'user') // Include user details
+            ->where('id', $id)
             ->where(function ($query) use ($user) {
-                // Allow admin to view all orders
                 if ($user->role === 'user') {
                     $query->where('user_id', $user->id);
                 }
@@ -99,7 +97,10 @@ class OrderController extends Controller
                 ]);
             }
     
-            // Return order ID along with other details
+            // Send the confirmation email
+            $order = Order::with(['orderItems.product', 'user'])->find($order->id);
+            Mail::to($user->email)->send(new OrderConfirmationMail($order));
+
             return response()->json([
                 'message' => 'Order created successfully',
                 'order_id' => $order->id, // Explicitly return order_id
