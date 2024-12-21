@@ -17,15 +17,58 @@ use App\Http\Controllers\ShippingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\RateLimitMiddleware;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\TestEmail;
 
 // Apply rate limiting and session middleware to all routes in this file
 Route::middleware([RateLimitMiddleware::class])->group(function () {
 
+    // Test email route
+    Route::post('/send-test-email', function (Illuminate\Http\Request $request) {
+        $to = $request->input('email');
+    
+        if (!$to) {
+            return response()->json(['error' => 'Recipient email is required'], 400);
+        }
+    
+        try {
+            Mail::to($to)->send(new TestEmail());
+            return response()->json(['success' => 'Test email sent successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    });
+
+    // Email Verification Routes
+    Route::post('/email/verification-notification', function (Request $request) {
+        $request->user()->sendEmailVerificationNotification();
+        return response()->json(['message' => 'Verification email sent.'], 200);
+    })->middleware(['auth:sanctum', 'throttle:6,1']);
+    
+    Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) {
+        $user = \App\Models\User::findOrFail($id);
+    
+        if (!hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
+            return response()->json(['error' => 'Invalid verification link.'], 403);
+        }
+    
+        if ($user->markEmailAsVerified()) {
+            return response()->json(['message' => 'Email successfully verified.'], 200);
+        }
+    
+        return response()->json(['message' => 'Email already verified.'], 200);
+    })->middleware(['signed', 'throttle:6,1']);
+    
     // Auth Routes
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
+    // Email verification
+    Route::get('/email/verify/{token}', [AuthController::class, 'confirmEmail']);
+    Route::post('/email/resend', [AuthController::class, 'resendEmailVerification']);
+    
     //Admin Routes
     Route::post('/admin/login', [AdminController::class, 'login']);
     
