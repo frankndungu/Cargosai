@@ -39,33 +39,13 @@ Route::middleware([RateLimitMiddleware::class])->group(function () {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     });
-
-    // Email Verification Routes
-    Route::post('/email/verification-notification', function (Request $request) {
-        $request->user()->sendEmailVerificationNotification();
-        return response()->json(['message' => 'Verification email sent.'], 200);
-    })->middleware(['auth:sanctum', 'throttle:6,1']);
-    
-    Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) {
-        $user = \App\Models\User::findOrFail($id);
-    
-        if (!hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
-            return response()->json(['error' => 'Invalid verification link.'], 403);
-        }
-    
-        if ($user->markEmailAsVerified()) {
-            return response()->json(['message' => 'Email successfully verified.'], 200);
-        }
-    
-        return response()->json(['message' => 'Email already verified.'], 200);
-    })->middleware(['signed', 'throttle:6,1']);
     
     // Auth Routes
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
-    // Email verification
+    // Email Verification Routes
     Route::get('/email/verify/{token}', [AuthController::class, 'confirmEmail']);
     Route::post('/email/resend', [AuthController::class, 'resendEmailVerification']);
     

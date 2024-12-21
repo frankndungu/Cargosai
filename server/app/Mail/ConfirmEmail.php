@@ -22,6 +22,9 @@ class ConfirmEmail extends Mailable
     public function build()
     {
         return $this->view('emails.confirm')
-                    ->subject('Please Verify Your Email Address');
+        ->with([
+        'verificationUrl' => $this->verificationUrl,
+        ])
+        ->subject('Please Verify Your Email Address');
     }
 }
