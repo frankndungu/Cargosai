@@ -35,7 +35,7 @@
 
         .email-container p {
             font-size: 16px;
-            color: #55555;
+            color: #0f0f0f;
             margin: 10px 0;
         }
 
