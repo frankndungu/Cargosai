@@ -402,10 +402,18 @@ const submitOrder = async () => {
           price: item.price,
           quantity: item.quantity,
         })),
-        total_price: total.value, // Send total price including shipping
-        shipping_fee: shippingFee, // Add shipping fee to the order submission
+        total_price: total.value,
+        shipping_fee: shippingFee,
         status: "Pending",
         payment_status: "Pending",
+        // Add shipping address details
+        shipping_address: {
+          address1: formData.value.address,
+          country: formData.value.country,
+          state: formData.value.state,
+          city: formData.value.city,
+          postal_code: formData.value.postalCode
+        }
       },
       {
         headers: {
@@ -418,19 +426,19 @@ const submitOrder = async () => {
       // Store orderId in a reactive state
       orderId.value = orderResponse.data.order_id;
 
-      // Step 2: Initialize payment with Paystack, include the order ID
+      // Step 2: Initialize payment with Paystack
       const paymentResponse = await axios.post(
         `${import.meta.env.VITE_API_URL}/paystack/initialize`,
         {
           email: formData.value.email,
-          amount: total.value, // Send total amount including shipping
+          amount: total.value,
           order_id: orderId.value,
         }
       );
 
       if (paymentResponse.data.status) {
-        // Step 3: Clear the cart after successful checkout
-        store.dispatch("clearCart"); // Clear the cart from Vuex and localStorage
+        // Clear the cart after successful checkout
+        store.dispatch("clearCart");
 
         // Redirect to Paystack payment page
         window.location.href = paymentResponse.data.data.authorization_url;

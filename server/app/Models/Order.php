@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    protected $fillable = ['user_id', 'status', 'total_price', 'shipping_fee', 'payment_status', 'reference'];
+    protected $fillable = ['user_id', 'status', 'total_price', 'shipping_fee', 'payment_status', 'reference', 'shipping_address_id'];
 
     // Cast total_price to float
     protected $casts = [
@@ -27,6 +27,11 @@ class Order extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function shippingAddress()
+    {
+        return $this->belongsTo(ShippingAddress::class);
     }
 
 }

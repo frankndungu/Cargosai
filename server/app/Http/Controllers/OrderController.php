@@ -6,6 +6,7 @@ use App\Mail\OrderConfirmationMail;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Order;
 use App\Models\OrderItem; // Ensure this is included
+use App\Models\ShippingAddress;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
 use Exception;
@@ -44,7 +45,7 @@ class OrderController extends Controller
     {
         $user = $request->user();
 
-        $order = Order::with('orderItems.product', 'user') // Include user details
+        $order = Order::with(['orderItems.product', 'user', 'shippingAddress']) // Add shippingAddress
             ->where('id', $id)
             ->where(function ($query) use ($user) {
                 if ($user->role === 'user') {
@@ -71,19 +72,39 @@ class OrderController extends Controller
                 'items.*.product_id' => 'required|integer|exists:products,id',
                 'items.*.price' => 'required|numeric',
                 'items.*.quantity' => 'required|integer|min:1',
-                'shipping_fee' => 'required|numeric', // Add shipping fee validation
+                'shipping_fee' => 'required|numeric',
                 'total_price' => 'required|numeric',
                 'status' => 'required|string|in:Pending,Canceled,Shipped,Delivered',
-                'payment_status' => 'required|string|in:Pending,Completed,Failed,Refund', // Validate payment status
+                'payment_status' => 'required|string|in:Pending,Completed,Failed,Refund',
+                // Add shipping address validation
+                'shipping_address' => 'required|array',
+                'shipping_address.address1' => 'required|string',
+                'shipping_address.country' => 'required|string',
+                'shipping_address.state' => 'required|string',
+                'shipping_address.city' => 'required|string',
+                'shipping_address.postal_code' => 'required|string',
             ]);
+
+            // Create or update shipping address
+            $shippingAddress = ShippingAddress::updateOrCreate(
+                [
+                    'user_id' => $user->id,
+                    'address1' => $request->shipping_address['address1'],
+                    'country' => $request->shipping_address['country'],
+                    'state' => $request->shipping_address['state'],
+                    'city' => $request->shipping_address['city'],
+                    'postal_code' => $request->shipping_address['postal_code'],
+                ]
+            );
     
             $order = Order::create([
                 'user_id' => $user->id,
-                'shipping_fee' => $request->shipping_fee, // Add shipping fee to order creation
+                'shipping_fee' => $request->shipping_fee,
                 'total_price' => $request->total_price,
                 'status' => $request->status,
-                'payment_status' => $request->payment_status, // Add payment status from request
-                'reference' => uniqid('order_'), // Generate a unique reference
+                'payment_status' => $request->payment_status,
+                'reference' => uniqid('order_'),
+                'shipping_address_id' => $shippingAddress->id  // Add shipping address reference
             ]);
     
             // Create each order item
@@ -93,17 +114,20 @@ class OrderController extends Controller
                     'product_id' => $item['product_id'],
                     'price' => $item['price'],
                     'quantity' => $item['quantity'],
-                    'total' => $item['price'] * $item['quantity'], // Calculate total
+                    'total' => $item['price'] * $item['quantity'],
                 ]);
             }
     
+            // Load relationships for the response
+            $order = Order::with(['orderItems.product', 'user', 'shippingAddress'])
+                ->find($order->id);
+            
             // Send the confirmation email
-            $order = Order::with(['orderItems.product', 'user'])->find($order->id);
             Mail::to($user->email)->send(new OrderConfirmationMail($order));
 
             return response()->json([
                 'message' => 'Order created successfully',
-                'order_id' => $order->id, // Explicitly return order_id
+                'order_id' => $order->id,
                 'order' => $order,
             ], 201);
     
