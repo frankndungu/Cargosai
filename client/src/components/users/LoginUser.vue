@@ -52,9 +52,11 @@
 import { ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import { useToast } from "vue-toast-notification";
 
 const store = useStore();
 const router = useRouter();
+const toast = useToast();
 const email = ref("");
 const password = ref("");
 const errors = ref({ email: "", password: "" });
@@ -99,10 +101,11 @@ const handleSubmit = async () => {
         await store.dispatch("fetchUser"); // Fetch user data from API
         email.value = "";
         password.value = "";
+        toast.success("Login successful! Redirecting to dashboard...");
         router.push("/dashboard");
       } else {
         if (data.error) {
-          alert(data.error);
+          toast.error(data.error);
         } else if (data.errors) {
           for (const [key, value] of Object.entries(data.errors)) {
             errors.value[key] = value[0];
@@ -111,7 +114,7 @@ const handleSubmit = async () => {
       }
     } catch (error) {
       console.error("Error:", error);
-      alert("An error occurred during login. Please try again.");
+      toast.error("An error occurred during login. Please try again.");
     } finally {
       isSubmitting.value = false;
     }
@@ -131,8 +134,6 @@ const handleSubmit = async () => {
 }
 
 .login-form {
-  border: 1px solid;
-  background-color: var(--secondary-color);
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);

@@ -58,8 +58,13 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { useToast } from "vue-toast-notification";
+import "vue-toast-notification/dist/theme-sugar.css";
+
+// Initialize toast
+const toast = useToast();
 
 // Define form fields
 const name = ref("");
@@ -128,8 +133,17 @@ const handleSubmit = async () => {
       const data = await response.json();
 
       if (response.ok) {
-        // Handle successful registration
-        alert("Registration successful!");
+        // Show success toast
+        toast.success("Registration successful!", {
+          position: "top-right",
+          duration: 3000,
+        });
+
+        // Show verification email toast
+        toast.info("Please check your email to verify your account", {
+          position: "top-right",
+          duration: 5000,
+        });
 
         // Login after registration
         const loginResponse = await fetch(
@@ -150,16 +164,21 @@ const handleSubmit = async () => {
 
         if (loginResponse.ok) {
           // Store token in localStorage
-          localStorage.setItem("token", loginData.token); // Assuming token is returned in loginData.token
-          router.push("/dashboard"); // Redirect to dashboard after successful login
+          localStorage.setItem("token", loginData.token);
+          router.push("/dashboard");
         } else {
-          // Handle login errors
-          alert(loginData.error || "Login failed. Please try again.");
+          toast.error(loginData.error || "Login failed. Please try again.", {
+            position: "top-right",
+            duration: 3000,
+          });
         }
       } else {
         // Handle errors returned from the backend
         if (data.error) {
-          alert(data.error);
+          toast.error(data.error, {
+            position: "top-right",
+            duration: 3000,
+          });
         } else if (data.errors) {
           for (const [key, value] of Object.entries(data.errors)) {
             errors.value[key] = value[0];
@@ -168,7 +187,10 @@ const handleSubmit = async () => {
       }
     } catch (error) {
       console.error("Error:", error);
-      alert("An error occurred during registration. Please try again.");
+      toast.error("An error occurred during registration. Please try again.", {
+        position: "top-right",
+        duration: 3000,
+      });
     }
   }
 };
@@ -192,9 +214,8 @@ const handleSubmit = async () => {
 }
 
 .register-form {
-  background: var(--secondary-color);
   padding: 20px;
-  border: 1px solid;
+
   border-radius: 10px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
   width: 100%;

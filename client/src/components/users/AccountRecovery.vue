@@ -7,7 +7,7 @@
 
       <!-- Description -->
       <p class="recovery-description">
-        Don't fret! Just type in your email and we will send you a code to reset
+        Don't fret! Just type in your email and we will send you a link to reset
         your password!
       </p>
 
@@ -67,8 +67,6 @@ const handleSubmit = () => {
 }
 
 .recovery-form {
-  border: 1px solid;
-  background: var(--secondary-color);
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);

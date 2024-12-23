@@ -2,13 +2,10 @@
   <section class="banner">
     <div class="pre-order-banner">
       <div class="banner-content">
-        <h2>We haven't launched yet, but we are accepting pre-orders</h2>
-        <p>
-          Secure your authentic Maasai products today and be among the first to
-          receive them when we go live.
-        </p>
+        <h2>Authentic Maasai Art & Jewelry</h2>
+        <p>Direct from Kenyan artisans. Pre-launch discounts available.</p>
         <button class="pre-order-button" @click="scrollToProducts">
-          Pre-Order Now
+          Shop Early
         </button>
       </div>
       <div class="banner-image">
