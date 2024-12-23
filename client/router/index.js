@@ -12,6 +12,7 @@ import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
 import AdminLogin from "../views/AdminLogin.vue";
 import ProductPage from "../views/ProductPage.vue";
+import Recovery from "../views/Recovery.vue";
 import Reset from "../views/Reset.vue";
 import NotFound from "../views/NotFound.vue";
 import Cart from "../views/Cart.vue";
@@ -174,9 +175,15 @@ const routes = [
   },
   {
     path: "/reset-password",
+    component: Recovery,
+    meta: { title: "Forgot Your Password" },
+    description: "Reset your password to regain access to your account",
+  },
+  {
+    path: "/recovery-email",
     component: Reset,
-    meta: { title: "Reset Your Password" },
-    description: "Reset your password to regain access to your account.",
+    meta: { title: "Recover Your Account" },
+    description: "Receive an email to recover your account..",
   },
   {
     path: "/cart",

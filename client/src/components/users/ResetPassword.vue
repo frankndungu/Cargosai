@@ -22,21 +22,25 @@
       </div>
 
       <!-- Reset Password Button -->
-      <button type="submit" class="recovery-submit-btn">Reset password</button>
+      <button type="submit" class="recovery-submit-btn">Send link</button>
     </form>
   </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
+import axios from "axios";
 
 // Form data
 const email = ref("");
 const errorMessage = ref("");
+const successMessage = ref("");
 
-const handleSubmit = () => {
+// Handle form submission
+const handleSubmit = async () => {
   // Reset error message
   errorMessage.value = "";
+  successMessage.value = "";
 
   // Validate email
   if (!email.value) {
@@ -47,8 +51,28 @@ const handleSubmit = () => {
 
   // Proceed if no errors
   if (!errorMessage.value) {
-    console.log("Reset password for:", email.value);
-    // Handle the recovery logic here (e.g., send recovery email)
+    try {
+      // Send the password reset request to the API
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/password/email`,
+        { email: email.value }
+      );
+
+      // Handle success response
+      successMessage.value = response.data.message;
+
+      // Optionally, reset the email input after successful submission
+      email.value = "";
+    } catch (error) {
+      // Handle error response
+      if (error.response && error.response.data) {
+        errorMessage.value =
+          error.response.data.error ||
+          "Failed to send reset link. Please try again.";
+      } else {
+        errorMessage.value = "An error occurred. Please try again later.";
+      }
+    }
   } else {
     console.log("Validation failed:", errorMessage.value);
   }

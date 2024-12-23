@@ -45,6 +45,10 @@ Route::middleware([RateLimitMiddleware::class])->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
+    // Forgot Password Routes
+    Route::post('/password/email', [AuthController::class, 'sendResetLink']);
+    Route::post('/password/reset', [AuthController::class, 'resetPassword']);
+
     // Email Verification Routes
     Route::get('/email/verify/{token}', [AuthController::class, 'confirmEmail']);
     Route::post('/email/resend', [AuthController::class, 'resendEmailVerification']);
