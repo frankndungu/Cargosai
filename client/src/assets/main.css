@@ -1667,7 +1667,7 @@ input[type="email"] {
 
 .faq-item {
   margin-bottom: 1rem;
-  border-bottom: 1px solid var(--dark-color-border);
+  color: var(--dark-color);
 }
 
 .faq-question {
@@ -1675,12 +1675,18 @@ input[type="email"] {
   text-align: left;
   font-size: 1.2rem;
   padding: 1rem;
-  background-color: transparent;
+  background: transparent;
+  color: var(--dark-color);
   border: none;
   display: flex;
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
+}
+
+.faq-question:hover {
+  background: transparent;
+  border: none;
 }
 
 .faq-question span {

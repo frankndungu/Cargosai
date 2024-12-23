@@ -12,7 +12,7 @@ import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
 import AdminLogin from "../views/AdminLogin.vue";
 import ProductPage from "../views/ProductPage.vue";
-import Recovery from "../views/Recovery.vue";
+import Reset from "../views/Reset.vue";
 import NotFound from "../views/NotFound.vue";
 import Cart from "../views/Cart.vue";
 import Checkout from "../views/Checkout.vue";
@@ -173,8 +173,8 @@ const routes = [
     description: "Admin login portal to manage products and orders.",
   },
   {
-    path: "/recovery",
-    component: Recovery,
+    path: "/reset-password",
+    component: Reset,
     meta: { title: "Reset Your Password" },
     description: "Reset your password to regain access to your account.",
   },

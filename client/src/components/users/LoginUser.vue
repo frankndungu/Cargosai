@@ -29,7 +29,7 @@
           <input type="checkbox" id="remember-me" v-model="rememberMe" />
           <label for="remember-me" class="login-label">Remember me</label>
         </div>
-        <router-link to="/recovery" class="login-forgot-link"
+        <router-link to="/reset-password" class="login-forgot-link"
           >Forgot password?</router-link
         >
       </div>
