@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use App\Models\Order;
 use App\Models\User;
+use App\Models\Payment;
 
 class PaystackController extends Controller
 {
@@ -93,54 +94,70 @@ class PaystackController extends Controller
     public function handleCallback(Request $request)
     {
         $reference = $request->query('reference');
-    
+
         if (!$reference) {
-            return redirect('/checkout')->with('error', 'Payment reference not found.');
+            return redirect(config('app.frontend_url') . '/checkout')
+                ->with('error', 'Payment reference not found.');
         }
-    
+
         try {
             // Paystack verification endpoint
             $paystackUrl = config('paystack.payment_url') . "/transaction/verify/{$reference}";
-    
+
             // Make the API request to verify the transaction
             $response = Http::withOptions([
                 'verify' => 'C:\\certificates\\cacert.pem' // Path to your CA certificate file
             ])
             ->withToken(config('paystack.secret_key')) // Include the Paystack secret key
             ->get($paystackUrl);
-    
+
+            // Check if the response is successful and the payment status is 'success'
             if ($response->successful() && $response->json('data.status') === 'success') {
+                // Retrieve the order using the Paystack reference
                 $order = Order::where('reference', $reference)->first();
-    
+
                 if ($order) {
-                    // Update payment status to Completed
+                    // Update the order's payment status to 'Completed'
                     $order->payment_status = 'Completed';
-                    
-                    // Keep the existing order status (don't change it to 'Paid')
-                    // The order status (Pending, Shipped, etc.) will be managed separately
                     $order->save();
+
+                    // Calculate the amount in USD
+                    $amountInKobo = $response->json('data.amount'); // Amount returned by Paystack in Kobo
+                    $amountInKES = $amountInKobo / 100; // Convert Kobo to KES
+                    $amountInUSD = $amountInKES / 145; // Convert KES to USD (1 USD = 145 KES)
+
+                    // Record the payment in the payments table with amount in USD
+                    Payment::create([
+                        'order_id' => $order->id,
+                        'payment_method' => 'Paystack', // You can add more payment methods if needed
+                        'reference' => $response->json('data.reference'), // Paystack transaction reference
+                        'status' => 'Completed', // Payment status
+                        'amount' => $amountInUSD, // Amount in USD
+                    ]);
                 }
-    
+
                 // Redirect to Order Confirmation page with the order ID
                 return redirect(config('app.frontend_url') . '/order/success?order_id=' . $order->id)
                     ->with('success', 'Payment successful!');
             }
-    
+
             // Log error if verification fails
             Log::error('Paystack Verification Failed', [
                 'response' => $response->body(),
                 'status' => $response->status()
             ]);
-    
-            return redirect('/checkout')->with('error', 'Payment verification failed.');
+
+            return redirect(config('app.frontend_url') . '/checkout')
+                ->with('error', 'Payment verification failed.');
         } catch (\Exception $e) {
             // Log any exceptions
             Log::error('Paystack Verification Error', [
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
-    
-            return redirect('/checkout')->with('error', 'An unexpected error occurred during payment verification.');
+
+            return redirect(config('app.frontend_url') . '/checkout')
+                ->with('error', 'An unexpected error occurred during payment verification.');
         }
     }
 

@@ -11,6 +11,7 @@ class Order extends Model
     // Cast total_price to float
     protected $casts = [
         'total_price' => 'float',
+        'shipping_fee' => 'float',
     ];
 
     public function orderItems()
