@@ -40,27 +40,26 @@
 
       <!-- Reset Password Button -->
       <button type="submit" class="reset-submit-btn">Reset Password</button>
-
-      <!-- Success Message -->
-      <div v-if="successMessage" class="success-message">
-        {{ successMessage }}
-      </div>
     </form>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import { useRoute } from "vue-router";
+import { ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
+import { useToast } from "vue-toast-notification";
 
 // Form data
 const password = ref("");
 const confirmPassword = ref("");
 const errorMessage = ref("");
 const confirmErrorMessage = ref("");
-const successMessage = ref("");
-const route = useRoute(); // Access the route
+
+// Router and Toast instances
+const route = useRoute();
+const router = useRouter();
+const toast = useToast();
 
 // Get token and email from URL query parameters
 const token = route.query.token;
@@ -68,21 +67,18 @@ const email = route.query.email;
 
 // Handle form submission
 const handleSubmit = async () => {
-  // Reset error messages
   errorMessage.value = "";
   confirmErrorMessage.value = "";
-  successMessage.value = "";
 
-  // Validate the password fields
   if (password.value !== confirmPassword.value) {
     confirmErrorMessage.value = "Passwords do not match!";
     return;
   }
 
   try {
-    // Make API call to reset the password
+    // API call to reset the password
     const response = await axios.post(
-      "http://localhost:8000/api/password/reset",
+      `${import.meta.env.VITE_API_URL}/password/reset`,
       {
         email: email,
         token: token,
@@ -91,19 +87,17 @@ const handleSubmit = async () => {
       }
     );
 
-    // Handle success
-    successMessage.value = response.data.message;
+    // Show success toast
+    toast.success(response.data.message);
+
+    // Redirect to the login page
+    router.push("/login");
   } catch (error) {
     errorMessage.value =
       error.response?.data?.error || "Failed to reset password.";
+    toast.error(errorMessage.value);
   }
 };
-
-// On mounted, you can log the parameters for debugging (optional)
-onMounted(() => {
-  console.log("Token:", token);
-  console.log("Email:", email);
-});
 </script>
 
 <style scoped>

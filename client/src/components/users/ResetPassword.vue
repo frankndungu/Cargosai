@@ -30,17 +30,19 @@
 <script setup>
 import { ref } from "vue";
 import axios from "axios";
+import { useToast } from "vue-toast-notification";
+
+// Toast instance
+const toast = useToast();
 
 // Form data
 const email = ref("");
 const errorMessage = ref("");
-const successMessage = ref("");
 
 // Handle form submission
 const handleSubmit = async () => {
   // Reset error message
   errorMessage.value = "";
-  successMessage.value = "";
 
   // Validate email
   if (!email.value) {
@@ -58,8 +60,10 @@ const handleSubmit = async () => {
         { email: email.value }
       );
 
-      // Handle success response
-      successMessage.value = response.data.message;
+      // Show success notification
+      toast.success(
+        response.data.message || "Check your email for the reset link!"
+      );
 
       // Optionally, reset the email input after successful submission
       email.value = "";
@@ -69,12 +73,12 @@ const handleSubmit = async () => {
         errorMessage.value =
           error.response.data.error ||
           "Failed to send reset link. Please try again.";
+        toast.error(errorMessage.value);
       } else {
         errorMessage.value = "An error occurred. Please try again later.";
+        toast.error(errorMessage.value);
       }
     }
-  } else {
-    console.log("Validation failed:", errorMessage.value);
   }
 };
 </script>

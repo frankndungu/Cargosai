@@ -1,5 +1,5 @@
 <template>
-  <header class="header">
+  <header class="header" v-if="!isResetPassword">
     <nav class="navbar">
       <div class="navbar__title">
         <router-link to="/" class="navbar__link-title" @click="closeMenu">
@@ -102,10 +102,15 @@ import { useRoute } from "vue-router";
 const store = useStore();
 const route = useRoute();
 const isMenuOpen = ref(false);
+
+// Route-specific checks
 const isDashboard = computed(() => route.path.startsWith("/dashboard"));
 const isCheckout = computed(() => route.path === "/checkout");
 const isCart = computed(() => route.path === "/cart");
-const isOrderSuccess = computed(() => route.path === "/order/success"); // Add this check
+const isOrderSuccess = computed(() => route.path === "/order/success");
+const isResetPassword = computed(() => route.path === "/reset-password");
+
+// User and authentication
 const isAuthenticated = computed(() => store.getters.isAuthenticated);
 const isAdmin = computed(() => store.getters.userRole === "admin");
 const cartItemCount = computed(() => store.getters.cartItemCount);
@@ -118,6 +123,7 @@ const userAvatarUrl = computed(() => {
   return `https://api.dicebear.com/9.x/initials/svg?seed=${initials}&radius=50&backgroundColor=000000`;
 });
 
+// Navbar menu controls
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value;
 };

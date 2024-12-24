@@ -69,6 +69,7 @@ const shouldShowFooter = computed(() => {
     "/dashboard/orders",
     "/dashboard/orders/:id",
     "/dashboard/wishlist",
+    "/reset-password", // Hide footer on reset password page
   ];
 
   // Check if the current route is in the hidden routes array
