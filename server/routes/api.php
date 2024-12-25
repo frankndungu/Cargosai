@@ -5,6 +5,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\PaystackController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\AdminController; 
@@ -24,7 +25,7 @@ use App\Mail\TestEmail;
 // Apply rate limiting and session middleware to all routes in this file
 Route::middleware([RateLimitMiddleware::class])->group(function () {
 
-    // Test email route
+    // Test email route (static route)
     Route::post('/send-test-email', function (Illuminate\Http\Request $request) {
         $to = $request->input('email');
     
@@ -40,108 +41,122 @@ Route::middleware([RateLimitMiddleware::class])->group(function () {
         }
     });
     
-    // Auth Routes
+    // Auth Routes (static routes first)
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
-
-    // Forgot Password Routes
     Route::post('/password/email', [AuthController::class, 'sendResetLink']);
     Route::post('/password/reset', [AuthController::class, 'resetPassword']);
-
-    // Email Verification Routes
-    Route::get('/email/verify/{token}', [AuthController::class, 'confirmEmail']);
     Route::post('/email/resend', [AuthController::class, 'resendEmailVerification']);
+    Route::get('/email/verify/{token}', [AuthController::class, 'confirmEmail']);
     
-    //Admin Routes
+    // Admin Routes
     Route::post('/admin/login', [AdminController::class, 'login']);
     
     Route::middleware(['auth:sanctum'])->prefix('admin')->group(function () {
-        Route::post('/create', [AdminController::class, 'createAdminUser']); // Create admin user
-        Route::get('/admins', [AdminController::class, 'listAdmins']); // Get all admins
-        Route::get('/users/{id}', [AdminController::class, 'showUser']); // Get individual user by ID
-        Route::delete('/users/{id}', [AdminController::class, 'deleteUser']); // Admin Delete user
-        Route::get('/users', [UserController::class, 'index']); // Get all users
-        Route::put('/users/{id}', [UserController::class, 'update']); // Update user
+        // Static admin routes first
+        Route::post('/create', [AdminController::class, 'createAdminUser']);
+        Route::get('/admins', [AdminController::class, 'listAdmins']);
+        Route::get('/users', [UserController::class, 'index']);
+        // Parameter-based admin routes last
+        Route::get('/users/{id}', [AdminController::class, 'showUser']);
+        Route::put('/users/{id}', [UserController::class, 'update']);
+        Route::delete('/users/{id}', [AdminController::class, 'deleteUser']);
     });
     
-    // Cart Routes
+    // Cart Routes (static routes first, then parameter routes)
     Route::get('/cart', [CartController::class, 'getCart']);
+    Route::get('/cart/total-items', [CartController::class, 'getTotalItems']);
     Route::post('/cart/add', [CartController::class, 'addItem']);
+    Route::delete('/cart', [CartController::class, 'deleteCart']);
     Route::put('/cart/item/{cartItem}', [CartController::class, 'updateItem']);
-    Route::get('/cart/total-items', [CartController::class, 'getTotalItems']); // Total items in cart
     Route::delete('/cart/item/{cartItem}', [CartController::class, 'removeItem']);
-    Route::delete('/cart', [CartController::class, 'deleteCart']); // Delete cart
 
     // Product Routes
     Route::prefix('products')->group(function () {
+        // Static routes first
         Route::get('/', [ProductController::class, 'index']);
-        Route::get('{id}', [ProductController::class, 'show']);
-        Route::get('slug/{slug}', [ProductController::class, 'showBySlug']);
-        Route::get('{id}/with-reviews', [ProductController::class, 'showWithReviews']);
-        // Apply auth middleware for store method to require login
         Route::post('/', [ProductController::class, 'store'])->middleware('auth:sanctum');
-        Route::put('{id}', [ProductController::class, 'update'])->middleware('auth:sanctum');
-        Route::delete('{id}', [ProductController::class, 'destroy'])->middleware('auth:sanctum');
-    
+        // Specific parameter routes
+        Route::get('/slug/{slug}', [ProductController::class, 'showBySlug']);
+        Route::get('/{id}/with-reviews', [ProductController::class, 'showWithReviews']);
+        // Generic parameter routes last
+        Route::get('/{id}', [ProductController::class, 'show']);
+        Route::put('/{id}', [ProductController::class, 'update'])->middleware('auth:sanctum');
+        Route::delete('/{id}', [ProductController::class, 'destroy'])->middleware('auth:sanctum');
     });
 
     // Review Routes
     Route::prefix('reviews')->group(function () {
+        // Static routes first
         Route::get('/', [ReviewController::class, 'indexAll']);
-        Route::get('/products/{productId}', [ReviewController::class, 'index']);
+        // Specific parameter routes
         Route::get('/products/{productId}/average', [ReviewController::class, 'averageRating']);
+        Route::get('/products/{productId}', [ReviewController::class, 'index']);
         Route::post('/products/{productId}', [ReviewController::class, 'store']);
+        // Generic parameter routes last
         Route::put('/{reviewId}', [ReviewController::class, 'update']);
         Route::delete('/{reviewId}', [ReviewController::class, 'destroy']);
     });
 
-    // Contact Routes
+    // Contact and Subscription Routes (static routes)
     Route::post('/contact', [ContactController::class, 'store']);
-
-    // Subscription Routes
     Route::post('/subscribe', [SubscriptionController::class, 'subscribe']);
 
     // Paystack Routes
     Route::post('/paystack/initialize', [PaystackController::class, 'initializePayment']);
     Route::get('/paystack/callback', [PaystackController::class, 'handleCallback'])->name('paystack.callback');
 
-    // User Routes
+    // Payment Routes
+    Route::get('/payments', [PaymentController::class, 'index']);
+    Route::get('/payments/revenue', [PaymentController::class, 'getRevenueSummary']);
+    Route::get('/payments/{id}', [PaymentController::class, 'show']);
+
+    // Authenticated User Routes
     Route::middleware('auth:sanctum')->group(function () {
+        // User Profile Routes
         Route::get('/user', function (Request $request) {
             return $request->user();
         });
-        Route::get('/users', [UserController::class, 'index']); // Get all users
-        Route::get('/users/{id}', [UserController::class, 'show']); // Get individual user by ID
-        Route::put('/users/{id}', [UserController::class, 'update']); // Update user
-        Route::post('/users/{id}/phonenumber', [UserController::class, 'createPhoneNumber']); // Create phone number
-        Route::put('/users/{id}/phonenumber', [UserController::class, 'updatePhoneNumber']); // Update phone number
-        Route::delete('/users/{id}/phonenumber', [UserController::class, 'deletePhoneNumber']); // Delete phone number
+        
+        // User Management Routes
+        Route::get('/users', [UserController::class, 'index']);
+        Route::get('/users/{id}', [UserController::class, 'show']);
+        Route::put('/users/{id}', [UserController::class, 'update']);
+        
+        // Phone Number Routes
+        Route::post('/users/{id}/phonenumber', [UserController::class, 'createPhoneNumber']);
+        Route::put('/users/{id}/phonenumber', [UserController::class, 'updatePhoneNumber']);
+        Route::delete('/users/{id}/phonenumber', [UserController::class, 'deletePhoneNumber']);
 
         // Shipping Address Routes
         Route::prefix('shipping-address')->group(function () {
-            Route::get('/user/{userId}', [ShippingAddressController::class, 'index']);
             Route::post('/create', [ShippingAddressController::class, 'store']);
-            Route::put('/update/{id}', [ShippingAddressController::class, 'update']);
+            Route::get('/user/{userId}', [ShippingAddressController::class, 'index']);
             Route::get('/{id}', [ShippingAddressController::class, 'show']);
+            Route::put('/update/{id}', [ShippingAddressController::class, 'update']);
         });
 
         // Billing Address Routes
         Route::prefix('billing-address')->group(function () {
-            Route::get('/user/{userId}', [BillingAddressController::class, 'index']);
             Route::post('/create', [BillingAddressController::class, 'store']);
-            Route::put('/update/{id}', [BillingAddressController::class, 'update']);
+            Route::get('/user/{userId}', [BillingAddressController::class, 'index']);
             Route::get('/{id}', [BillingAddressController::class, 'show']);
+            Route::put('/update/{id}', [BillingAddressController::class, 'update']);
         });
 
         // Orders Routes
         Route::prefix('orders')->group(function () {
+            // Static routes first
             Route::get('/', [OrderController::class, 'index']);
-            Route::get('{order}', [OrderController::class, 'show']);
-            Route::get('{order}/details', [OrderDetailsController::class, 'show']);
             Route::post('/', [OrderController::class, 'create']);
-            Route::put('{order}/status', [OrderController::class, 'updateStatus']);
-            Route::delete('{order}', [OrderController::class, 'destroy']);
+            // Parameter routes last
+            Route::get('/total', [OrderController::class, 'getTotalOrders']);
+            Route::get('/completed-count', [OrderController::class, 'getCompletedOrdersCount']);
+            Route::get('/{order}', [OrderController::class, 'show']);
+            Route::get('/{order}/details', [OrderDetailsController::class, 'show']);
+            Route::put('/{order}/status', [OrderController::class, 'updateStatus']);
+            Route::delete('/{order}', [OrderController::class, 'destroy']);
         });
 
         // Shipping Routes

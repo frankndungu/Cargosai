@@ -224,7 +224,7 @@
                         <tr>
                             <th>Product Name</th>
                             <th>Quantity</th>
-                            <th>Price (Each)</th>
+                            <th>Price</th>
                             <th>Subtotal</th>
                         </tr>
                     </thead>

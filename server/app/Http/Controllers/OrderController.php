@@ -191,7 +191,42 @@ class OrderController extends Controller
     
         return response()->json(['message' => 'Order status and payment status updated successfully', 'order' => $order], 200);
     }
-    
+
+    public function getTotalOrders()
+    {
+        try {
+            // Fetch the total number of orders
+            $totalOrders = Order::count();
+
+            return response()->json([
+                'total_orders' => $totalOrders,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while fetching the total number of orders',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function getCompletedOrdersCount()
+    {
+        try {
+            // Fetch the total number of completed orders
+            $completedOrdersCount = Order::where('payment_status', 'Completed')->count();
+
+            return response()->json([
+                'completed_orders_count' => $completedOrdersCount,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while fetching completed orders count',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+
     // Delete a specific order
     public function destroy($id, Request $request)
     {
