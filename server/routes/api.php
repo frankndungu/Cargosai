@@ -153,6 +153,7 @@ Route::middleware([RateLimitMiddleware::class])->group(function () {
             // Parameter routes last
             Route::get('/total', [OrderController::class, 'getTotalOrders']);
             Route::get('/completed-count', [OrderController::class, 'getCompletedOrdersCount']);
+            Route::get('/recent', [OrderController::class, 'getRecentSales']);
             Route::get('/{order}', [OrderController::class, 'show']);
             Route::get('/{order}/details', [OrderDetailsController::class, 'show']);
             Route::put('/{order}/status', [OrderController::class, 'updateStatus']);

@@ -143,8 +143,7 @@ class OrderController extends Controller
             ], 500);
         }
     }
-    
-    
+     
     // Update the status of a specific order
     public function updateStatus(Request $request, $id)
     {
@@ -192,6 +191,7 @@ class OrderController extends Controller
         return response()->json(['message' => 'Order status and payment status updated successfully', 'order' => $order], 200);
     }
 
+    // Get total number of orders
     public function getTotalOrders()
     {
         try {
@@ -209,6 +209,7 @@ class OrderController extends Controller
         }
     }
 
+    // Get total number of completed orders
     public function getCompletedOrdersCount()
     {
         try {
@@ -226,7 +227,39 @@ class OrderController extends Controller
         }
     }
 
-
+    // Get the 5 most recent sales
+    public function getRecentSales()
+    {
+        try {
+            // Fetch the 5 most recent orders with specific fields
+            $recentSales = Order::select('total_price', 'user_id') // Select only total_price and user_id
+                ->with([
+                    'user:id,name,email' // Include only the user's id, name, and email
+                ])
+                ->orderBy('created_at', 'desc') // Order by creation date, most recent first
+                ->limit(5) // Limit to 5 orders
+                ->get();
+    
+            // Map to include name, email, and total_price
+            $sales = $recentSales->map(function ($order) {
+                return [
+                    'name' => $order->user->name ?? 'Unknown',
+                    'email' => $order->user->email ?? 'Unknown',
+                    'total_price' => $order->total_price,
+                ];
+            });
+    
+            return response()->json([
+                'recent_sales' => $sales,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while fetching recent sales',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+    
     // Delete a specific order
     public function destroy($id, Request $request)
     {
