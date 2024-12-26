@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\OrderConfirmationMail;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderItem; // Ensure this is included
 use App\Models\ShippingAddress;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OrderConfirmationMail;
+use App\Mail\OrderStatusUpdatedMail;;
 use Illuminate\Database\QueryException;
 use Exception;
 
@@ -149,45 +150,52 @@ class OrderController extends Controller
     {
         $user = $request->user(); // Get the authenticated user
         $order = Order::where('id', $id)->first(); // Admin can update any order, so no user_id check needed.
-    
+
         if (!$order) {
             return response()->json(['message' => 'Order not found'], 404);
         }
-    
+
         // Prevent the user from canceling the order if its status is not 'Pending'
         if ($user->role === 'user' && $order->status !== 'Pending') {
             return response()->json(['message' => 'You can only cancel orders with "Pending" status.'], 400);
         }
-    
+
         // Validate status change for users and admins
         if ($user->role !== 'admin' && in_array($order->status, ['Shipped', 'Delivered', 'Canceled'])) {
             return response()->json(['message' => 'Cannot change status of this order.'], 400);
         }
-    
+
         // Validate the request body
         $request->validate([
             'status' => 'required|string|in:Pending,Canceled,Shipped,Delivered', // Only admin can update this to other statuses
             'payment_status' => 'nullable|string|in:Pending,Completed,Failed,Refund', // Admin can update payment status
         ]);
-    
+
         // Check if the user is attempting to cancel the order
         if ($request->status === 'Canceled' && $order->status === 'Pending') {
             // Update the order status to 'Canceled'
             $order->status = 'Canceled';
             $order->save();
+
+            // Send the email notification
+            Mail::to($order->user->email)->send(new OrderStatusUpdatedMail($order));
+
             return response()->json(['message' => 'Order has been canceled successfully', 'order' => $order], 200);
         }
-    
+
         // Update status and payment status for other status changes
         $order->status = $request->status;
-    
+
         // If payment status is provided, update it
         if ($request->has('payment_status')) {
             $order->payment_status = $request->payment_status;
         }
-    
+
         $order->save();
-    
+
+        // Send the email notification
+        Mail::to($order->user->email)->send(new OrderStatusUpdatedMail($order));
+
         return response()->json(['message' => 'Order status and payment status updated successfully', 'order' => $order], 200);
     }
 
