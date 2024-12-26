@@ -110,6 +110,7 @@ Route::middleware([RateLimitMiddleware::class])->group(function () {
     // Payment Routes
     Route::get('/payments', [PaymentController::class, 'index']);
     Route::get('/payments/revenue', [PaymentController::class, 'getRevenueSummary']);
+    Route::get('payments/monthly-sales', [PaymentController::class, 'getMonthlySalesData']);
     Route::get('/payments/{id}', [PaymentController::class, 'show']);
 
     // Authenticated User Routes

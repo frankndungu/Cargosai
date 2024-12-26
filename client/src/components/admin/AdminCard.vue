@@ -60,7 +60,6 @@ const fetchTotalOrders = async () => {
     const response = await axios.get(
       `${import.meta.env.VITE_API_URL}/orders/total`,
       {
-        method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -78,7 +77,6 @@ const fetchSalesCount = async () => {
     const response = await axios.get(
       `${import.meta.env.VITE_API_URL}/orders/completed-count`,
       {
-        method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
