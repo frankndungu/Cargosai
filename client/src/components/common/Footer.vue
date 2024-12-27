@@ -76,3 +76,141 @@ const shouldShowFooter = computed(() => {
   return !hiddenRoutes.includes(route.path) && userRole.value !== "admin";
 });
 </script>
+
+<style scoped>
+/* footer section */
+.footer {
+  background-color: var(--dark-tint);
+  padding: 40px 50px;
+  color: var(--background-color);
+  margin-top: auto; /* Push the footer to the bottom */
+}
+
+.footer__content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.footer__left {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer__logo {
+  display: flex;
+  flex-direction: column;
+}
+
+.logo-main-title {
+  font-family: "League Spartan", sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--background-color);
+  margin-bottom: 2px;
+}
+
+.logo-sub-title {
+  font-family: "Quicksand", sans-serif;
+  font-size: 14px;
+  letter-spacing: 5px;
+  color: var(--background-color);
+  margin-top: -4px;
+  margin-bottom: 10px;
+  margin-left: 38px;
+}
+
+.footer__left p {
+  margin: 10px 0;
+}
+
+.footer__text {
+  font-weight: var(--font-medium);
+  font-size: var(--normal-font-size);
+}
+
+.footer__copy {
+  font-weight: var(--font-light);
+  font-size: var(--smaller-font-size);
+}
+
+.transform {
+  text-decoration: underline;
+}
+
+.footer__right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.footer__links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 20px;
+}
+
+.footer__links li {
+  margin-bottom: 20px;
+}
+
+.footer__links a {
+  text-decoration: none;
+  color: var(--background-color);
+}
+
+.footer__links a:hover {
+  text-decoration: underline;
+}
+
+.footer__kofi img {
+  width: 250px;
+  height: auto;
+  margin-bottom: 20px;
+}
+
+.footer__social-icons {
+  display: flex;
+  gap: 30px;
+}
+
+.footer__social-icons a {
+  color: var(--background-color);
+  font-size: 20px;
+  transition: color 0.3s;
+}
+
+.footer__creator {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .footer__content {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .footer__left,
+  .footer__right {
+    align-items: center;
+  }
+
+  .footer__text {
+    text-align: center;
+  }
+
+  .footer__links {
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .footer__kofi img {
+    margin-bottom: 20px;
+  }
+  .footer__copy {
+    font-size: var(--font-extra-small);
+  }
+}
+</style>
