@@ -273,16 +273,20 @@
   }
 
   .hero-title {
-    font-size: 2rem;
+    font-size: 1.22rem;
   }
 
   .hero-description {
-    font-size: 1.1rem;
+    font-size: 0.75rem;
     padding: 0 20px;
   }
 
   .em::after {
     background: none;
+  }
+
+  .as-seen-on h2 {
+    font-size: 1.1rem;
   }
 
   .hero-buttons {
