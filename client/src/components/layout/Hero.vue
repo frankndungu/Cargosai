@@ -2,7 +2,7 @@
   <section class="hero">
     <div class="hero-content">
       <h1 class="hero-title">
-        Get beautiful, <em class="em">handmade products</em> from Kenya,<br />
+        Get beautiful, <em class="em">handmade products</em> from Kenya,
         <span class="highlight">shipped directly to your door</span>
       </h1>
       <p class="hero-description">
@@ -11,10 +11,42 @@
       </p>
       <div class="hero-buttons">
         <router-link class="button-link" to="/blog">
-          <button class="btn btn-light">Learn more</button></router-link
-        >
+          <button class="btn btn-light">
+            <span>Learn more</span>
+            <svg
+              class="arrow-icon"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </router-link>
         <router-link class="button-link" to="/register">
-          <button class="btn btn-dark">Get Started</button>
+          <button class="btn btn-dark">
+            <span>Get Started</span>
+            <svg
+              class="arrow-icon"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
         </router-link>
       </div>
     </div>
@@ -49,77 +81,119 @@
 <style scoped>
 /* hero section */
 .hero {
-  background: var(--secondary-color);
+  background: linear-gradient(
+    135deg,
+    var(--secondary-color) 0%,
+    var(--background-color) 100%
+  );
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 100px 20px;
+  padding: 120px 20px 80px;
+  position: relative;
+  overflow: hidden;
 }
 
 .hero-content {
-  max-width: 800px;
+  max-width: 900px;
   margin-bottom: 40px;
+  position: relative;
+  z-index: 1;
 }
 
-.hero h1 {
-  font-size: var(--font-size-heading);
-  font-weight: var(--font-bold);
-  margin-bottom: 20px;
+.hero-title {
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
 }
 
 .em {
-  font-weight: var(--font-medium);
-}
-
-.highlight {
+  font-style: normal;
+  position: relative;
+  display: inline-block;
   color: var(--accent-color);
 }
 
-.hero p {
-  font-size: var(--h3-font-size);
-  margin-bottom: 30px;
+.em::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--dark-tint);
+  opacity: 0.3;
+}
+
+.highlight {
+  color: var(--dark-color);
+}
+
+.hero-description {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  color: var(--dark-color);
+  margin-bottom: 2.5rem;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .hero-buttons {
   display: flex;
-  gap: 20px;
+  gap: 24px;
   justify-content: center;
-  width: 100%;
+  margin-bottom: 3rem;
+}
+
+.button-link {
+  text-decoration: none;
 }
 
 .btn {
-  padding: 10px 20px;
-  border-radius: 5px;
-  font-weight: var(--font-medium);
+  padding: 16px 32px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 1.1rem;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
 }
 
 .btn-light {
-  border: 1px solid black;
-  color: black;
-  background-color: transparent;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--dark-color);
+  border: 2px solid transparent;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .btn-light:hover {
-  background-color: transparent;
-  box-shadow: none;
+  background: white;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
 .btn-dark {
   background: var(--dark-tint);
-  color: var(--background-color);
+  color: white;
   border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .btn-dark:hover {
-  background-color: var(--dark-color);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0);
+  background: var(--dark-color);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
-.btn-dark:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(15, 15, 15, 0.6);
+.arrow-icon {
+  transition: transform 0.3s ease;
+}
+
+.btn:hover .arrow-icon {
+  transform: translateX(4px);
 }
 
 .as-seen-on {
@@ -195,33 +269,40 @@
 
 @media (max-width: 768px) {
   .hero {
-    padding: 80px 20px;
+    padding: 100px 20px;
   }
 
-  .hero-content {
-    max-width: 100%;
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .hero-description {
+    font-size: 1.1rem;
     padding: 0 20px;
   }
 
-  .hero h1 {
-    font-size: var(--font-size-large);
-  }
-
-  .hero p {
-    font-size: var(--h3-font-size);
+  .em::after {
+    background: none;
   }
 
   .hero-buttons {
     flex-direction: column;
     align-items: center;
-    gap: 10px;
-  }
-
-  .btn,
-  .button-link {
-    padding: 8px 16px;
+    gap: 16px;
     width: 100%;
     max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .button-link {
+    width: 100%;
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+    padding: 14px 24px;
   }
 
   .hero-gallery {

@@ -1,20 +1,33 @@
 <template>
   <section class="cta-section">
     <div class="cta-subscribe-container">
-      <h2 class="cta-title">Become a Member of This Community</h2>
+      <h2 class="cta-title">Join Our Growing Community</h2>
       <p class="cta-description">
-        Get access to discounts, new arrivals and receive updates on our latest
-        products.
+        Get exclusive access to member-only discounts, early product releases,
+        and stay updated with our latest offerings.
       </p>
       <form @submit.prevent="handleSubscribe" class="cta-form">
-        <input
-          type="email"
-          v-model="email"
-          placeholder="Enter your email"
-          required
-          class="cta-input"
-        />
-        <button type="submit" class="cta-button">Join</button>
+        <div class="input-group">
+          <input
+            type="email"
+            v-model="email"
+            placeholder="Enter your email"
+            required
+            class="cta-input"
+            :disabled="isSubmitting"
+            @focus="handleInputFocus"
+            @blur="handleInputBlur"
+          />
+          <button type="submit" class="cta-button" :disabled="isSubmitting">
+            <span v-if="isSubmitting">
+              <span class="loader"></span>
+            </span>
+            <span v-else> Join Now </span>
+          </button>
+        </div>
+        <p class="privacy-notice">
+          We respect your privacy. Unsubscribe at any time.
+        </p>
       </form>
     </div>
   </section>
@@ -26,106 +39,183 @@ import { ref } from "vue";
 import { useToast } from "vue-toast-notification";
 
 const email = ref("");
+const isSubmitting = ref(false);
+const isInputFocused = ref(false);
 const toast = useToast();
 
+const handleInputFocus = () => {
+  isInputFocused.value = true;
+};
+
+const handleInputBlur = () => {
+  isInputFocused.value = false;
+};
+
 async function handleSubscribe() {
+  if (isSubmitting.value) return;
+
+  isSubmitting.value = true;
   try {
     const response = await axios.post(
       `${import.meta.env.VITE_API_URL}/subscribe`,
       { email: email.value }
     );
-    toast.success(response.data.message);
-    email.value = ""; // Clear the input
+    toast.success("Welcome to our community! 🎉");
+    email.value = "";
   } catch (error) {
-    if (error.response && error.response.data.errors) {
+    if (error.response?.data?.errors) {
       const errors = Object.values(error.response.data.errors).flat();
       errors.forEach((err) => toast.error(err));
     } else {
-      toast.error("An error occurred. Please try again later.");
+      toast.error("Oops! Something went wrong. Please try again.");
     }
+  } finally {
+    isSubmitting.value = false;
   }
 }
 </script>
 
 <style scoped>
-/* CTA section */
 .cta-section {
   text-align: center;
-  padding: 40px;
-  background-color: var(--secondary-color);
-  margin-top: 40px;
-  border-radius: 8px;
+  padding: 3.5rem 2rem;
+  background: linear-gradient(
+    145deg,
+    var(--secondary-color),
+    var(--secondary-color-light, #f5f5f5)
+  );
+  margin: 2.5rem auto;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
 }
 
 .cta-title {
-  font-size: 1.5rem;
-  margin-bottom: 20px;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  background: linear-gradient(to right, var(--dark-color), var(--dark-tint));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .cta-description {
-  margin-bottom: 20px;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
   color: var(--dark-color);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .cta-form {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.input-group {
   display: flex;
-  justify-content: center;
-  gap: 10px;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
 }
 
 .cta-input {
+  flex: 1;
   background: var(--background-color);
-  padding: 10px;
+  padding: 0.875rem 1.25rem;
   font-size: 1rem;
-  border: 1px solid var(--dark-color);
-  border-radius: 5px;
-  width: 300px;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.cta-input:focus {
+  outline: none;
+  border-color: var(--dark-tint);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .cta-button {
-  background-color: var(--dark-tint);
+  background: var(--dark-tint);
   color: var(--background-color);
-  padding: 10px 50px;
+  padding: 0.875rem 2rem;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.cta-button:hover {
-  background-color: var(--dark-color);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0);
+.cta-button:not(:disabled):hover {
+  background: var(--dark-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.cta-button:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(15, 15, 15, 0.6);
+.cta-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.privacy-notice {
+  font-size: 0.875rem;
+  color: var(--dark-color);
+  opacity: 0.8;
+}
+
+.loader {
+  width: 20px;
+  height: 20px;
+  border: 3px solid var(--background-color);
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @media (max-width: 600px) {
-  .cta-form {
-    flex-direction: column;
+  .cta-section {
+    padding: 2rem 1rem;
+    margin: 1.5rem 1rem;
   }
 
   .cta-title {
-    font-size: var(--h2-font-size);
-    margin-bottom: 20px;
+    font-size: 1.75rem;
   }
 
   .cta-description {
-    font-size: var(--normal-font-size);
-    margin-bottom: 20px;
+    font-size: 1rem;
+  }
+
+  .input-group {
+    flex-direction: column;
+    gap: 1rem;
   }
 
   .cta-input,
   .cta-button {
     width: 100%;
-    max-width: 100%;
-    margin: 5px 0;
+    min-width: unset;
   }
 
   .cta-button {
-    padding: 10px;
+    padding: 0.875rem 1rem;
   }
 }
 </style>
