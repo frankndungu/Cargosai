@@ -165,14 +165,14 @@
 }
 
 .btn-light {
-  background: rgba(255, 255, 255, 0.9);
+  background: transparent;
   color: var(--dark-color);
-  border: 2px solid transparent;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 2px solid #ccc;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
 .btn-light:hover {
-  background: white;
+  background: #f5f5f5;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
