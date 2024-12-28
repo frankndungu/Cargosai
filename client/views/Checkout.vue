@@ -80,36 +80,40 @@
               </p>
             </div>
           </div>
-        </div>
 
-        <!-- Order Summary -->
-        <div class="order-summary-section">
-          <div class="summary-container">
-            <h3 class="summary-title">Order Summary</h3>
-            <div class="summary-content">
-              <div class="summary-breakdown">
-                <div class="summary-row">
-                  <span>Subtotal</span>
-                  <span>${{ cartTotal.toFixed(2) }}</span>
+          <!-- Order Summary -->
+          <div class="form-column order-summary-section">
+            <div class="summary-container">
+              <h3 class="summary-title">Order Summary</h3>
+              <div class="summary-content">
+                <div class="summary-breakdown">
+                  <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span>${{ cartTotal.toFixed(2) }}</span>
+                  </div>
+                  <div class="summary-row">
+                    <span>Shipping</span>
+                    <span
+                      >${{
+                        selectedShippingOption?.price
+                          ? selectedShippingOption.price.toFixed(2)
+                          : "0.00"
+                      }}</span
+                    >
+                  </div>
+                  <div class="summary-row total">
+                    <strong>Total</strong>
+                    <strong>${{ total.toFixed(2) }}</strong>
+                  </div>
                 </div>
-                <div class="summary-row">
-                  <span>Shipping</span>
-                  <span
-                    >${{
-                      selectedShippingOption?.price
-                        ? selectedShippingOption.price.toFixed(2)
-                        : "0.00"
-                    }}</span
-                  >
-                </div>
-                <div class="summary-row total">
-                  <strong>Total</strong>
-                  <strong>${{ total.toFixed(2) }}</strong>
-                </div>
+                <button
+                  type="submit"
+                  class="submit-button"
+                  :disabled="isLoading"
+                >
+                  Pay With Card
+                </button>
               </div>
-              <button type="submit" class="submit-button" :disabled="isLoading">
-                Pay With Card
-              </button>
             </div>
           </div>
         </div>
@@ -288,6 +292,7 @@ const fetchCountries = async () => {
       .map((country) => country.name.common)
       .sort();
   } catch (error) {
+    console.error("Error fetching countries:", error);
     errorMessage.value = "Failed to load countries. Please try again.";
   }
 };
@@ -412,8 +417,8 @@ const submitOrder = async () => {
           country: formData.value.country,
           state: formData.value.state,
           city: formData.value.city,
-          postal_code: formData.value.postalCode
-        }
+          postal_code: formData.value.postalCode,
+        },
       },
       {
         headers: {
@@ -504,7 +509,7 @@ onMounted(async () => {
 
 .form-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
   margin-bottom: 2rem;
 }
@@ -761,15 +766,8 @@ onMounted(async () => {
   transform: translateY(-50%);
 }
 
-.order-summary-section {
-  margin-top: 0rem;
-  padding-top: 0rem;
-  margin-left: 2rem;
-}
-
 .summary-container {
   max-width: 400px;
-  margin: 0 auto;
 }
 
 .summary-title {
@@ -782,7 +780,7 @@ onMounted(async () => {
 .summary-content {
   border-radius: 12px;
   padding: 1.5rem;
-  width: 400px;
+  width: 100%;
 }
 
 .summary-breakdown {

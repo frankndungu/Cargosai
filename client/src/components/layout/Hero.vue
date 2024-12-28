@@ -128,16 +128,40 @@
 }
 
 .as-seen-on h2 {
-  font-size: var(--font-size-large);
-  color: var(--accent-color);
-  margin-bottom: 10px;
-  font-weight: var(--font-medium);
+  font-size: 1.25rem;
+  color: var(--dark-color);
+  margin-bottom: 40px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  position: relative;
+  display: inline-block;
+}
+
+.as-seen-on h2::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 2px;
+  background-color: var(--accent-color);
 }
 
 .hero-gallery {
   margin-top: 30px;
   display: flex;
   gap: 80px;
+}
+
+.hero-gallery img {
+  opacity: 0.7;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.hero-gallery img:hover {
+  opacity: 1;
+  transform: scale(1.05);
 }
 
 .indie-hackers-logo {

@@ -1,19 +1,20 @@
 <template>
-  <section class="call-to-action">
-    <div class="subscribe-section">
-      <h2>Become a Member of This Community</h2>
-      <p>
+  <section class="cta-section">
+    <div class="cta-subscribe-container">
+      <h2 class="cta-title">Become a Member of This Community</h2>
+      <p class="cta-description">
         Get access to discounts, new arrivals and receive updates on our latest
         products.
       </p>
-      <form @submit.prevent="handleSubscribe">
+      <form @submit.prevent="handleSubscribe" class="cta-form">
         <input
           type="email"
           v-model="email"
           placeholder="Enter your email"
           required
+          class="cta-input"
         />
-        <button type="submit" class="subscribe-button">Join</button>
+        <button type="submit" class="cta-button">Join</button>
       </form>
     </div>
   </section>
@@ -47,8 +48,8 @@ async function handleSubscribe() {
 </script>
 
 <style scoped>
-/* subscribe section */
-.subscribe-section {
+/* CTA section */
+.cta-section {
   text-align: center;
   padding: 40px;
   background-color: var(--secondary-color);
@@ -56,23 +57,23 @@ async function handleSubscribe() {
   border-radius: 8px;
 }
 
-.subscribe-section h2 {
+.cta-title {
   font-size: 1.5rem;
   margin-bottom: 20px;
 }
 
-.subscribe-section p {
+.cta-description {
   margin-bottom: 20px;
   color: var(--dark-color);
 }
 
-form {
+.cta-form {
   display: flex;
   justify-content: center;
   gap: 10px;
 }
 
-input[type="email"] {
+.cta-input {
   background: var(--background-color);
   padding: 10px;
   font-size: 1rem;
@@ -81,7 +82,7 @@ input[type="email"] {
   width: 300px;
 }
 
-.subscribe-button {
+.cta-button {
   background-color: var(--dark-tint);
   color: var(--background-color);
   padding: 10px 50px;
@@ -91,39 +92,39 @@ input[type="email"] {
   cursor: pointer;
 }
 
-.subscribe-button:hover {
+.cta-button:hover {
   background-color: var(--dark-color);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0);
 }
 
-.subscribe-button:focus {
+.cta-button:focus {
   outline: none;
   box-shadow: 0 0 0 3px rgba(15, 15, 15, 0.6);
 }
 
 @media (max-width: 600px) {
-  form {
-    flex-direction: column; /* Stack input and button vertically */
+  .cta-form {
+    flex-direction: column;
   }
 
-  .subscribe-section h2 {
+  .cta-title {
     font-size: var(--h2-font-size);
     margin-bottom: 20px;
   }
 
-  .subscribe-section p {
+  .cta-description {
     font-size: var(--normal-font-size);
     margin-bottom: 20px;
   }
 
-  input[type="email"],
-  .subscribe-button {
+  .cta-input,
+  .cta-button {
     width: 100%;
     max-width: 100%;
     margin: 5px 0;
   }
 
-  .subscribe-button {
+  .cta-button {
     padding: 10px;
   }
 }
