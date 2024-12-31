@@ -134,11 +134,7 @@ const categories = [
   background-color: var(--background-color);
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.category-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
 }
 
 .image-container {

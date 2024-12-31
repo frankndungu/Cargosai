@@ -116,16 +116,15 @@
   color: var(--accent-color);
 }
 
-.em::after {
+/* .em::after {
   content: "";
   position: absolute;
   bottom: -4px;
-  left: 0;
-  width: 100%;
+  left: 100px;
+  width: 40%;
   height: 4px;
-  background: var(--dark-tint);
-  opacity: 0.3;
-}
+  background: var(--dark-color);
+} */
 
 .highlight {
   color: var(--dark-color);
