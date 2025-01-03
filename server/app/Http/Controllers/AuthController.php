@@ -23,11 +23,16 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         try {
+            // Add detailed logging
+            Log::info('Registration attempt:', $request->all());
+
             $request->validate([
                 'name' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users',
                 'password' => 'required|string|min:8|confirmed',
             ]);
+
+            Log::info('Validation passed');
 
             $user = User::create([
                 'name' => $request->name,
@@ -36,15 +41,19 @@ class AuthController extends Controller
                 'role' => 'user',
             ]);
 
-            // Create token for the user
+            Log::info('User created:', ['user_id' => $user->id]);
+
             $token = $user->createToken('authToken')->plainTextToken;
+            Log::info('Token created');
 
             // Automatically send email confirmation
             $this->sendConfirmationEmail($user);
+            Log::info('Confirmation email sent');
 
             return response()->json(['token' => $token, 'user' => $user], 201);
         } catch (\Exception $e) {
-            Log::error('Registration failed: ' . $e->getMessage());
+            Log::error('Registration failed with exception: ' . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
             return response()->json(['error' => 'Registration failed. Please try again later.'], 500);
         }
     }
