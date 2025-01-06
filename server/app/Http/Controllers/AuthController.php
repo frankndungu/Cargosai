@@ -23,6 +23,8 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         try {
+            Log::info('Registration attempt:', $request->all());
+
             $request->validate([
                 'name' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users',
@@ -36,15 +38,24 @@ class AuthController extends Controller
                 'role' => 'user',
             ]);
 
-            // Create token for the user
+            Log::info('User registered successfully:', ['user_id' => $user->id, 'email' => $user->email]);
+
             $token = $user->createToken('authToken')->plainTextToken;
 
             // Automatically send email confirmation
             $this->sendConfirmationEmail($user);
+            Log::info('Confirmation email sent successfully.', ['user_id' => $user->id]);
 
             return response()->json(['token' => $token, 'user' => $user], 201);
+        } catch (\Illuminate\Validation\ValidationException $validationException) {
+            Log::warning('Validation failed during registration.', [
+                'errors' => $validationException->errors(),
+            ]);
+            return response()->json(['errors' => $validationException->errors()], 422);
         } catch (\Exception $e) {
-            Log::error('Registration failed: ' . $e->getMessage());
+            Log::error('Registration failed: ' . $e->getMessage(), [
+                'exception' => $e->getTraceAsString(),
+            ]);
             return response()->json(['error' => 'Registration failed. Please try again later.'], 500);
         }
     }
