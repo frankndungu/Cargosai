@@ -19,7 +19,11 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://localhost:3000', 'https://maasaimarketonline.com/', 'https://www.maasaimarketonline.com/'],
+    'allowed_origins' => [
+        'http://localhost:3000',
+        'https://maasaimarketonline.com',  // removed trailing slash
+        'https://www.maasaimarketonline.com'  // removed trailing slash
+    ],
 
     'allowed_origins_patterns' => [],
 

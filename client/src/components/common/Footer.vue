@@ -65,7 +65,7 @@
     <!-- Bottom Bar -->
     <div class="footer__bottom">
       <p class="footer__copy">
-        &copy; 2024 Fueled By Dosha LLC, All Rights Reserved
+        &copy; 2025 Fueled By Dosha LLC, All Rights Reserved
       </p>
     </div>
   </footer>
@@ -154,6 +154,7 @@ const shouldShowFooter = computed(() => {
   font-weight: 600;
   background: linear-gradient(45deg, #ffffff, #e6e6e6);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
