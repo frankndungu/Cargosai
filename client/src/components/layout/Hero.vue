@@ -272,11 +272,11 @@
   }
 
   .hero-title {
-    font-size: 1.22rem;
+    font-size: 1.55rem;
   }
 
   .hero-description {
-    font-size: 0.75rem;
+    font-size: 1.15rem;
     padding: 0 20px;
   }
 
