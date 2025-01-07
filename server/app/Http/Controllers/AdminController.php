@@ -96,7 +96,7 @@ class AdminController extends Controller
             return response()->json(['message' => 'User not found'], 404);
         }
 
-        $user->role = $request->role;
+        $user->role = $request->role; // Assign the new role (e.g., 'admin')
         $user->save();
 
         return response()->json(['message' => 'User role updated successfully']);

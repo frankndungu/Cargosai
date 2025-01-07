@@ -56,6 +56,7 @@ Route::middleware([RateLimitMiddleware::class])->group(function () {
     Route::middleware(['auth:sanctum'])->prefix('admin')->group(function () {
         // Static admin routes first
         Route::post('/create', [AdminController::class, 'createAdminUser']);
+        Route::put('/users/{id}/role', [AdminController::class, 'updateUserRole']);
         Route::get('/admins', [AdminController::class, 'listAdmins']);
         Route::get('/users', [UserController::class, 'index']);
         // Parameter-based admin routes last
