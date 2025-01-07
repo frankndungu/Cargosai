@@ -158,13 +158,8 @@
             </p>
 
             <a href="{{ $verificationUrl }}" class="btn">
-                Confirm Email Address
+                Confirm Your Email Address
             </a>
-
-            <p>
-                Or copy and paste this link in your browser:<br>
-                <span style="color: #666666; font-size: 14px;">{{ $verificationUrl }}</span>
-            </p>
 
             <p>
                 This link will expire in {{ config('auth.verification.expire', 24) }} hours for security reasons.
