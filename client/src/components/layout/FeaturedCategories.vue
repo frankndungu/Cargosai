@@ -258,6 +258,14 @@ const categories = [
   .header-categories {
     margin-bottom: 30px;
   }
+
+  .image-container {
+    aspect-ratio: 6/5;
+  }
+
+  .category-image {
+    height: 100%;
+  }
 }
 
 @media (max-width: 480px) {
