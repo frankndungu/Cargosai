@@ -58,4 +58,15 @@ return [
     */
     'currency' => env('PAYSTACK_CURRENCY', 'USD'),
 
+    /* 
+    |--------------------------------------------------------------------------
+    | SSL Certificate Path
+    |--------------------------------------------------------------------------
+    |
+    | This is the path to the SSL certificate file on your server.
+    | It is used to verify the SSL certificate when making requests to Paystack.
+    |
+    */
+
+    'ssl_cert_path' => env('PAYSTACK_SSL_CERT_PATH', '/etc/ssl/certs/ca-certificates.crt'),
 ];

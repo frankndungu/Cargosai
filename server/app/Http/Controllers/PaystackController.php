@@ -50,7 +50,7 @@ class PaystackController extends Controller
 
             // Make the API request to Paystack
             $response = Http::withOptions([
-                'verify' => 'C:\\certificates\\cacert.pem' // Path to your CA certificate file
+                'verify' => config('paystack.ssl_cert_path')// Path to your CA certificate file
             ])
             ->withToken(config('paystack.secret_key')) // Include the Paystack secret key
             ->post($paystackUrl, [
@@ -106,7 +106,7 @@ class PaystackController extends Controller
 
             // Make the API request to verify the transaction
             $response = Http::withOptions([
-                'verify' => 'C:\\certificates\\cacert.pem' // Path to your CA certificate file
+                'verify' => config('paystack.ssl_cert_path') // Path to your CA certificate file
             ])
             ->withToken(config('paystack.secret_key')) // Include the Paystack secret key
             ->get($paystackUrl);
