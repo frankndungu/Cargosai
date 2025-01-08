@@ -388,10 +388,20 @@ const logout = () => {
     flex-direction: column;
     align-items: center;
     gap: 1rem;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    background: var(--secondary-color);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: max-height 0.3s ease-in;
+    z-index: 1000;
+    padding: 20px 0;
   }
 
   .navbar__links li {
     width: 100%;
+    margin: 10px 0;
     text-align: center;
   }
 
