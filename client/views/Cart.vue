@@ -35,7 +35,7 @@
                 </h3>
                 <span class="item-price">{{ formatPrice(item.price) }}</span>
               </div>
-              <p class="item-description">{{ item.description }}</p>
+
               <div class="item-actions">
                 <div class="quantity-control">
                   <button @click="decreaseQuantity(item.id)" class="qty-btn">
@@ -553,7 +553,7 @@ const getImageUrl = (imagePath) => {
   }
 
   .item-image-container {
-    height: 250px; /* Slightly smaller on very small screens */
+    height: auto; /* Slightly smaller on very small screens */
   }
 
   .item-details {
