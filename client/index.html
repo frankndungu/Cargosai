@@ -2,9 +2,65 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Laravel-specific directive: Ensure your tool recognizes Blade syntax -->
     <meta name="csrf-token" content="{{ csrf_token() }}" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.ico" />
+
+    <!-- SEO Meta Tags -->
+    <meta
+      name="title"
+      content="Maasai Market Online | Authentic Maasai and African Products"
+    />
+    <meta
+      name="description"
+      content="Discover authentic handmade Maasai and African products. Shop for unique jewelry, textiles, and more. Experience Africa's rich culture and craftsmanship."
+    />
+    <meta
+      name="keywords"
+      content="Maasai Market, African products, handmade jewelry, authentic Maasai, African textiles, cultural products, African gifts"
+    />
+    <meta name="author" content="Maasai Market Online" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#8B0000" />
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.maasaimarketonline.com/" />
+    <meta
+      property="og:title"
+      content="Maasai Market Online | Authentic Maasai and African Products"
+    />
+    <meta
+      property="og:description"
+      content="Explore and shop authentic Maasai and African products. Celebrate Africa's craftsmanship and cultural heritage."
+    />
+    <meta
+      property="og:image"
+      content="https://www.maasaimarketonline.com/assets/images/og-image.jpg"
+    />
+
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://www.maasaimarketonline.com/" />
+    <meta
+      name="twitter:title"
+      content="Maasai Market Online | Authentic Maasai and African Products"
+    />
+    <meta
+      name="twitter:description"
+      content="Shop handmade Maasai and African products. Experience the vibrant culture and craftsmanship of Africa."
+    />
+    <meta
+      name="twitter:image"
+      content="https://www.maasaimarketonline.com/assets/images/twitter-image.jpg"
+    />
+
+    <!-- Canonical Link -->
+    <link rel="canonical" href="https://www.maasaimarketonline.com/" />
+
     <!-- Google Analytics -->
     <script
       async
@@ -16,13 +72,14 @@
         dataLayer.push(arguments);
       }
       gtag("js", new Date());
-
       gtag("config", "G-9Y5HC5GM6X");
     </script>
-    <title>Maasai Market Online</title>
+
+    <title>Maasai Market Online | Authentic Maasai and African Products</title>
   </head>
   <body>
     <div id="app"></div>
+    <!-- Main JS File -->
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

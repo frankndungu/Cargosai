@@ -6,13 +6,18 @@
         <span class="highlight">shipped directly to your door</span>
       </h1>
       <p class="hero-description">
-        maasai market online is your one-stop shop for authentic Maasai and
+        Maasai Market Online is your one-stop shop for authentic Maasai and
         African products
       </p>
       <div class="hero-buttons">
-        <router-link class="button-link" to="/blog">
+        <!-- Updated link for accessibility -->
+        <router-link
+          class="button-link"
+          to="/blog"
+          aria-label="Learn more about Maasai Market Online from our blog"
+        >
           <button class="btn btn-light">
-            <span>Learn more</span>
+            <span>Explore Our Blog</span>
             <svg
               class="arrow-icon"
               width="20"
@@ -29,7 +34,12 @@
             </svg>
           </button>
         </router-link>
-        <router-link class="button-link" to="/register">
+
+        <router-link
+          class="button-link"
+          to="/register"
+          aria-label="Register now to start shopping at Maasai Market Online"
+        >
           <button class="btn btn-dark">
             <span>Get Started</span>
             <svg
