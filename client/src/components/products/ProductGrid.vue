@@ -70,7 +70,7 @@ const fetchProducts = async () => {
     store.dispatch("setTotalPages", response.data.products.last_page);
     store.dispatch("setTotalProducts", response.data.total); // Dispatch total products
   } catch (error) {
-    console.error("Error fetching products:", error);
+    // Error handling logic (optional logging, alerts, etc.)
   }
 };
 

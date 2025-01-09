@@ -125,15 +125,14 @@ const currentUserId = computed(() => store.state.cart.currentUserId);
 onMounted(async () => {
   try {
     await store.dispatch("fetchCurrentUser"); // Use namespace if applicable
-    console.log("User ID in Cart.vue after fetch:", currentUserId.value); // Log after fetch
   } catch (error) {
-    console.error("Failed to fetch current user in Cart.vue:", error);
+    // Handle error as needed
   }
 });
 
 const cartItems = computed(() => store.getters.cartItems);
 
-// format price
+// Format price
 const formatPrice = (price) => {
   return price ? `$${Number(price).toFixed(2)}` : "$0.00";
 };
@@ -174,8 +173,6 @@ const removeItem = (id) => {
 
 // Proceed to checkout or redirect to login
 const proceedToCheckout = () => {
-  console.log("Is Logged In:", store.getters.isLoggedIn);
-
   if (store.getters.isLoggedIn) {
     router.push("/checkout");
   } else {

@@ -2,11 +2,6 @@
   <div class="product-card">
     <div class="image-container">
       <img :src="imageUrl" :alt="product.name" class="product-image" />
-      <div class="image-overlay">
-        <button @click="addToCart(product)" class="quick-add">
-          Quick Add +
-        </button>
-      </div>
     </div>
     <div class="product-info">
       <div class="name-rating-container">
