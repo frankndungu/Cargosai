@@ -33,10 +33,10 @@
             <span>Authentic African Crafts</span>
           </div>
           <p class="category-description">{{ category.description }}</p>
-          <router-link :to="`/shop`" class="see-more">
+          <!-- <router-link :to="`/shop`" class="see-more">
             Explore {{ category.name }}
             <span class="arrow">→</span>
-          </router-link>
+          </router-link> -->
         </div>
       </div>
     </div>
@@ -55,7 +55,7 @@ const categories = [
   },
   {
     id: 2,
-    name: "Wall Canvas",
+    name: "Wall Decor",
     description:
       "Decorate your space with authentic Maasai art, wall baskets, plates and vases.",
     image:
@@ -63,7 +63,7 @@ const categories = [
   },
   {
     id: 3,
-    name: "Beaded",
+    name: "Beaded Accessories",
     description:
       "Shop comfortable and stylish Maasai beaded necklaces, chokers and anklets",
     image:
