@@ -81,6 +81,7 @@
     <div class="product-info">
       <ProductInformation />
       <Vendor />
+      <CustomerReviews :reviews="reviews" :product="product" />
     </div>
   </div>
 </template>
@@ -95,6 +96,7 @@ import { useStore } from "vuex";
 import { useToast } from "vue-toast-notification";
 import ProductInformation from "./ProductInformation.vue";
 import Vendor from "./Vendor.vue";
+import CustomerReviews from "./CustomerReviews.vue";
 
 const API_URL = import.meta.env.VITE_API_URL;
 const storageBaseURL = import.meta.env.VITE_STORAGE_BASE_URL;
