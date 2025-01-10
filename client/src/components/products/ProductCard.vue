@@ -77,7 +77,7 @@ const imageUrl = computed(
 .image-container {
   position: relative;
   width: 100%;
-  padding-top: 100%; /* Creates a perfect square */
+  padding-top: 100%;
   margin-bottom: 1rem;
   border-radius: 8px;
   overflow: hidden;
@@ -115,28 +115,6 @@ const imageUrl = computed(
   transform: scale(1.05);
 }
 
-.quick-add {
-  background: white;
-  color: var(--dark-color);
-  padding: 12px 24px;
-  border-radius: 25px;
-  border: none;
-  font-weight: 600;
-  cursor: pointer;
-  transform: translateY(20px);
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.image-container:hover .quick-add {
-  transform: translateY(0);
-}
-
-.quick-add:hover {
-  background: var(--dark-tint);
-  color: white;
-}
-
 .product-info {
   text-align: left;
   flex-grow: 1;
@@ -163,6 +141,11 @@ const imageUrl = computed(
   color: var(--dark-color);
   margin: 0;
   line-height: 1.4;
+}
+
+.product-name:hover {
+  text-decoration: underline;
+  color: var(--dark-color);
 }
 
 .vendor-name {
@@ -214,7 +197,7 @@ const imageUrl = computed(
 
 .add-to-cart {
   background: var(--dark-tint);
-  color: white;
+  color: var(--background-color);
   padding: 10px 20px;
   border-radius: 6px;
   border: none;

@@ -287,7 +287,7 @@ onMounted(() => {
 .product-overview-thumbnails {
   display: flex;
   gap: 10px;
-  margin-top: 20px;
+  margin-top: -5px;
   flex-wrap: wrap;
 }
 
