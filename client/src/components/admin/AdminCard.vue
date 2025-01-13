@@ -25,10 +25,10 @@
   </div>
   <div class="admin-card">
     <div class="admin-card-content">
-      <h3>Active Now</h3>
+      <h3>New Users</h3>
       <i class="fa-solid fa-users admin-card-icon"></i>
     </div>
-    <p class="admin-card-value">573</p>
+    <p class="admin-card-value">{{ newUsers }}</p>
     <p class="admin-card-change neutral">+201 since last hour</p>
   </div>
 </template>
@@ -41,6 +41,7 @@ import axios from "axios";
 const totalRevenue = ref(0);
 const totalOrders = ref(0);
 const salesCount = ref(0);
+const newUsers = ref(0);
 
 // Fetch revenue data from the backend
 const fetchRevenue = async () => {
@@ -88,10 +89,29 @@ const fetchSalesCount = async () => {
   }
 };
 
+// Fetch new users count
+const fetchNewUsers = async () => {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_URL}/admin/users/new`,
+      {
+        params: { days: 30 }, // Last 30 days
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    newUsers.value = response.data.new_users_count;
+  } catch (error) {
+    console.error("Error fetching new users data:", error);
+  }
+};
+
 // Call fetch functions when the component is mounted
 onMounted(() => {
   fetchRevenue();
   fetchTotalOrders();
   fetchSalesCount();
+  fetchNewUsers();
 });
 </script>

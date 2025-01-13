@@ -58,6 +58,7 @@ Route::middleware([RateLimitMiddleware::class])->group(function () {
         Route::post('/create', [AdminController::class, 'createAdminUser']);
         Route::put('/users/{id}/role', [AdminController::class, 'updateUserRole']);
         Route::get('/admins', [AdminController::class, 'listAdmins']);
+        Route::get('/users/new', [UserController::class, 'getNewUsers']);
         Route::get('/users', [UserController::class, 'index']);
         // Parameter-based admin routes last
         Route::get('/users/{id}', [AdminController::class, 'showUser']);
@@ -111,7 +112,8 @@ Route::middleware([RateLimitMiddleware::class])->group(function () {
     // Payment Routes
     Route::get('/payments', [PaymentController::class, 'index']);
     Route::get('/payments/revenue', [PaymentController::class, 'getRevenueSummary']);
-    Route::get('payments/monthly-sales', [PaymentController::class, 'getMonthlySalesData']);
+    Route::get('/payments/daily-sales', [PaymentController::class, 'getDailySalesData']);
+    Route::get('/payments/monthly-sales', [PaymentController::class, 'getMonthlySalesData']);
     Route::get('/payments/{id}', [PaymentController::class, 'show']);
 
     // Authenticated User Routes

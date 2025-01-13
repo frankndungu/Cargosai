@@ -95,4 +95,16 @@ class UserController extends Controller
             return response()->json(['message' => 'User not found!'], 404);
         }
     }
+
+    // Get new users within a specific timeframe
+    public function getNewUsers(Request $request)
+    {
+        $days = $request->query('days', 30); // Default to the last 30 days if not provided
+
+        // Get users created within the specified number of days
+        $newUsersCount = User::where('created_at', '>=', now()->subDays($days))->count();
+
+        return response()->json(['new_users_count' => $newUsersCount], 200);
+    }
+
 }

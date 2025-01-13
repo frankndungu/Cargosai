@@ -239,24 +239,26 @@ class OrderController extends Controller
     public function getRecentSales()
     {
         try {
-            // Fetch the 5 most recent orders with specific fields
-            $recentSales = Order::select('total_price', 'user_id') // Select only total_price and user_id
+            // Fetch the 5 most recent orders with 'Completed' payment status
+            $recentSales = Order::select('total_price', 'user_id', 'payment_status') // Select total_price, user_id, and payment_status
                 ->with([
                     'user:id,name,email' // Include only the user's id, name, and email
                 ])
+                ->where('payment_status', 'Completed') // Only fetch orders with 'Completed' payment status
                 ->orderBy('created_at', 'desc') // Order by creation date, most recent first
                 ->limit(5) // Limit to 5 orders
                 ->get();
-    
-            // Map to include name, email, and total_price
+
+            // Map to include name, email, payment_status, and total_price
             $sales = $recentSales->map(function ($order) {
                 return [
                     'name' => $order->user->name ?? 'Unknown',
                     'email' => $order->user->email ?? 'Unknown',
+                    'payment_status' => $order->payment_status, // Include payment_status
                     'total_price' => $order->total_price,
                 ];
             });
-    
+
             return response()->json([
                 'recent_sales' => $sales,
             ], 200);
@@ -267,7 +269,7 @@ class OrderController extends Controller
             ], 500);
         }
     }
-    
+   
     // Delete a specific order
     public function destroy($id, Request $request)
     {
