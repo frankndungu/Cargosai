@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Log; // Import the Log facade for logging errors
 use App\Models\EmailVerification; // Model for email verification tokens
 use App\Mail\ConfirmEmail; // Mailable class for sending confirmation emails
 use App\Mail\PasswordResetMail;
-
+use App\Mail\AdminNotificationMail;
 
 class AuthController extends Controller
 {
@@ -42,9 +42,14 @@ class AuthController extends Controller
 
             $token = $user->createToken('authToken')->plainTextToken;
 
-            // Automatically send email confirmation
+            // Send confirmation email
             $this->sendConfirmationEmail($user);
-            Log::info('Confirmation email sent successfully.', ['user_id' => $user->id]);
+
+            // Notify admins of the new registration
+            Mail::to(['support@maasaimarketonline.com', 'sisinei@maasaimarketonline.com'])
+                ->send(new AdminNotificationMail($user));
+
+            Log::info('Admin notification sent successfully.', ['user_id' => $user->id]);
 
             return response()->json(['token' => $token, 'user' => $user], 201);
         } catch (\Illuminate\Validation\ValidationException $validationException) {
@@ -59,7 +64,7 @@ class AuthController extends Controller
             return response()->json(['error' => 'Registration failed. Please try again later.'], 500);
         }
     }
-    
+
     // Log in a user
     public function login(Request $request)
     {

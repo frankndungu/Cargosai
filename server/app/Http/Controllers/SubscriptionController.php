@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\SubscriptionMail;
 use App\Models\Subscription;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class SubscriptionController extends Controller
@@ -23,8 +25,11 @@ class SubscriptionController extends Controller
         }
 
         // Store email
-        Subscription::create(['email' => $request->email]);
+        $subscription = Subscription::create(['email' => $request->email]);
 
-        return response()->json(['message' => 'Thank you for subscribing!'], 201);
+        // Send confirmation email
+        Mail::to($subscription->email)->send(new SubscriptionMail($subscription->email));
+
+        return response()->json(['message' => 'Thank you for subscribing! A confirmation email has been sent.'], 201);
     }
 }

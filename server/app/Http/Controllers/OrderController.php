@@ -8,7 +8,8 @@ use App\Models\OrderItem; // Ensure this is included
 use App\Models\ShippingAddress;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\OrderConfirmationMail;
-use App\Mail\OrderStatusUpdatedMail;;
+use App\Mail\OrderStatusUpdatedMail;
+use App\Mail\AdminOrderMail;
 use Illuminate\Database\QueryException;
 use Exception;
 
@@ -67,7 +68,7 @@ class OrderController extends Controller
     {
         try {
             $user = $request->user();
-    
+
             $request->validate([
                 'items' => 'required|array',
                 'items.*.product_id' => 'required|integer|exists:products,id',
@@ -77,7 +78,6 @@ class OrderController extends Controller
                 'total_price' => 'required|numeric',
                 'status' => 'required|string|in:Pending,Canceled,Shipped,Delivered',
                 'payment_status' => 'required|string|in:Pending,Completed,Failed,Refund',
-                // Add shipping address validation
                 'shipping_address' => 'required|array',
                 'shipping_address.address1' => 'required|string',
                 'shipping_address.country' => 'required|string',
@@ -86,7 +86,6 @@ class OrderController extends Controller
                 'shipping_address.postal_code' => 'required|string',
             ]);
 
-            // Create or update shipping address
             $shippingAddress = ShippingAddress::updateOrCreate(
                 [
                     'user_id' => $user->id,
@@ -97,7 +96,7 @@ class OrderController extends Controller
                     'postal_code' => $request->shipping_address['postal_code'],
                 ]
             );
-    
+
             $order = Order::create([
                 'user_id' => $user->id,
                 'shipping_fee' => $request->shipping_fee,
@@ -105,10 +104,9 @@ class OrderController extends Controller
                 'status' => $request->status,
                 'payment_status' => $request->payment_status,
                 'reference' => uniqid('order_'),
-                'shipping_address_id' => $shippingAddress->id  // Add shipping address reference
+                'shipping_address_id' => $shippingAddress->id,
             ]);
-    
-            // Create each order item
+
             foreach ($request->items as $item) {
                 OrderItem::create([
                     'order_id' => $order->id,
@@ -118,20 +116,22 @@ class OrderController extends Controller
                     'total' => $item['price'] * $item['quantity'],
                 ]);
             }
-    
-            // Load relationships for the response
-            $order = Order::with(['orderItems.product', 'user', 'shippingAddress'])
-                ->find($order->id);
-            
-            // Send the confirmation email
+
+            $order = Order::with(['orderItems.product', 'user', 'shippingAddress'])->find($order->id);
+
+            // Send the confirmation email to the customer
             Mail::to($user->email)->send(new OrderConfirmationMail($order));
+
+            // Send notification emails to admins
+            $adminEmails = ['support@maasaimarketonline.com', 'sisinei@maasaimarketonline.com'];
+            Mail::to($adminEmails)->send(new AdminOrderMail($order));
 
             return response()->json([
                 'message' => 'Order created successfully',
                 'order_id' => $order->id,
                 'order' => $order,
             ], 201);
-    
+
         } catch (QueryException $qe) {
             return response()->json([
                 'message' => 'Database error during order creation',
