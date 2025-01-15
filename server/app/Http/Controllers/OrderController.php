@@ -235,6 +235,40 @@ class OrderController extends Controller
         }
     }
 
+    // Get the monthly percentage change in completed orders
+    public function getCompletedOrdersChange()
+    {
+        try {
+            // Fetch the number of completed orders for the current month
+            $currentMonthCompletedOrders = Order::where('payment_status', 'Completed')
+                ->whereYear('created_at', now()->year)
+                ->whereMonth('created_at', now()->month)
+                ->count();
+
+            // Fetch the number of completed orders for the previous month
+            $lastMonthCompletedOrders = Order::where('payment_status', 'Completed')
+                ->whereYear('created_at', now()->subMonth()->year)
+                ->whereMonth('created_at', now()->subMonth()->month)
+                ->count();
+
+            // Calculate the percentage change
+            $percentageChange = $lastMonthCompletedOrders > 0
+                ? (($currentMonthCompletedOrders - $lastMonthCompletedOrders) / $lastMonthCompletedOrders) * 100
+                : ($currentMonthCompletedOrders > 0 ? 100 : 0);
+
+            return response()->json([
+                'current_month_completed_orders' => $currentMonthCompletedOrders,
+                'last_month_completed_orders' => $lastMonthCompletedOrders,
+                'percentage_change' => round($percentageChange, 2),
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while calculating the completed orders change percentage',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+    
     // Get the 5 most recent sales
     public function getRecentSales()
     {
@@ -269,7 +303,39 @@ class OrderController extends Controller
             ], 500);
         }
     }
-   
+
+    // Get percentage change in the total number of orders
+    public function getOrderChange()
+    {
+        try {
+            // Fetch the number of orders for the current month
+            $currentMonthOrders = Order::whereYear('created_at', now()->year)
+                ->whereMonth('created_at', now()->month)
+                ->count();
+
+            // Fetch the number of orders for the previous month (from the 1st to the last day)
+            $lastMonthOrders = Order::whereYear('created_at', now()->subMonth()->year)
+                ->whereMonth('created_at', now()->subMonth()->month)
+                ->count();
+
+            // Calculate percentage change
+            $percentageChange = $lastMonthOrders > 0
+                ? (($currentMonthOrders - $lastMonthOrders) / $lastMonthOrders) * 100
+                : ($currentMonthOrders > 0 ? 100 : 0);
+
+            return response()->json([
+                'current_month_orders' => $currentMonthOrders,
+                'last_month_orders' => $lastMonthOrders,
+                'percentage_change' => round($percentageChange, 2),
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while calculating order change percentage',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
     // Delete a specific order
     public function destroy($id, Request $request)
     {

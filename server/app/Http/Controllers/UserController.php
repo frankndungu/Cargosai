@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Exception;
 
 class UserController extends Controller
 {
@@ -107,4 +110,40 @@ class UserController extends Controller
         return response()->json(['new_users_count' => $newUsersCount], 200);
     }
 
+    // Get percentage change of new users within a specific timeframe
+    public function getPercentageChangeOfNewUsers(Request $request)
+    {
+        $days = $request->query('days', 30); // Default to the last 30 days if not provided
+
+        try {
+            // Calculate new users for the current period
+            $currentPeriodNewUsers = User::where('created_at', '>=', now()->subDays($days))->count();
+
+            // Calculate new users for the previous period
+            $previousPeriodNewUsers = User::whereBetween('created_at', [
+                now()->subDays($days * 2), // Start of the previous period
+                now()->subDays($days),    // End of the previous period
+            ])->count();
+
+            // Calculate percentage change
+            if ($previousPeriodNewUsers == 0) {
+                // If there were no users in the previous period, avoid division by zero
+                $percentageChange = $currentPeriodNewUsers > 0 ? 100 : 0;
+            } else {
+                $percentageChange = (($currentPeriodNewUsers - $previousPeriodNewUsers) / $previousPeriodNewUsers) * 100;
+            }
+
+            return response()->json([
+                'current_period_new_users' => $currentPeriodNewUsers,
+                'previous_period_new_users' => $previousPeriodNewUsers,
+                'percentage_change' => round($percentageChange, 2),
+            ], 200);
+        } catch (Exception $e) {
+            // Log the error for debugging
+            Log::error('Error calculating percentage change of new users: ' . $e->getMessage());
+
+            return response()->json(['message' => 'An error occurred while calculating percentage change'], 500);
+        }
+    }
+    
 }

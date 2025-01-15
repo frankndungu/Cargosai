@@ -49,12 +49,13 @@ Route::middleware([RateLimitMiddleware::class])->group(function () {
     Route::post('/password/reset', [AuthController::class, 'resetPassword']);
     Route::post('/email/resend', [AuthController::class, 'resendEmailVerification']);
     Route::get('/email/verify/{token}', [AuthController::class, 'confirmEmail']);
-    
+
     // Admin Routes
     Route::post('/admin/login', [AdminController::class, 'login']);
     
     Route::middleware(['auth:sanctum'])->prefix('admin')->group(function () {
         // Static admin routes first
+        Route::get('/users/change', [UserController::class, 'getPercentageChangeOfNewUsers']);
         Route::post('/create', [AdminController::class, 'createAdminUser']);
         Route::put('/users/{id}/role', [AdminController::class, 'updateUserRole']);
         Route::get('/admins', [AdminController::class, 'listAdmins']);
@@ -112,8 +113,10 @@ Route::middleware([RateLimitMiddleware::class])->group(function () {
     // Payment Routes
     Route::get('/payments', [PaymentController::class, 'index']);
     Route::get('/payments/revenue', [PaymentController::class, 'getRevenueSummary']);
+    Route::get('/payments/monthly-sales/previous', [PaymentController::class, 'getPreviousYearMonthlySales']);
     Route::get('/payments/daily-sales', [PaymentController::class, 'getDailySalesData']);
     Route::get('/payments/monthly-sales', [PaymentController::class, 'getMonthlySalesData']);
+    Route::get('/payments/revenue-change', [PaymentController::class, 'getRevenueChange']);
     Route::get('/payments/{id}', [PaymentController::class, 'show']);
 
     // Authenticated User Routes
@@ -158,6 +161,8 @@ Route::middleware([RateLimitMiddleware::class])->group(function () {
             Route::get('/total', [OrderController::class, 'getTotalOrders']);
             Route::get('/completed-count', [OrderController::class, 'getCompletedOrdersCount']);
             Route::get('/recent', [OrderController::class, 'getRecentSales']);
+            Route::get('/change', [OrderController::class, 'getOrderChange']);
+            Route::get('/completed-change', [OrderController::class, 'getCompletedOrdersChange']);
             Route::get('/{order}', [OrderController::class, 'show']);
             Route::get('/{order}/details', [OrderDetailsController::class, 'show']);
             Route::put('/{order}/status', [OrderController::class, 'updateStatus']);

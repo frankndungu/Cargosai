@@ -66,6 +66,69 @@ class PaymentController extends Controller
     }
 
     /**
+     * Get previous year sales data
+     */
+
+     public function getPreviousYearMonthlySales(Request $request)
+    {
+        try {
+            // Get the previous year
+            $year = $request->query('year', date('Y')) - 1; // Get previous year based on current or provided year
+        
+            // Get monthly sales data for the previous year
+            $monthlySales = Order::selectRaw('SUM(payments.amount) as total_sales, EXTRACT(MONTH FROM orders.created_at) as month')
+                ->join('payments', 'orders.id', '=', 'payments.order_id')
+                ->where('orders.payment_status', 'Completed')
+                ->whereYear('orders.created_at', $year) // Filter by previous year
+                ->groupBy(DB::raw('EXTRACT(MONTH FROM orders.created_at)'))
+                ->orderBy(DB::raw('EXTRACT(MONTH FROM orders.created_at)'), 'asc')
+                ->get();
+        
+            // Array to hold monthly sales data for all months (1 to 12)
+            $monthlyData = array_fill(1, 12, 0); // Initialize with 0 for all months (1 - 12)
+        
+            // Populate the monthlyData array with the sales data from the query
+            foreach ($monthlySales as $sales) {
+                $monthlyData[$sales->month] = $sales->total_sales;
+            }
+        
+            // Month names (for labels)
+            $monthNames = [
+                1 => 'January',
+                2 => 'February',
+                3 => 'March',
+                4 => 'April',
+                5 => 'May',
+                6 => 'June',
+                7 => 'July',
+                8 => 'August',
+                9 => 'September',
+                10 => 'October',
+                11 => 'November',
+                12 => 'December'
+            ];
+        
+            $salesData = [
+                'labels' => [],
+                'data' => [],
+            ];
+        
+            // Assign labels and corresponding data for previous year's monthly sales
+            foreach ($monthlyData as $month => $sales) {
+                $salesData['labels'][] = $monthNames[$month]; // Month name as label
+                $salesData['data'][] = $sales; // Sales data for each month
+            }
+        
+            return response()->json($salesData, 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while fetching previous year monthly sales data',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
      * Get monthly sales data based on completed payments
      */
     public function getMonthlySalesData(Request $request)
@@ -73,7 +136,8 @@ class PaymentController extends Controller
         try {
             // Optional year filter
             $year = $request->query('year', date('Y')); // Default to the current year
-
+    
+            // Get monthly sales data
             $monthlySales = Order::selectRaw('SUM(payments.amount) as total_sales, EXTRACT(MONTH FROM orders.created_at) as month')
                 ->join('payments', 'orders.id', '=', 'payments.order_id')
                 ->where('orders.payment_status', 'Completed')
@@ -81,17 +145,42 @@ class PaymentController extends Controller
                 ->groupBy(DB::raw('EXTRACT(MONTH FROM orders.created_at)'))
                 ->orderBy(DB::raw('EXTRACT(MONTH FROM orders.created_at)'), 'asc')
                 ->get();
-
+    
+            // Array to hold monthly sales data for all months (1 to 12)
+            $monthlyData = array_fill(1, 12, 0); // Initialize with 0 for all months (1 - 12)
+    
+            // Populate the monthlyData array with the sales data from the query
+            foreach ($monthlySales as $sales) {
+                $monthlyData[$sales->month] = $sales->total_sales;
+            }
+    
+            // Month names (for labels)
+            $monthNames = [
+                1 => 'January',
+                2 => 'February',
+                3 => 'March',
+                4 => 'April',
+                5 => 'May',
+                6 => 'June',
+                7 => 'July',
+                8 => 'August',
+                9 => 'September',
+                10 => 'October',
+                11 => 'November',
+                12 => 'December'
+            ];
+    
             $salesData = [
                 'labels' => [],
                 'data' => [],
             ];
-
-            foreach ($monthlySales as $sales) {
-                $salesData['labels'][] = date('F', mktime(0, 0, 0, $sales->month, 10));
-                $salesData['data'][] = $sales->total_sales;
+    
+            // Assign labels and corresponding data
+            foreach ($monthlyData as $month => $sales) {
+                $salesData['labels'][] = $monthNames[$month]; // Month name as label
+                $salesData['data'][] = $sales; // Sales data for each month
             }
-
+    
             return response()->json($salesData, 200);
         } catch (Exception $e) {
             return response()->json([
@@ -100,8 +189,7 @@ class PaymentController extends Controller
             ], 500);
         }
     }
-
-
+    
     /**
      * Get daily sales data based on completed payments
      */
@@ -123,6 +211,44 @@ class PaymentController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'message' => 'An error occurred while fetching daily sales data',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Get revenue percentage change compared to last month.
+     */
+    public function getRevenueChange(Request $request)
+    {
+        try {
+            // Get current and last month date ranges
+            $currentMonthRange = [now()->startOfMonth(), now()->endOfMonth()];
+            $lastMonthRange = [now()->subMonth()->startOfMonth(), now()->subMonth()->endOfMonth()];
+
+            // Total revenue for the current month
+            $currentMonthRevenue = Payment::where('status', 'Completed')
+                ->whereBetween('created_at', $currentMonthRange)
+                ->sum('amount');
+
+            // Total revenue for the last month
+            $lastMonthRevenue = Payment::where('status', 'Completed')
+                ->whereBetween('created_at', $lastMonthRange)
+                ->sum('amount');
+
+            // Calculate percentage change
+            $percentageChange = $lastMonthRevenue > 0
+                ? (($currentMonthRevenue - $lastMonthRevenue) / $lastMonthRevenue) * 100
+                : null;
+
+            return response()->json([
+                'current_month_revenue' => $currentMonthRevenue,
+                'last_month_revenue' => $lastMonthRevenue,
+                'percentage_change' => $percentageChange,
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while calculating revenue change.',
                 'error' => $e->getMessage(),
             ], 500);
         }
