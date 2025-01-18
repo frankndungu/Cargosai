@@ -51,7 +51,7 @@ const props = defineProps({
 const addToCart = (product) => {
   store.dispatch("addToCart", product);
   toast.success(`${product.name} has been added to the cart!`, {
-    position: "top-right",
+    position: "bottom-right",
     timeout: 3000,
     closeOnClick: true,
     pauseOnHover: true,
