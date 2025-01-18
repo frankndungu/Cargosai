@@ -10,7 +10,6 @@
         African products
       </p>
       <div class="hero-buttons">
-        <!-- Updated link for accessibility -->
         <router-link
           class="button-link"
           to="/blog"
@@ -59,7 +58,27 @@
           </button>
         </router-link>
       </div>
+
+      <!-- Trustpilot widget moved inside hero-content -->
+      <div class="trustpilot-container">
+        <div
+          class="trustpilot-widget"
+          data-locale="en-US"
+          data-template-id="56278e9abfbbba0bdcd568bc"
+          data-businessunit-id="678b6af96fb402becde54baa"
+          data-style-height="52px"
+          data-style-width="100%"
+        >
+          <a
+            href="https://www.trustpilot.com/review/maasaimarketonline.com"
+            target="_blank"
+            rel="noopener"
+            >Trustpilot</a
+          >
+        </div>
+      </div>
     </div>
+
     <div class="as-seen-on">
       <h2>As featured on</h2>
       <div class="hero-gallery">
@@ -77,11 +96,6 @@
           src="https://res.cloudinary.com/kwishi/image/upload/v1722436863/product-hunt-logo-horizontal-black_sipadd.svg"
           alt="Product Hunt logo"
           class="product-hunt-logo"
-        />
-        <img
-          src="https://res.cloudinary.com/kwishi/image/upload/v1722436613/indiehackers_ww9uac.svg"
-          alt="Indie Hackers logo"
-          class="indie-hackers-logo"
         />
       </div>
     </div>
@@ -126,16 +140,6 @@
   color: var(--accent-color);
 }
 
-/* .em::after {
-  content: "";
-  position: absolute;
-  bottom: -4px;
-  left: 100px;
-  width: 40%;
-  height: 4px;
-  background: var(--dark-color);
-} */
-
 .highlight {
   color: var(--dark-color);
 }
@@ -154,7 +158,14 @@
   display: flex;
   gap: 24px;
   justify-content: center;
-  margin-bottom: 3rem;
+  margin-bottom: 2rem; /* Reduced margin to accommodate Trustpilot */
+}
+
+/* New Trustpilot container styles */
+.trustpilot-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 1rem 0;
 }
 
 .button-link {
@@ -249,30 +260,23 @@
 
 .indie-hackers-logo {
   width: 100px;
-  justify-content: center;
-  flex-wrap: wrap;
   height: auto;
 }
 
 .product-hunt-logo {
   width: 200px;
-  justify-content: center;
-  flex-wrap: wrap;
   height: auto;
 }
 
 .reddit-logo {
   width: 120px;
   border-radius: 5px;
-  justify-content: center;
-  flex-wrap: wrap;
   height: auto;
 }
+
 .betalist-logo {
   width: 200px;
   border-radius: 5px;
-  justify-content: center;
-  flex-wrap: wrap;
   height: auto;
 }
 
@@ -290,10 +294,6 @@
     padding: 0 20px;
   }
 
-  .em::after {
-    background: none;
-  }
-
   .as-seen-on h2 {
     font-size: 1.1rem;
   }
@@ -306,6 +306,10 @@
     max-width: 300px;
     margin-left: auto;
     margin-right: auto;
+  }
+
+  .trustpilot-container {
+    padding: 1rem 20px;
   }
 
   .button-link {
@@ -325,21 +329,9 @@
     margin-top: 30px;
   }
 
-  .betalist-logo {
-    width: 200px;
-    margin: 0 auto;
-  }
-
-  .reddit-logo {
-    width: 170px;
-    margin: 0 auto;
-  }
-
-  .product-hunt-logo {
-    width: 190px;
-    margin: 0 auto;
-  }
-
+  .betalist-logo,
+  .reddit-logo,
+  .product-hunt-logo,
   .indie-hackers-logo {
     width: 160px;
     margin: 0 auto;
