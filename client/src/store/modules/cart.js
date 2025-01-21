@@ -7,9 +7,14 @@ export default {
     guestCart: JSON.parse(localStorage.getItem("guestCart") || "[]"),
     currentUserId: null,
     isLoggedIn: false,
+    isGuestCheckout: false, // New state to track guest checkout
   },
 
   mutations: {
+    SET_GUEST_CHECKOUT(state, status) {
+      state.isGuestCheckout = status;
+    },
+
     SET_CURRENT_USER(state, userId) {
       state.currentUserId = userId;
     },
@@ -176,11 +181,13 @@ export default {
       console.log("Cart cleared from state and localStorage.");
     },
 
+    // Modify SET_LOGGED_IN to handle guest checkout state
     SET_LOGGED_IN(state, { status, userId }) {
       state.isLoggedIn = status;
       state.currentUserId = status ? userId : null;
 
       if (status) {
+        state.isGuestCheckout = false; // Reset guest checkout when logging in
         this.commit("MERGE_CARTS");
       }
 
@@ -264,9 +271,15 @@ export default {
     clearCart({ commit }) {
       commit("CLEAR_CART");
     },
+
+    setGuestCheckout({ commit }, status) {
+      commit("SET_GUEST_CHECKOUT", status);
+    },
   },
 
   getters: {
+    isGuestCheckout: (state) => state.isGuestCheckout,
+
     cartItems(state) {
       const items = state.currentUserId
         ? state.carts[state.currentUserId] || []

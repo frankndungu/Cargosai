@@ -173,10 +173,18 @@ const removeItem = (id) => {
 
 // Proceed to checkout or redirect to login
 const proceedToCheckout = () => {
+  if (!cartItems.value.length) {
+    // Don't proceed if cart is empty
+    return;
+  }
+
   if (store.getters.isLoggedIn) {
+    // User is logged in, proceed normally
     router.push("/checkout");
   } else {
-    router.push("/login");
+    // Guest checkout flow
+    store.dispatch("setGuestCheckout", true);
+    router.push("/checkout");
   }
 };
 

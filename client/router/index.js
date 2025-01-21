@@ -240,21 +240,20 @@ const routes = [
       description: "The page you are looking for could not be found.",
     },
   },
-  // Checkout route for authenticated users
+  // Checkout route for authenticated users and guest users
   {
     path: "/checkout",
     component: Checkout,
-    meta: { requiresAuth: true, title: "Checkout" },
+    meta: { title: "Checkout" }, // Removed requiresAuth: true
     description: "Complete your purchase and enter payment details.",
   },
-  // Paid orders
+  // Updated order confirmation route to handle both guest and authenticated orders
   {
     path: "/order/success/",
     name: "OrderConfirmation",
     component: () => import("../views/OrderConfirmation.vue"),
     meta: {
       title: "Order Confirmation",
-      requiresAuth: true,
       description:
         "Thank you for your order. View your order confirmation details.",
     },
@@ -267,10 +266,16 @@ const router = createRouter({
   routes,
 });
 
-// Navigation Guard for authentication and role-based access
+// Update Navigation Guard to handle guest checkout
 router.beforeEach((to, _, next) => {
   const isAuthenticated = store.getters.isAuthenticated;
   const userRole = store.getters.userRole;
+  const isGuestCheckout = store.getters.isGuestCheckout;
+
+  // Allow checkout access for guest checkout
+  if (to.path === "/checkout" && !isAuthenticated && isGuestCheckout) {
+    return next();
+  }
 
   // Redirect to login if route requires auth and user isn't authenticated
   if (

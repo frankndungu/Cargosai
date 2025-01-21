@@ -34,9 +34,10 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import { useToast } from "vue-toast-notification";
+import { useMeta } from "vue-meta"; // Import useMeta
 
 const store = useStore();
 const toast = useToast();
@@ -61,6 +62,22 @@ const addToCart = (product) => {
 const imageUrl = computed(
   () => `${import.meta.env.VITE_STORAGE_BASE_URL}${props.product.main_image}`
 );
+
+// Dynamic meta tags based on the product
+useMeta({
+  title: `${props.product.name} | Maasai Market Online`,
+  meta: [
+    {
+      name: "description",
+      content:
+        props.product.description || "Explore authentic Maasai products.",
+    },
+    {
+      name: "keywords",
+      content: `${props.product.name}, African, Maasai products, Maasai Market, African crafts, handmade products, jewelry, ${props.product.vendor_name}`,
+    },
+  ],
+});
 </script>
 
 <style scoped>
