@@ -69,6 +69,7 @@ class OrderController extends Controller
         try {
             $user = $request->user();
 
+            // Validation
             $request->validate([
                 'items' => 'required|array',
                 'items.*.product_id' => 'required|integer|exists:products,id',
@@ -81,32 +82,39 @@ class OrderController extends Controller
                 'shipping_address' => 'required|array',
                 'shipping_address.address1' => 'required|string',
                 'shipping_address.country' => 'required|string',
-                'shipping_address.state' => 'required|string',
-                'shipping_address.city' => 'required|string',
-                'shipping_address.postal_code' => 'required|string',
+                'shipping_address.state' => 'nullable|string',
+                'shipping_address.city' => 'nullable|string',
+                'shipping_address.postal_code' => 'nullable|string',
+                'guest_email' => 'nullable|email|required_without:user',
+                'guest_name' => 'nullable|string|required_without:user',
+                'guest_phone' => 'nullable|string|required_without:user',
             ]);
 
-            $shippingAddress = ShippingAddress::updateOrCreate(
-                [
-                    'user_id' => $user->id,
-                    'address1' => $request->shipping_address['address1'],
-                    'country' => $request->shipping_address['country'],
-                    'state' => $request->shipping_address['state'],
-                    'city' => $request->shipping_address['city'],
-                    'postal_code' => $request->shipping_address['postal_code'],
-                ]
-            );
+            // Create or Update Shipping Address
+            $shippingAddress = ShippingAddress::create([
+                'user_id' => $user ? $user->id : null, // Use user ID if authenticated, otherwise null
+                'address1' => $request->shipping_address['address1'],
+                'country' => $request->shipping_address['country'],
+                'state' => $request->shipping_address['state'],
+                'city' => $request->shipping_address['city'],
+                'postal_code' => $request->shipping_address['postal_code'],
+            ]);
 
+            // Create Order
             $order = Order::create([
-                'user_id' => $user->id,
+                'user_id' => $user ? $user->id : null, // Use user ID if authenticated
                 'shipping_fee' => $request->shipping_fee,
                 'total_price' => $request->total_price,
                 'status' => $request->status,
                 'payment_status' => $request->payment_status,
                 'reference' => uniqid('order_'),
                 'shipping_address_id' => $shippingAddress->id,
+                'guest_email' => $request->guest_email, // Guest details
+                'guest_name' => $request->guest_name,
+                'guest_phone' => $request->guest_phone,
             ]);
 
+            // Create Order Items
             foreach ($request->items as $item) {
                 OrderItem::create([
                     'order_id' => $order->id,
@@ -117,12 +125,14 @@ class OrderController extends Controller
                 ]);
             }
 
+            // Load Order with Relations
             $order = Order::with(['orderItems.product', 'user', 'shippingAddress'])->find($order->id);
 
-            // Send the confirmation email to the customer
-            Mail::to($user->email)->send(new OrderConfirmationMail($order));
+            // Send Confirmation Email (to guest or authenticated user)
+            $recipient = $user ? $user->email : $request->guest_email;
+            Mail::to($recipient)->send(new OrderConfirmationMail($order));
 
-            // Send notification emails to admins
+            // Notify Admins
             $adminEmails = ['support@maasaimarketonline.com', 'sisinei@maasaimarketonline.com'];
             Mail::to($adminEmails)->send(new AdminOrderMail($order));
 
@@ -144,7 +154,7 @@ class OrderController extends Controller
             ], 500);
         }
     }
-     
+
     // Update the status of a specific order
     public function updateStatus(Request $request, $id)
     {
@@ -178,7 +188,7 @@ class OrderController extends Controller
             $order->save();
 
             // Send the email notification
-            Mail::to($order->user->email)->send(new OrderStatusUpdatedMail($order));
+            $this->sendOrderStatusUpdatedEmail($order);
 
             return response()->json(['message' => 'Order has been canceled successfully', 'order' => $order], 200);
         }
@@ -194,9 +204,23 @@ class OrderController extends Controller
         $order->save();
 
         // Send the email notification
-        Mail::to($order->user->email)->send(new OrderStatusUpdatedMail($order));
+        $this->sendOrderStatusUpdatedEmail($order);
 
         return response()->json(['message' => 'Order status and payment status updated successfully', 'order' => $order], 200);
+    }
+
+    // Send Order Status Updated Email to both the authenticated user and the guest (if applicable)
+    private function sendOrderStatusUpdatedEmail($order)
+    {
+        // Send to the authenticated user if available
+        if ($order->user) {
+            Mail::to($order->user->email)->send(new OrderStatusUpdatedMail($order));
+        }
+
+        // Send to the guest email if available
+        if ($order->guest_email) {
+            Mail::to($order->guest_email)->send(new OrderStatusUpdatedMail($order));
+        }
     }
 
     // Get total number of orders

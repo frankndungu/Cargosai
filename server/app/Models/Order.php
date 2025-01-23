@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    protected $fillable = ['user_id', 'status', 'total_price', 'shipping_fee', 'payment_status', 'reference', 'shipping_address_id'];
+    protected $fillable = ['user_id', 'status', 'total_price', 'shipping_fee', 'payment_status', 'reference', 'shipping_address_id', 'guest_name', 'guest_email', 'guest_phone'];
 
     // Cast total_price to float
     protected $casts = [

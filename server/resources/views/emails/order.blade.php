@@ -180,7 +180,7 @@
         <div class="header">
             <img src="https://res.cloudinary.com/kwishi/image/upload/v1734847185/Maasai-market_phlqzq.png"
                 alt="Maasai Market" class="logo">
-            <h1 class="welcome-text">Thank you for your order, {{ $order->user->name }}!</h1>
+            <h1 class="welcome-text">Thank you for your order, {{ $order->user->name ?? $order->guest_name }}!</h1>
             <div class="order-status">Order Confirmed</div>
         </div>
 

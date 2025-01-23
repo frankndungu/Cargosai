@@ -119,6 +119,12 @@ Route::middleware([RateLimitMiddleware::class])->group(function () {
     Route::get('/payments/revenue-change', [PaymentController::class, 'getRevenueChange']);
     Route::get('/payments/{id}', [PaymentController::class, 'show']);
 
+    // Shipping Routes
+    Route::post('/shipping-rates', [ShippingController::class, 'calculateRates']);
+
+    // Order Route
+    Route::post('/orders', [OrderController::class, 'create']);
+
     // Authenticated User Routes
     Route::middleware('auth:sanctum')->group(function () {
         // User Profile Routes
@@ -156,7 +162,6 @@ Route::middleware([RateLimitMiddleware::class])->group(function () {
         Route::prefix('orders')->group(function () {
             // Static routes first
             Route::get('/', [OrderController::class, 'index']);
-            Route::post('/', [OrderController::class, 'create']);
             // Parameter routes last
             Route::get('/total', [OrderController::class, 'getTotalOrders']);
             Route::get('/completed-count', [OrderController::class, 'getCompletedOrdersCount']);
@@ -168,8 +173,5 @@ Route::middleware([RateLimitMiddleware::class])->group(function () {
             Route::put('/{order}/status', [OrderController::class, 'updateStatus']);
             Route::delete('/{order}', [OrderController::class, 'destroy']);
         });
-
-        // Shipping Routes
-        Route::post('/shipping-rates', [ShippingController::class, 'calculateRates']);
     });
 });

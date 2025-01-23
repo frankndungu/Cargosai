@@ -139,7 +139,7 @@
         </div>
 
         <div class="message">
-            <p><span class="emoji-icon"></span> Hello {{ $order->user->name }},</p>
+            <p><span class="emoji-icon"></span> Hello {{ $order->user->name ?? $order->guest_name }},</p>
 
             <div class="order-status">
                 <p>Order ID: #{{ $order->id }}</p>
