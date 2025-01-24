@@ -297,12 +297,20 @@ const fetchCountries = async () => {
   }
 };
 
-// Fetch personal details
+// Fetch user details
 const fetchUserDetails = async () => {
+  // Check if user is authenticated
+  const token = localStorage.getItem("token");
+
+  // If no token, skip fetching user details
+  if (!token) {
+    return;
+  }
+
   try {
     const response = await axios.get(`${import.meta.env.VITE_API_URL}/user`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -318,10 +326,18 @@ const fetchUserDetails = async () => {
 
 // Fetch shipping address
 const fetchShippingAddress = async () => {
+  // Check if user is authenticated
+  const token = localStorage.getItem("token");
+
+  // If no token, skip fetching shipping address
+  if (!token) {
+    return;
+  }
+
   try {
     const response = await axios.get(`${import.meta.env.VITE_API_URL}/user`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -335,7 +351,7 @@ const fetchShippingAddress = async () => {
       `${import.meta.env.VITE_API_URL}/shipping-address/user/${userId}`,
       {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -398,31 +414,46 @@ const submitOrder = async () => {
   errorMessage.value = "";
 
   try {
+    // Determine if the user is authenticated
+    const isAuthenticated = localStorage.getItem("token");
+
+    // Prepare order data
+    const orderData = {
+      items: cartItems.value.map((item) => ({
+        product_id: item.id,
+        price: item.price,
+        quantity: item.quantity,
+      })),
+      total_price: total.value,
+      shipping_fee: shippingFee,
+      status: "Pending",
+      payment_status: "Pending",
+      // Add shipping address details
+      shipping_address: {
+        address1: formData.value.address,
+        country: formData.value.country,
+        state: formData.value.state,
+        city: formData.value.city,
+        postal_code: formData.value.postalCode,
+      },
+    };
+
+    // Add guest details if user is not authenticated
+    if (!isAuthenticated) {
+      orderData.guest_name = formData.value.name;
+      orderData.guest_email = formData.value.email;
+      orderData.guest_phone = formData.value.phone;
+    }
+
     // Step 1: Submit the order to the backend
     const orderResponse = await axios.post(
       `${import.meta.env.VITE_API_URL}/orders`,
-      {
-        items: cartItems.value.map((item) => ({
-          product_id: item.id,
-          price: item.price,
-          quantity: item.quantity,
-        })),
-        total_price: total.value,
-        shipping_fee: shippingFee,
-        status: "Pending",
-        payment_status: "Pending",
-        // Add shipping address details
-        shipping_address: {
-          address1: formData.value.address,
-          country: formData.value.country,
-          state: formData.value.state,
-          city: formData.value.city,
-          postal_code: formData.value.postalCode,
-        },
-      },
+      orderData,
       {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: isAuthenticated
+            ? `Bearer ${localStorage.getItem("token")}`
+            : "",
         },
       }
     );
@@ -470,8 +501,13 @@ const clearError = () => {
 // Load user details on component mount
 onMounted(async () => {
   fetchCountries();
-  await fetchUserDetails();
-  await fetchShippingAddress();
+
+  // Only attempt to fetch user details if there's a token
+  const token = localStorage.getItem("token");
+  if (token) {
+    await fetchUserDetails();
+    await fetchShippingAddress();
+  }
 });
 </script>
 

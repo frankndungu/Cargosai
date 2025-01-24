@@ -5,18 +5,7 @@
     </div>
     <div v-else class="success-card">
       <div class="success-icon">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-          <polyline points="22 4 12 14.01 9 11.01"></polyline>
-        </svg>
+        <!-- Success Icon -->
       </div>
       <h1 class="success-title">Thank You for Your Order!</h1>
       <p class="success-subtitle">
@@ -83,37 +72,39 @@ const router = useRouter();
 const route = useRoute();
 
 const fetchUserDetails = async () => {
-  try {
-    const response = await axios.get(`${import.meta.env.VITE_API_URL}/user`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
-    return response.data.email || "customer@example.com";
-  } catch (error) {
-    console.error("Error fetching user details:", error);
-    toast.error("Unable to fetch user details. Using default email.");
-    return "customer@example.com"; // Default email if the user fetch fails
+  // Check if the user is authenticated
+  const token = localStorage.getItem("token");
+  if (token) {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/user`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return response.data.email || "customer@example.com";
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+      toast.error("Unable to fetch user details. Using default email.");
+      return "customer@example.com";
+    }
   }
+  return "customer@example.com"; // Default email for guests
 };
 
 const fetchOrderDetails = async () => {
   try {
-    const orderId = route.query.order_id; // Fetch the order ID from query params
-    if (!orderId) {
-      throw new Error("Order ID is missing.");
-    }
+    const orderId = route.query.order_id; // Get order ID from query params
+    if (!orderId) throw new Error("Order ID is missing.");
+
+    // For guests, no authorization header is needed
+    const token = localStorage.getItem("token");
+    const headers = token ? { Authorization: `Bearer ${token}` } : {}; // Skip header for guest
+
     const orderResponse = await axios.get(
       `${import.meta.env.VITE_API_URL}/orders/${orderId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`, // Replace with your auth mechanism if different
-        },
-      }
+      { headers }
     );
     order.value = orderResponse.data;
 
-    // Fetch user details after the order details are loaded
+    // Fetch user details for email display
     customerEmail.value = await fetchUserDetails();
   } catch (error) {
     console.error("Error fetching order details:", error);
@@ -125,22 +116,19 @@ const fetchOrderDetails = async () => {
 
 const viewOrderDetails = async () => {
   try {
-    const orderId = route.query.order_id; // Fetch the order ID from query params
-    if (!orderId) {
-      throw new Error("Order ID is missing.");
-    }
+    const orderId = route.query.order_id;
+    if (!orderId) throw new Error("Order ID is missing.");
+
+    const token = localStorage.getItem("token");
+    const headers = token ? { Authorization: `Bearer ${token}` } : {}; // Skip header for guest
+
     const response = await axios.get(
       `${import.meta.env.VITE_API_URL}/orders/${orderId}/details`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`, // Replace with your auth mechanism if different
-        },
-      }
+      { headers }
     );
-    // Use router.push with the `id` from the response to navigate to the order details page
     router.push({ name: "OrderDetails", params: { id: response.data.id } });
   } catch (error) {
-    console.error("Error fetching detailed order information:", error);
+    console.error("Error fetching order details:", error);
     toast.error("Failed to load order details. Please try again later.");
   }
 };
@@ -153,10 +141,7 @@ const store = useStore();
 
 onMounted(() => {
   fetchOrderDetails();
-  // Clear the cart after a successful checkout
   store.dispatch("clearCart");
-
-  // Show a success toast when the page loads
   toast.success("Order confirmed successfully!", {
     position: "top-right",
     duration: 3000,

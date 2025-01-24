@@ -11,6 +11,7 @@ use App\Mail\OrderConfirmationMail;
 use App\Mail\OrderStatusUpdatedMail;
 use App\Mail\AdminOrderMail;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Str;
 use Exception;
 
 class OrderController extends Controller
@@ -20,6 +21,7 @@ class OrderController extends Controller
     {
         $user = $request->user();
 
+        // Admin logic: Fetch all orders (including guest orders)
         if ($user->role === 'admin') {
             $orders = Order::with('user') // Include user details
                 ->orderBy('id')
@@ -29,6 +31,7 @@ class OrderController extends Controller
                     return $order;
                 });
         } else {
+            // Non-admin logic: Fetch only orders tied to the authenticated user
             $orders = Order::with('user') // Include user details
                 ->where('user_id', $user->id)
                 ->orderBy('id')
@@ -47,15 +50,19 @@ class OrderController extends Controller
     {
         $user = $request->user();
 
-        $order = Order::with(['orderItems.product', 'user', 'shippingAddress']) // Add shippingAddress
+        // Fetch the order with its relationships
+        $order = Order::with(['orderItems.product', 'user', 'shippingAddress']) // Include order details
             ->where('id', $id)
             ->where(function ($query) use ($user) {
-                if ($user->role === 'user') {
+                // Admins can access all orders (user and guest)
+                if ($user->role !== 'admin') {
+                    // Users can only access their own orders
                     $query->where('user_id', $user->id);
                 }
             })
             ->first();
 
+        // Check if the order exists
         if (!$order) {
             return response()->json(['message' => 'Order not found'], 404);
         }
@@ -92,7 +99,7 @@ class OrderController extends Controller
 
             // Create or Update Shipping Address
             $shippingAddress = ShippingAddress::create([
-                'user_id' => $user ? $user->id : null, // Use user ID if authenticated, otherwise null
+                'user_id' => $user ? $user->id : null, 
                 'address1' => $request->shipping_address['address1'],
                 'country' => $request->shipping_address['country'],
                 'state' => $request->shipping_address['state'],
@@ -102,16 +109,17 @@ class OrderController extends Controller
 
             // Create Order
             $order = Order::create([
-                'user_id' => $user ? $user->id : null, // Use user ID if authenticated
+                'user_id' => $user ? $user->id : null,
+                'guest_id' => $user ? null : Str::uuid(), // Generate UUID for guest
+                'guest_email' => $request->guest_email,
+                'guest_name' => $request->guest_name,
+                'guest_phone' => $request->guest_phone,
                 'shipping_fee' => $request->shipping_fee,
                 'total_price' => $request->total_price,
                 'status' => $request->status,
                 'payment_status' => $request->payment_status,
                 'reference' => uniqid('order_'),
                 'shipping_address_id' => $shippingAddress->id,
-                'guest_email' => $request->guest_email, // Guest details
-                'guest_name' => $request->guest_name,
-                'guest_phone' => $request->guest_phone,
             ]);
 
             // Create Order Items
@@ -298,20 +306,20 @@ class OrderController extends Controller
     {
         try {
             // Fetch the 5 most recent orders with 'Completed' payment status
-            $recentSales = Order::select('total_price', 'user_id', 'payment_status') // Select total_price, user_id, and payment_status
+            $recentSales = Order::select('total_price', 'user_id', 'guest_name', 'guest_email', 'payment_status') // Include guest_name and guest_email
                 ->with([
-                    'user:id,name,email' // Include only the user's id, name, and email
+                    'user:id,name,email', // Include only the user's id, name, and email
                 ])
                 ->where('payment_status', 'Completed') // Only fetch orders with 'Completed' payment status
                 ->orderBy('created_at', 'desc') // Order by creation date, most recent first
                 ->limit(5) // Limit to 5 orders
                 ->get();
 
-            // Map to include name, email, payment_status, and total_price
+            // Map to include guest orders and user details
             $sales = $recentSales->map(function ($order) {
                 return [
-                    'name' => $order->user->name ?? 'Unknown',
-                    'email' => $order->user->email ?? 'Unknown',
+                    'name' => $order->user->name ?? $order->guest_name ?? 'Guest', // Use guest_name if user is null
+                    'email' => $order->user->email ?? $order->guest_email ?? 'guest@example.com', // Use guest_email if user is null
                     'payment_status' => $order->payment_status, // Include payment_status
                     'total_price' => $order->total_price,
                 ];

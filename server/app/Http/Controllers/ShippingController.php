@@ -31,12 +31,12 @@ class ShippingController extends Controller
         // Generate shipping options (express and economy) with mock rates and times
         $shippingOptions = [
             [
-                'service' => 'Express Shipping',
+                'service' => 'DHL Express Shipping',
                 'price' => $baseRate * 1.2, // Express rate with markup
                 'estimatedDelivery' => '2-4 Business Days'
             ],
             [
-                'service' => 'Economy Shipping',
+                'service' => 'DHL Economy Shipping',
                 'price' => $baseRate * 0.8, // Economy rate with discount
                 'estimatedDelivery' => '5-7 Business Days'
             ],
