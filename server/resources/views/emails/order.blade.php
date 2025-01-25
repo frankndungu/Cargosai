@@ -25,7 +25,7 @@
             background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
             border-radius: 12px;
             margin-bottom: 30px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .logo {
@@ -49,6 +49,9 @@
             margin: 20px 0;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
             border-left: 4px solid #0f0f0f;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .section {
@@ -56,7 +59,13 @@
             padding: 25px;
             border-radius: 12px;
             margin-bottom: 25px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
 
         .section-title {
@@ -66,6 +75,13 @@
             padding-bottom: 10px;
             border-bottom: 2px solid #f0f0f0;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i {
+            margin-right: 10px;
+            color: #2e7d32;
         }
 
         .address-grid {
@@ -76,6 +92,14 @@
 
         .address-item {
             margin-bottom: 15px;
+            background-color: #f9f9f9;
+            padding: 12px;
+            border-radius: 8px;
+            transition: background-color 0.2s ease;
+        }
+
+        .address-item:hover {
+            background-color: #f0f0f0;
         }
 
         .address-label {
@@ -115,11 +139,6 @@
             color: #333;
         }
 
-        .total-section {
-            margin-top: 20px;
-            border-top: 2px solid #f0f0f0;
-        }
-
         .total-row {
             font-weight: 600;
             background-color: #f8f9fa;
@@ -141,10 +160,12 @@
             color: #0f0f0f;
             text-decoration: none;
             font-weight: 500;
+            transition: color 0.2s ease;
         }
 
         .contact-link:hover {
             text-decoration: underline;
+            color: #2e7d32;
         }
 
         .footer {
@@ -155,7 +176,6 @@
             margin-top: 30px;
         }
 
-        /* Add styling for order status */
         .order-status {
             display: inline-block;
             padding: 8px 15px;
@@ -167,10 +187,10 @@
             margin-top: 10px;
         }
 
-        /* Add some cool hover effects */
-        .section:hover {
-            transform: translateY(-2px);
-            transition: transform 0.2s ease;
+        .addresses-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
         }
     </style>
 </head>
@@ -185,33 +205,64 @@
         </div>
 
         <div class="order-reference">
-            <strong>Order Reference:</strong> {{ $order->reference }}
-            <br>
-            <strong>Order Date:</strong> {{ $order->created_at->format('F j, Y') }}
+            <div>
+                <strong>Order Reference:</strong> {{ $order->reference }}
+            </div>
+            <div>
+                <strong>Order Date:</strong> {{ $order->created_at->format('F j, Y') }}
+            </div>
         </div>
 
-        <div class="section">
-            <h2 class="section-title">Shipping Address</h2>
-            <div class="address-grid">
-                <div class="address-item">
-                    <span class="address-label">Address</span>
-                    <span class="address-value">{{ $order->shippingAddress->address1 }}</span>
+        <div class="addresses-container">
+            <div class="section">
+                <h2 class="section-title">Shipping Address</h2>
+                <div class="address-grid">
+                    <div class="address-item">
+                        <span class="address-label">Address</span>
+                        <span class="address-value">{{ $order->shippingAddress->address1 }}</span>
+                    </div>
+                    <div class="address-item">
+                        <span class="address-label">City</span>
+                        <span class="address-value">{{ $order->shippingAddress->city }}</span>
+                    </div>
+                    <div class="address-item">
+                        <span class="address-label">State</span>
+                        <span class="address-value">{{ $order->shippingAddress->state }}</span>
+                    </div>
+                    <div class="address-item">
+                        <span class="address-label">Country</span>
+                        <span class="address-value">{{ $order->shippingAddress->country }}</span>
+                    </div>
+                    <div class="address-item">
+                        <span class="address-label">Postal Code</span>
+                        <span class="address-value">{{ $order->shippingAddress->postal_code }}</span>
+                    </div>
                 </div>
-                <div class="address-item">
-                    <span class="address-label">City</span>
-                    <span class="address-value">{{ $order->shippingAddress->city }}</span>
-                </div>
-                <div class="address-item">
-                    <span class="address-label">State</span>
-                    <span class="address-value">{{ $order->shippingAddress->state }}</span>
-                </div>
-                <div class="address-item">
-                    <span class="address-label">Country</span>
-                    <span class="address-value">{{ $order->shippingAddress->country }}</span>
-                </div>
-                <div class="address-item">
-                    <span class="address-label">Postal Code</span>
-                    <span class="address-value">{{ $order->shippingAddress->postal_code }}</span>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Billing Address</h2>
+                <div class="address-grid">
+                    <div class="address-item">
+                        <span class="address-label">Address</span>
+                        <span class="address-value">{{ $order->billingAddress->address1 }}</span>
+                    </div>
+                    <div class="address-item">
+                        <span class="address-label">City</span>
+                        <span class="address-value">{{ $order->billingAddress->city }}</span>
+                    </div>
+                    <div class="address-item">
+                        <span class="address-label">State</span>
+                        <span class="address-value">{{ $order->billingAddress->state }}</span>
+                    </div>
+                    <div class="address-item">
+                        <span class="address-label">Country</span>
+                        <span class="address-value">{{ $order->billingAddress->country }}</span>
+                    </div>
+                    <div class="address-item">
+                        <span class="address-label">Postal Code</span>
+                        <span class="address-value">{{ $order->billingAddress->postal_code }}</span>
+                    </div>
                 </div>
             </div>
         </div>

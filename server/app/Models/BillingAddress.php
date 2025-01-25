@@ -11,6 +11,7 @@ class BillingAddress extends Model
 
     protected $fillable = [
         'user_id',
+        'guest_id',
         'address1',
         'country',
         'city',

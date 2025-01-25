@@ -36,8 +36,8 @@
 
         <router-link
           class="button-link"
-          to="/register"
-          aria-label="Register now to start shopping at Maasai Market Online"
+          to="/shop"
+          aria-label="Start shopping at Maasai Market Online"
         >
           <button class="btn btn-dark">
             <span>Get Started</span>

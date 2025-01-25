@@ -129,7 +129,7 @@
         <div class="input-group">
           <div class="input-wrapper">
             <label>Country</label>
-            <select v-model="formData.country" required>
+            <select v-model="formData.shippingCountry" required>
               <option value="" disabled>Select your country</option>
               <option
                 v-for="(country, index) in countries"
@@ -143,7 +143,7 @@
           <div class="input-wrapper">
             <label>State/Province</label>
             <input
-              v-model="formData.state"
+              v-model="formData.shippingState"
               type="text"
               placeholder="New York"
               required
@@ -152,7 +152,7 @@
           <div class="input-wrapper">
             <label>City</label>
             <input
-              v-model="formData.city"
+              v-model="formData.shippingCity"
               type="text"
               placeholder="New York"
               required
@@ -161,7 +161,7 @@
           <div class="input-wrapper">
             <label>Address</label>
             <input
-              v-model="formData.address"
+              v-model="formData.shippingAddress"
               type="text"
               placeholder="123 Main St"
               required
@@ -170,7 +170,7 @@
           <div class="input-wrapper">
             <label>Postal Code</label>
             <input
-              v-model="formData.postalCode"
+              v-model="formData.shippingPostalCode"
               type="text"
               placeholder="10001"
               required
@@ -242,6 +242,66 @@
           </div>
         </div>
       </div>
+
+      <!-- Billing Address Section -->
+      <div class="billing-address-section">
+        <div class="section-header">
+          <h2>Billing Address</h2>
+          <span>Ensure your billing information is correct</span>
+        </div>
+
+        <div class="input-group">
+          <div class="input-wrapper">
+            <label>Country</label>
+            <select v-model="formData.billingCountry" required>
+              <option value="" disabled>Select your country</option>
+              <option
+                v-for="(country, index) in countries"
+                :key="index"
+                :value="country"
+              >
+                {{ country }}
+              </option>
+            </select>
+          </div>
+          <div class="input-wrapper">
+            <label>State/Province</label>
+            <input
+              v-model="formData.billingState"
+              type="text"
+              placeholder="New York"
+              required
+            />
+          </div>
+          <div class="input-wrapper">
+            <label>City</label>
+            <input
+              v-model="formData.billingCity"
+              type="text"
+              placeholder="New York"
+              required
+            />
+          </div>
+          <div class="input-wrapper">
+            <label>Address</label>
+            <input
+              v-model="formData.billingAddress"
+              type="text"
+              placeholder="123 Main St"
+              required
+            />
+          </div>
+          <div class="input-wrapper">
+            <label>Postal Code</label>
+            <input
+              v-model="formData.billingPostalCode"
+              type="text"
+              placeholder="10001"
+              required
+            />
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -253,15 +313,21 @@ import axios from "axios";
 
 const store = useStore();
 
+// Form data for personal details, shipping, and billing addresses
 const formData = ref({
   name: "",
   email: "",
   phone: "",
-  address: "",
-  city: "",
-  postalCode: "",
-  country: "",
-  state: "",
+  shippingAddress: "",
+  shippingCity: "",
+  shippingState: "",
+  shippingPostalCode: "",
+  shippingCountry: "",
+  billingAddress: "",
+  billingCity: "",
+  billingState: "",
+  billingPostalCode: "",
+  billingCountry: "",
 });
 
 const countries = ref([]);
@@ -359,16 +425,64 @@ const fetchShippingAddress = async () => {
     const shippingAddresses = addressResponse.data;
     if (shippingAddresses.length > 0) {
       const shippingAddress = shippingAddresses[0];
-      formData.value.address = shippingAddress.address1;
-      formData.value.city = shippingAddress.city;
-      formData.value.state = shippingAddress.state;
-      formData.value.postalCode = shippingAddress.postal_code;
-      formData.value.country = shippingAddress.country;
+      formData.value.shippingAddress = shippingAddress.address1;
+      formData.value.shippingCity = shippingAddress.city;
+      formData.value.shippingState = shippingAddress.state;
+      formData.value.shippingPostalCode = shippingAddress.postal_code;
+      formData.value.shippingCountry = shippingAddress.country;
     } else {
       errorMessage.value = "No shipping address found.";
     }
   } catch (error) {
     errorMessage.value = "Failed to fetch shipping address. Please try again.";
+  }
+};
+
+// Fetch billing address
+const fetchBillingAddress = async () => {
+  // Check if user is authenticated
+  const token = localStorage.getItem("token");
+
+  // If no token, skip fetching billing address
+  if (!token) {
+    return;
+  }
+
+  try {
+    const response = await axios.get(`${import.meta.env.VITE_API_URL}/user`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const userId = response.data?.id;
+    if (!userId) {
+      errorMessage.value = "User ID not found. Cannot fetch billing address.";
+      return;
+    }
+
+    const addressResponse = await axios.get(
+      `${import.meta.env.VITE_API_URL}/billing-address/user/${userId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const billingAddresses = addressResponse.data;
+    if (billingAddresses.length > 0) {
+      const billingAddress = billingAddresses[0];
+      formData.value.billingAddress = billingAddress.address1;
+      formData.value.billingCity = billingAddress.city;
+      formData.value.billingState = billingAddress.state;
+      formData.value.billingPostalCode = billingAddress.postal_code;
+      formData.value.billingCountry = billingAddress.country;
+    } else {
+      errorMessage.value = "No billing address found.";
+    }
+  } catch (error) {
+    errorMessage.value = "Failed to fetch billing address. Please try again.";
   }
 };
 
@@ -378,8 +492,8 @@ const calculateShipping = async () => {
     const response = await axios.post(
       `${import.meta.env.VITE_API_URL}/shipping-rates`,
       {
-        country: formData.value.country,
-        postal_code: formData.value.postalCode,
+        country: formData.value.shippingCountry,
+        postal_code: formData.value.shippingPostalCode,
         weight: 1,
       },
       {
@@ -427,14 +541,22 @@ const submitOrder = async () => {
       total_price: total.value,
       shipping_fee: shippingFee,
       status: "Pending",
-      payment_status: "Pending",
+      payment_status: "Completed",
       // Add shipping address details
       shipping_address: {
-        address1: formData.value.address,
-        country: formData.value.country,
-        state: formData.value.state,
-        city: formData.value.city,
-        postal_code: formData.value.postalCode,
+        address1: formData.value.shippingAddress,
+        country: formData.value.shippingCountry,
+        state: formData.value.shippingState,
+        city: formData.value.shippingCity,
+        postal_code: formData.value.shippingPostalCode,
+      },
+      // Add billing address details
+      billing_address: {
+        address1: formData.value.billingAddress,
+        country: formData.value.billingCountry,
+        state: formData.value.billingState,
+        city: formData.value.billingCity,
+        postal_code: formData.value.billingPostalCode,
       },
     };
 
@@ -507,6 +629,7 @@ onMounted(async () => {
   if (token) {
     await fetchUserDetails();
     await fetchShippingAddress();
+    await fetchBillingAddress(); // Fetch billing address for authenticated users
   }
 });
 </script>
@@ -566,7 +689,8 @@ onMounted(async () => {
   color: var(--dark-color);
 }
 
-.shipping-address-section {
+.shipping-address-section,
+.billing-address-section {
   border-top: 1px solid #ccc;
   margin-top: 5px;
   padding: 2rem;
