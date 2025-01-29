@@ -117,11 +117,29 @@ const routes = [
   {
     path: "/",
     component: Home,
-    meta: { title: "Shop Authentic African Crafts" },
-    description:
-      "Explore and shop authentic African crafts and home decor online.",
-    keywords:
-      "African crafts, handmade jewelry, African home decor, authentic African art",
+    meta: {
+      title:
+        "Authentic Maasai & African Crafts | Handmade Jewelry & Decor | Maasai Market Online",
+      description:
+        "Discover authentic handmade African crafts, Maasai jewelry, beadwork, and traditional home decor. Shop our curated collection of fair-trade artisan pieces direct from Kenya. Free shipping on orders over $50.",
+      keywords:
+        "Maasai jewelry, African crafts, handmade African jewelry, Maasai beadwork, African home decor, authentic African art, Kenyan crafts, fair trade African crafts, traditional Maasai accessories, African tribal art, African cultural gifts, Maasai market, African artisan crafts, authentic African decor, handcrafted African items",
+      canonical: "https://maasaimarketonline.com/",
+      ogTitle: "Authentic Maasai & African Crafts | Handmade Jewelry & Decor",
+      ogDescription:
+        "Shop authentic handmade African crafts, Maasai jewelry, and traditional home decor. Direct from Kenyan artisans with free shipping over $50.",
+      twitterCard: "summary_large_image",
+      twitterTitle:
+        "Authentic Maasai & African Crafts | Handmade Jewelry & Decor",
+      twitterDescription:
+        "Shop authentic handmade African crafts, Maasai jewelry, and traditional home decor. Direct from Kenyan artisans.",
+      twitterImage: "/images/maasai-market-crafts.jpg",
+      robots: "index, follow",
+      alternateLanguages: {
+        en: "https://maasaimarketonline.com/",
+        sw: "https://maasaimarketonline.com/sw",
+      },
+    },
   },
   {
     path: "/about",
@@ -134,18 +152,92 @@ const routes = [
   {
     path: "/blog",
     component: Blog,
-    meta: { title: "African Art & Culture Blog" },
-    description: "Read about African art, culture, and crafts on our blog.",
-    keywords: "African art, African culture, African blog",
+    meta: {
+      title:
+        "African Art & Culture Blog | Traditional Crafts & Maasai Heritage | Maasai Market Online",
+      description:
+        "Explore the rich heritage of African art, Maasai culture, and traditional craftsmanship. Read expert insights on African jewelry making, cultural ceremonies, sustainable practices, and artisan stories from Kenya.",
+      keywords:
+        "African art blog, Maasai culture, African craft techniques, traditional African jewelry, Kenyan art history, Maasai heritage, African cultural ceremonies, sustainable African crafts, African artisan stories, Maasai traditions, African design inspiration, African craft tutorials, East African culture",
+      canonical: "https://maasaimarketonline.com/blog",
+      ogTitle:
+        "African Art & Culture Blog | Traditional Crafts & Maasai Heritage",
+      ogDescription:
+        "Dive into African art, Maasai culture, and traditional craftsmanship. Expert insights on jewelry making, cultural ceremonies, and artisan stories.",
+      ogImage: "/images/blog-header.jpg",
+      twitterCard: "summary_large_image",
+      twitterTitle: "African Art & Culture Blog | Maasai Market Online",
+      twitterDescription:
+        "Explore African art, Maasai culture, and traditional craftsmanship through our expert articles and artisan stories.",
+      twitterImage: "/images/blog-twitter.jpg",
+      schema: {
+        "@type": "Blog",
+        name: "Maasai Market Online Blog",
+        description:
+          "Expert insights into African art, culture, and traditional crafts",
+        publisher: {
+          "@type": "Organization",
+          name: "Maasai Market Online",
+          logo: {
+            "@type": "ImageObject",
+            url: "https://maasaimarketonline.com/logo.png",
+          },
+        },
+      },
+    },
   },
   {
     path: "/blog/:slug",
     component: BlogPost,
     name: "BlogPost",
     props: true,
-    meta: { title: "Blog" },
-    description: "Read this article on African art and culture.",
-    keywords: "African art, African culture, African crafts",
+    meta: {
+      title:
+        "{{ post.title }} | African Art & Culture Blog | Maasai Market Online",
+      description:
+        "{{ post.excerpt }} Read more about {{ post.topic }} on our African art and culture blog. Expert insights from Maasai Market Online.",
+      keywords:
+        "{{ post.keywords }}, {{ post.category }}, African culture, Maasai traditions, {{ post.tags }}",
+      canonical: "https://maasaimarketonline.com/blog/{{ post.slug }}",
+      ogTitle: "{{ post.title }} | African Art & Culture",
+      ogDescription:
+        "{{ post.excerpt }} Discover more about {{ post.topic }} in our expert blog.",
+      ogImage: "{{ post.featuredImage }}",
+      twitterCard: "summary_large_image",
+      twitterTitle: "{{ post.title }} | African Art & Culture",
+      twitterDescription:
+        "{{ post.excerpt }} Expert insights on {{ post.topic }}.",
+      twitterImage: "{{ post.featuredImage }}",
+      schema: {
+        "@type": "BlogPosting",
+        headline: "{{ post.title }}",
+        image: "{{ post.featuredImage }}",
+        author: {
+          "@type": "Person",
+          name: "{{ post.author.name }}",
+          url: "https://maasaimarketonline.com/authors/{{ post.author.slug }}",
+        },
+        datePublished: "{{ post.publishDate }}",
+        dateModified: "{{ post.modifiedDate }}",
+        keywords: "{{ post.keywords }}",
+        description: "{{ post.excerpt }}",
+        articleBody: "{{ post.content }}",
+        publisher: {
+          "@type": "Organization",
+          name: "Maasai Market Online",
+          logo: {
+            "@type": "ImageObject",
+            url: "https://maasaimarketonline.com/logo.png",
+          },
+        },
+      },
+      articleTags: "{{ post.tags }}",
+      articleCategory: "{{ post.category }}",
+      publishDate: "{{ post.publishDate }}",
+      modifiedDate: "{{ post.modifiedDate }}",
+      author: "{{ post.author.name }}",
+      readingTime: "{{ post.readingTime }}",
+    },
   },
   {
     path: "/contact",
