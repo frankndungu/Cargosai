@@ -119,7 +119,7 @@ const routes = [
     component: Home,
     meta: {
       title:
-        "Authentic Maasai & African Crafts | Handmade Jewelry & Decor | Maasai Market Online",
+        "Authentic Handmade Maasai & African Crafts | Maasai Market Online",
       description:
         "Discover authentic handmade African crafts, Maasai jewelry, beadwork, and traditional home decor. Shop our curated collection of fair-trade artisan pieces direct from Kenya. Free shipping on orders over $50.",
       keywords:
