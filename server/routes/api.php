@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\PayPalController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\PaystackController;
 use App\Http\Controllers\PaymentController;
@@ -106,6 +107,13 @@ Route::middleware([RateLimitMiddleware::class])->group(function () {
     Route::post('/contact', [ContactController::class, 'store']);
     Route::post('/subscribe', [SubscriptionController::class, 'subscribe']);
 
+    // Paypal Routes
+    Route::prefix('paypal')->group(function () {
+        Route::post('/create-order', [PayPalController::class, 'createOrder']);
+        Route::get('/success', [PayPalController::class, 'success'])->name('paypal.success');
+        Route::get('/cancel', [PayPalController::class, 'cancel'])->name('paypal.cancel');
+    });
+    
     // Paystack Routes
     Route::post('/paystack/initialize', [PaystackController::class, 'initializePayment']);
     Route::get('/paystack/callback', [PaystackController::class, 'handleCallback'])->name('paystack.callback');
