@@ -17,7 +17,6 @@ import Reset from "../views/Reset.vue";
 import NotFound from "../views/NotFound.vue";
 import Cart from "../views/Cart.vue";
 import Checkout from "../views/Checkout.vue";
-import PayPalCallback from "../views/PaypalCallback.vue";
 import PaymentFailed from "../views/PaymentFailed.vue";
 import TermsOfService from "../views/TermsOfService.vue";
 import FrequentlyAskedQuestions from "../views/FrequentlyAskedQuestions.vue";
@@ -340,14 +339,7 @@ const routes = [
     meta: { title: "Checkout" }, // Removed requiresAuth: true
     description: "Complete your purchase and enter payment details.",
   },
-  // PayPal callback route
-  {
-    path: "/paypal/callback",
-    name: "PayPalCallback",
-    meta: { title: "PayPal Callback" },
-    description: "Processing your PayPal payment...",
-    component: PayPalCallback,
-  },
+  // failed payment route
   {
     path: "/payment/failed",
     name: "PaymentFailed",
