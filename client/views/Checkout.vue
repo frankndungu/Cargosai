@@ -106,13 +106,41 @@
                     <strong>${{ total.toFixed(2) }}</strong>
                   </div>
                 </div>
-                <button
-                  type="submit"
-                  class="submit-button"
-                  :disabled="isLoading"
-                >
-                  Pay With Card
-                </button>
+                <div class="payment-buttons">
+                  <button
+                    type="button"
+                    class="submit-button paypal-button"
+                    :disabled="isLoading"
+                    @click="checkoutWithPaypal"
+                  >
+                    <span class="button-icon">
+                      <svg
+                        class="paypal-icon"
+                        viewBox="0 0 24 24"
+                        width="18"
+                        height="18"
+                      >
+                        <path
+                          fill="currentColor"
+                          d="M20.067 8.478c.492.876.661 1.924.662 3.084 0 3.634-3.076 6.938-7.73 6.938h-2.437a.766.766 0 0 0-.756.655L8.82 23.425c-.048.264-.282.575-.557.575H5.947a.434.434 0 0 1-.429-.506l2.474-15.642a.764.764 0 0 1 .756-.655h4.648c1.096 0 2.26.145 3.131.531.857.383 1.54.977 2.04 1.75zM9.421 0c4.654 0 7.73 3.304 7.73 6.938 0 1.16-.169 2.208-.662 3.084-.5.773-1.183 1.367-2.04 1.75-.87.386-2.035.531-3.131.531H6.67a.766.766 0 0 0-.756.655L3.441 28.3a.434.434 0 0 1-.43.506H.695a.434.434 0 0 1-.429-.506L2.74 12.658a.764.764 0 0 1 .756-.655h2.437c4.654 0 7.73-3.304 7.73-6.938 0-1.16-.169-2.208-.662-3.084-.5-.773-1.183-1.367-2.04-1.75C10.091.145 8.926 0 7.83 0h-4.648a.766.766 0 0 0-.756.655L0 15.642a.434.434 0 0 0 .429.506h2.316c.275 0 .509-.311.557-.575l.986-4.27a.766.766 0 0 1 .756-.655h2.437c4.654 0 7.73-3.304 7.73-6.938 0-1.16-.169-2.208-.662-3.084-.5-.773-1.183-1.367-2.04-1.75C12.639.145 11.474 0 10.378 0H5.73z"
+                        />
+                      </svg>
+                    </span>
+                    Checkout With PayPal
+                  </button>
+
+                  <div class="button-divider">
+                    <span>or</span>
+                  </div>
+                  <button
+                    type="submit"
+                    class="submit-button card-button"
+                    :disabled="isLoading"
+                  >
+                    <span class="button-icon"></span>
+                    Checkout With Paystack
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -509,7 +537,89 @@ const calculateShipping = async () => {
   }
 };
 
-// Submit order
+// Submit order using paypal
+const checkoutWithPaypal = async () => {
+  // Validate shipping option selection
+  if (!selectedShippingOption.value) {
+    errorMessage.value = "Please select a shipping option first.";
+    return;
+  }
+
+  isLoading.value = true;
+  errorMessage.value = "";
+
+  try {
+    // Calculate shipping fee
+    const shippingFee = selectedShippingOption.value
+      ? parseFloat(selectedShippingOption.value.price)
+      : 0;
+
+    // Prepare order data
+    const orderData = {
+      items: cartItems.value.map((item) => ({
+        product_id: item.id,
+        price: item.price,
+        quantity: item.quantity,
+      })),
+      total_price: total.value,
+      shipping_fee: shippingFee,
+      shipping_address: {
+        address1: formData.value.shippingAddress,
+        country: formData.value.shippingCountry,
+        state: formData.value.shippingState,
+        city: formData.value.shippingCity,
+        postal_code: formData.value.shippingPostalCode,
+      },
+      billing_address: {
+        address1: formData.value.billingAddress,
+        country: formData.value.billingCountry,
+        state: formData.value.billingState,
+        city: formData.value.billingCity,
+        postal_code: formData.value.billingPostalCode,
+      },
+    };
+
+    // Add guest details if user is not authenticated
+    const isAuthenticated = localStorage.getItem("token");
+    if (!isAuthenticated) {
+      orderData.guest_name = formData.value.name;
+      orderData.guest_email = formData.value.email;
+      orderData.guest_phone = formData.value.phone;
+    }
+
+    // Create PayPal order
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_URL}/paypal/create-order`,
+      orderData,
+      {
+        headers: {
+          Authorization: isAuthenticated
+            ? `Bearer ${localStorage.getItem("token")}`
+            : "",
+        },
+      }
+    );
+
+    if (response.data.approval_url) {
+      // Store order details in localStorage for reference after return
+      localStorage.setItem("pending_order_id", response.data.order_id);
+      store.dispatch("clearCart");
+
+      // Redirect to PayPal
+      window.location.href = response.data.approval_url;
+    } else {
+      throw new Error("PayPal approval URL not received");
+    }
+  } catch (error) {
+    console.error("PayPal checkout error:", error);
+    errorMessage.value =
+      error.response?.data?.message || "Failed to initialize PayPal checkout";
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+// Submit order using paystack
 const orderId = ref(null);
 
 const submitOrder = async () => {
@@ -964,41 +1074,84 @@ onMounted(async () => {
   padding-top: 1rem;
 }
 
+.payment-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  width: 100%;
+}
+
+.button-divider {
+  position: relative;
+  text-align: center;
+  margin: 0.5rem 0;
+}
+
+.button-divider::before,
+.button-divider::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: calc(50% - 1.5rem);
+  height: 1px;
+  background-color: var(--border-color);
+}
+
+.button-divider::before {
+  left: 0;
+}
+
+.button-divider::after {
+  right: 0;
+}
+
+.button-divider span {
+  background-color: white;
+  padding: 0 1rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
 .submit-button {
+  margin-top: 0;
+}
+
+.card-button {
   background-color: var(--dark-tint);
-  color: var(--background-color);
-  border: none;
-  padding: 1rem 2rem;
-  border-radius: 8px;
+}
+
+.card-button:hover {
+  background-color: var(--dark-color);
+}
+
+.paypal-button {
+  background-color: #0070ba;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  width: 100%;
-  margin-top: 1.5rem;
-  font-weight: 500;
+  gap: 0.75rem;
+}
+
+.paypal-button:hover {
+  background-color: #003087;
+}
+
+.paypal-icon {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.submit-button {
   font-size: 1rem;
-}
-
-.submit-button:hover {
-  background-color: var(--dark-color);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.submit-button:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(15, 15, 15, 0.6);
-}
-
-.submit-button:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
+  padding: 0.875rem 1.5rem;
+  font-weight: 600;
 }
 
 .button-icon {
-  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Loading and Error Styles */
@@ -1095,6 +1248,12 @@ onMounted(async () => {
 
   .modern-checkout-form {
     padding: 1.5rem;
+  }
+
+  .payment-buttons {
+    /* Keep column layout for larger screens too for consistency */
+    flex-direction: column;
+    max-width: 100%;
   }
 
   .name-row,

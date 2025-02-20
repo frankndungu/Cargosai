@@ -97,8 +97,8 @@
               class="payment-logo"
             />
             <img
-              src="https://res.cloudinary.com/kwishi/image/upload/v1733219157/apple_pay_by7btv.svg"
-              alt="Apple Pay"
+              src="https://res.cloudinary.com/kwishi/image/upload/v1740036678/paypal_xe2bqq.svg"
+              alt="Paypal"
               class="payment-logo"
             />
           </div>

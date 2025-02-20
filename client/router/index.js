@@ -17,6 +17,8 @@ import Reset from "../views/Reset.vue";
 import NotFound from "../views/NotFound.vue";
 import Cart from "../views/Cart.vue";
 import Checkout from "../views/Checkout.vue";
+import PayPalCallback from "../views/PaypalCallback.vue";
+import PaymentFailed from "../views/PaymentFailed.vue";
 import TermsOfService from "../views/TermsOfService.vue";
 import FrequentlyAskedQuestions from "../views/FrequentlyAskedQuestions.vue";
 import UserDashboard from "../views/UserDashboard.vue";
@@ -118,7 +120,7 @@ const routes = [
     path: "/",
     component: Home,
     meta: {
-      title: "Authentic Handmade Maasai & African Crafts | Maasai Market",
+      title: "Authentic Handmade Maasai & African Crafts, Art & Jewelry",
       description:
         "Discover authentic handmade African crafts, Maasai jewelry, beadwork, and traditional home decor. Shop our curated collection of fair-trade artisan pieces direct from Kenya. Free shipping on orders over $50.",
       keywords:
@@ -337,6 +339,21 @@ const routes = [
     component: Checkout,
     meta: { title: "Checkout" }, // Removed requiresAuth: true
     description: "Complete your purchase and enter payment details.",
+  },
+  // PayPal callback route
+  {
+    path: "/paypal/callback",
+    name: "PayPalCallback",
+    meta: { title: "PayPal Callback" },
+    description: "Processing your PayPal payment...",
+    component: PayPalCallback,
+  },
+  {
+    path: "/payment/failed",
+    name: "PaymentFailed",
+    meta: { title: "Payment Failed" },
+    description: "Your payment was not successful. Please try again.",
+    component: PaymentFailed,
   },
   // Updated order confirmation route to handle both guest and authenticated orders
   {
